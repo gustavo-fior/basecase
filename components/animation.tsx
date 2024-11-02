@@ -30,7 +30,7 @@ const AsciiAnimation = () => {
 
   return (
     <div className="h-[192px]">
-      <pre className="font-mono text-center whitespace-pre text-green-500 p-4">
+      <pre className="font-mono text-center whitespace-pre text-emerald-500 p-4">
         {lines.slice(0, position).join('\n')}
         {'\n'.repeat(Math.max(0, totalHeight - position))}
       </pre>

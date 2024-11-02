@@ -3,8 +3,8 @@
 import { Hero } from "./hero";
 import { Portfolio } from "./portfolio";
 import { Quotes } from "./quotes";
-import About from "./about";
-import GitHistory from "./git";
+import { About } from "./about";
+import { GitHistory } from "./git";
 
 export default function Content() {
   return (

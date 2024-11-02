@@ -28,7 +28,7 @@ interface GitHubEvent {
   created_at: string;
 }
 
-const GitHistory: React.FC = () => {
+export const GitHistory: React.FC = () => {
   const [commits, setCommits] = useState<Commit[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

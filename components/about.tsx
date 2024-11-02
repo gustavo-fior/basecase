@@ -1,6 +1,6 @@
 "use client";
 
-export default function About() {
+export const About = () => {
   return (
     <div className="max-w-6xl py-10">
       <h2 className="text-2xl mb-8">A different way of working</h2>
