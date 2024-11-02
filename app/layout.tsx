@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "basecase.sh",
     description: "basecase.sh",
-    images: ["/api/og"],
+    images: ["https://base-case-images.s3.us-west-2.amazonaws.com/og-image.png"],
     siteName: "basecase.sh",
     url: process.env.NEXT_PUBLIC_URL,
   },
