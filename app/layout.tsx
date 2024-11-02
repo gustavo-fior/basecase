@@ -15,13 +15,13 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "basecase",
-  description: "basecase",
+  title: "basecase.sh",
+  description: "basecase.sh",
   openGraph: {
-    title: "GitRoasted",
-    description: "GitRoasted: Roast your GitHub profile with AI",
+    title: "basecase.sh",
+    description: "basecase.sh",
     images: ["/api/og"],
-    siteName: "GitRoasted",
+    siteName: "basecase.sh",
     url: process.env.NEXT_PUBLIC_URL,
   },
 };
