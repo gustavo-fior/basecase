@@ -2,8 +2,8 @@
 
 import AsciiAnimation from "./animation";
 import Content from "./content";
-import Footer from "./footer";
-import { Navigation } from "./nav";
+import CTA from "./cta";
+import Navigation from "./nav";
 
 export default function HomePage() {
   return (
@@ -11,7 +11,7 @@ export default function HomePage() {
       <Navigation />
       <div className="max-w-6xl px-4 mx-auto">
         <Content />
-        <Footer />
+        <CTA />
         <AsciiAnimation />
       </div>
     </div>

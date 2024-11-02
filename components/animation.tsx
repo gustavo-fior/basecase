@@ -25,12 +25,12 @@ const AsciiAnimation = () => {
   }, [totalHeight]);
 
   if (!isMounted) {
-    return <div className="h-[192px]" />;
+    return <div className="h-[225px]" />;
   }
 
   return (
-    <div className="h-[192px]">
-      <pre className="font-mono text-center whitespace-pre text-emerald-500 p-4">
+    <div className="h-[225px] border border-dashed border-emerald-500 flex justify-center mb-10">
+      <pre className="font-mono text-center whitespace-pre text-emerald-500 p-4 w-full pt-[45px]">
         {lines.slice(0, position).join('\n')}
         {'\n'.repeat(Math.max(0, totalHeight - position))}
       </pre>

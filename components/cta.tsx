@@ -1,9 +1,9 @@
 "use client";
 
-export default function Footer() {
+export default function CTA() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-10 text-center">
-      <h2 className="text-2xl mb-8">
+      <h2 className="text-2xl">
         Too early to talk to an investor?
         <br />
         <a

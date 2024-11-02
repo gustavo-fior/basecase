@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { ModeToggle } from "@/components/theme-toggle";
 import { GitHub } from "./github";
 
-export const Navigation = () => {
+export default function Navigation() {
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
       if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
