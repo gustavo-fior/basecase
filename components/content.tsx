@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import { Navigation } from './nav';
-import Main from './main';
-import Footer from './footer';
-import AsciiAnimation from './animation';
+import { Hero } from "./hero";
+import About from "./about";
+import GitHistory from "./git";
+import { Portfolio } from "./portfolio";
+import { Quotes } from "./quotes";
 
-const HomePage = () => {
+export default function Content() {
   return (
-    <div className="min-h-screen font-mono">
-      <Navigation />
-      <Main />
-      <Footer />  
-      <AsciiAnimation />
+    <div className="max-w-6xl mx-auto px-4">
+      <Hero />
+      <About />
+      <GitHistory />
+      <Portfolio />
+      <Quotes />
     </div>
   );
-};
-
-export default HomePage;
+}

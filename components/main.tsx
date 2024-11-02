@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import About from "./about";
-import GitHistory from "./git";
-import { Hero } from "./hero";
-import { Portfolio } from "./portfolio";
-import { Quotes } from "./quotes";
+import AsciiAnimation from "./animation";
+import Content from "./content";
+import Footer from "./footer";
+import { Navigation } from "./nav";
 
-export default function Main() {
+export default function HomePage() {
   return (
-    <div className="max-w-6xl mx-auto px-4">
-      <Hero />
-      <About />
-      <GitHistory />
-      <Portfolio />
-      <Quotes />
+    <div className="min-h-screen font-mono">
+      <Navigation />
+      <div className="max-w-6xl px-4 mx-auto">
+        <Content />
+        <Footer />
+        <AsciiAnimation />
+      </div>
     </div>
   );
 }
