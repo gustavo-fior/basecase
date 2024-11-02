@@ -6,11 +6,15 @@ export default function Footer() {
       <h2 className="text-2xl mb-8">
         Too early to talk to a VC?
         <br />
-        <span className="text-emerald-500">Talk to a developer.</span>
+        <a
+          href="https://x.com/alanaagoyal"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-emerald-500 hover:text-emerald-400"
+        >
+          Talk to a developer.
+        </a>
       </h2>
-      <button className="px-8 py-4 bg-emerald-500 text-black rounded-lg hover:bg-emerald-400 transition-colors">
-        Say Hi
-      </button>
     </div>
   );
 }
