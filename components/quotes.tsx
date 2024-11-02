@@ -72,7 +72,7 @@ export const Quotes = () => {
   }, []);
 
   return (
-    <div className="py-10 h-[150px]">
+    <div className="py-10 min-h-[150px]">
       <div
         className="border-l-4 border-orange-500 pl-6"
         tabIndex={0}

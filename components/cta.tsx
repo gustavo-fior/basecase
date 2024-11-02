@@ -2,8 +2,8 @@
 
 export default function CTA() {
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10 text-center">
-      <h2 className="text-2xl">
+    <div className="mx-auto px-4 py-10 text-center">
+      <h2 className="text-xl md:text-2xl">
         Too early to talk to an investor?
         <br />
         <a
