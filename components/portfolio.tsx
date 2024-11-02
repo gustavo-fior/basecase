@@ -141,13 +141,13 @@ export const Portfolio = () => {
             target="_blank"
             rel="noopener noreferrer"
             key={index}
-            className="cursor-default"
+            className="cursor-pointer"
           >
             <div className="border border-gray-800 hover:border-orange-500 p-8 rounded flex items-center justify-center group relative">
               <img 
                 src={client.icon} 
                 alt={client.title} 
-                className="h-8 group-hover:opacity-0 transition-opacity dark:invert" 
+                className="h-10 group-hover:opacity-0 transition-opacity dark:invert" 
               />
               <div className="absolute inset-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-center">
                 <span className="text-2xl font-bold tracking-wide font-inter">{client.title}</span>
