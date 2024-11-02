@@ -55,7 +55,7 @@ const GitHistory: React.FC = () => {
 
         setCommits(pushEvents);
         setLoading(false);
-      } catch (err) {
+      } catch {
         setError("Failed to load commit history");
         setLoading(false);
       }
