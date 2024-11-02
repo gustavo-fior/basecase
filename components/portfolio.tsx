@@ -147,7 +147,7 @@ export const Portfolio = () => {
               <img 
                 src={client.icon} 
                 alt={client.title} 
-                className="h-8 group-hover:opacity-0 transition-opacity" 
+                className="h-8 group-hover:opacity-0 transition-opacity dark:invert" 
               />
               <div className="absolute inset-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-center">
                 <span className="text-sm">{client.title}</span>
