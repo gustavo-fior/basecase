@@ -72,7 +72,7 @@ export const Quotes = () => {
   }, []);
 
   return (
-    <div className="mt-20 h-[200px]">
+    <div className="mt-20 h-[150px]">
       <div
         className="border-l-4 border-orange-500 pl-6"
         tabIndex={0}

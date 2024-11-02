@@ -2,7 +2,7 @@
 
 export const Hero = () => {
   return (
-    <div className="max-w-3xl">
+    <div className="max-w-3xl pt-20">
       <h1 className="text-4xl mb-6">
         A builder
         <br />
