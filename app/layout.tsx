@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { siteConfig } from "@/config/site";
 
 
 const geistSans = localFont({
@@ -22,13 +23,15 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "basecase.sh",
-  description: "basecase.sh",
+  metadataBase: new URL(siteConfig.url),
+  title: siteConfig.name,
+  description: siteConfig.description,
   openGraph: {
-    title: "basecase.sh",
-    images: [{ url: process.env.NEXT_PUBLIC_OG_IMAGE ?? '' }],
-    siteName: "basecase.sh",
-    url: process.env.NEXT_PUBLIC_URL,
+    images: [siteConfig.ogImage],
+    siteName: siteConfig.name,
+    title: siteConfig.name,
+    description: siteConfig.description,
+    url: siteConfig.url,
   },
 };
 
