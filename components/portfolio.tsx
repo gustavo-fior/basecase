@@ -3,56 +3,56 @@
 export const Portfolio = () => {
   const portfolio = [
     {
-      title: "ashby",
+      title: "Ashby",
       icon: "/portfolio/ashby.png",
       description:
         "ashby helps scaling companies achieve their ambitious growth targets. with ashby, teams of all sizes can run a fast and efficient hiring process.",
       url: "https://www.ashbyhq.com/",
     },
     {
-      title: "astral",
+      title: "Astral",
       icon: "/portfolio/astral.png",
       description:
         "astral's mission is to make the python ecosystem more productive by building high-performance developer tools, starting with ruff.",
       url: "https://www.astral.sh/",
     },
     {
-      title: "baseten",
+      title: "Baseten",
       icon: "/portfolio/baseten.png",
       description:
         "baseten provides all the infrastructure you need to deploy and serve ml models performantly, scalably, and cost-efficiently.",
       url: "https://www.baseten.co/",
     },
     {
-      title: "braintrust",
+      title: "Braintrust",
       icon: "/portfolio/braintrust.png",
       description:
         "braintrust is the enterprise-grade stack for building ai products. from evaluations, to prompt playground, to data management, braintrust takes uncertainty and tedium out of incorporating ai into your business.",
       url: "https://www.braintrustdata.com/",
     },
     {
-      title: "browserbase",
+      title: "Browserbase",
       icon: "/portfolio/browserbase.png",
       description:
         "browserbase is the all-in-one platform developers need to host, manage, and monitor headless browsers in the cloud.",
       url: "https://www.browserbase.com/",
     },
     {
-      title: "codeium",
+      title: "Codeium",
       icon: "/portfolio/codeium.png",
       description:
         "codeium is the modern coding superpower, a code acceleration toolkit built on cutting edge ai technology.",
       url: "https://codeium.com/",
     },
     {
-      title: "default",
+      title: "Default",
       icon: "/portfolio/default.png",
       description:
         "default is the all-in-one inbound lead platform that helps modern companies make the most of every lead by consolidating the usually fragmented inbound sales stack into one deeply integrated platform.",
       url: "https://www.default.com/",
     },
     {
-      title: "diagram",
+      title: "Diagram",
       icon: "/portfolio/diagram.png",
       description: (
         <>
@@ -66,28 +66,28 @@ export const Portfolio = () => {
       url: "https://diagram.com/",
     },
     {
-      title: "doss",
+      title: "Doss",
       icon: "/portfolio/doss.png",
       description:
         "doss is a lightweight erp and data platform that helps teams manage their operations from purchase order to point of sale.",
       url: "https://doss.com/",
     },
     {
-      title: "graphite",
+      title: "Graphite",
       icon: "/portfolio/graphite.png",
       description:
         "graphite is a fast, simple code review platform designed for engineers who want to write and review smaller pull requests, stay unblocked, and ship faster.",
       url: "https://graphite.dev/",
     },
     {
-      title: "orb",
+      title: "Orb",
       icon: "/portfolio/orb.png",
       description:
         "orb is developer-first billing infrastructure built to help companies succeed with usage-based pricing.",
       url: "https://www.withorb.com/",
     },
     {
-      title: "pyroscope",
+      title: "Pyroscope",
       icon: "/portfolio/pyroscope.png",
       description: (
         <>
@@ -102,28 +102,28 @@ export const Portfolio = () => {
       url: "https://pyroscope.io/",
     },
     {
-      title: "replo",
+      title: "Replo",
       icon: "/portfolio/replo.png",
       description:
         "replo is the fastest way to modify, customize, and build on every part of your shopify store pages, down to the pixel.",
       url: "https://www.replo.app/",
     },
     {
-      title: "resend",
+      title: "Resend",
       icon: "/portfolio/resend.png",
       description:
         "resend is the email api for developers to build, test, and deliver transactional emails at scale.",
       url: "https://resend.com/",
     },
     {
-      title: "supabase",
+      title: "Supabase",
       icon: "/portfolio/supabase.png",
       description:
         "supabase is an open source firebase alternative. start your project with a postgres database, authentication, instant apis, edge functions, realtime subscriptions, and storage.",
       url: "https://supabase.com/",
     },
     {
-      title: "vercel",
+      title: "Vercel",
       icon: "/portfolio/vercel.png",
       description:
         "vercel's frontend cloud provides the developer experience and infrastructure to build, scale, and secure a faster, more personalized web.",
