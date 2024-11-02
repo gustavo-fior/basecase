@@ -1,5 +1,7 @@
 "use client";
 
+import GitHistory from "./git";
+
 export const Hero = () => {
   return (
     <div className="max-w-3xl py-10">
@@ -13,6 +15,7 @@ export const Hero = () => {
         first check to technical founders who are often still in the dreaming,
         building, and exploring phase of their journey.
       </p>
+      <GitHistory />
     </div>
   );
 };
