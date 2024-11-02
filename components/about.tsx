@@ -3,7 +3,7 @@ import { Star } from "lucide-react";
 
 export default function About() {
   return (
-    <div className="max-w-6xl py-20">
+    <div className="max-w-6xl py-10">
       <h2 className="text-3xl mb-12">I don&apos;t take pitch meetings</h2>
       <div className="grid md:grid-cols-2 gap-12">
         <div>

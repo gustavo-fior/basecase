@@ -32,9 +32,12 @@ const GitHistory: React.FC = () => {
   const [commits, setCommits] = useState<Commit[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [isBlinking, setIsBlinking] = useState(false);
 
   useEffect(() => {
     const fetchCommits = async () => {
+      setIsRefreshing(true);
       try {
         const response = await fetch(
           "https://api.github.com/users/alanagoyal/events/public"
@@ -59,11 +62,21 @@ const GitHistory: React.FC = () => {
         setError("Failed to load commit history");
         setLoading(false);
       }
+      setTimeout(() => setIsRefreshing(false), 1000);
     };
 
+    const blinkInterval = setInterval(() => {
+      setIsBlinking(true);
+      setTimeout(() => setIsBlinking(false), 1000);
+    }, 3000); // Blink every 3 seconds
+
     fetchCommits();
-    const interval = setInterval(fetchCommits, 300000); // Refresh every 5 minutes
-    return () => clearInterval(interval);
+    const fetchInterval = setInterval(fetchCommits, 300000); // Refresh every 5 minutes
+    
+    return () => {
+      clearInterval(fetchInterval);
+      clearInterval(blinkInterval);
+    };
   }, []);
 
   if (loading) {
@@ -91,14 +104,23 @@ const GitHistory: React.FC = () => {
         <div className="w-3 h-3 rounded-full bg-red-500" />
         <div className="w-3 h-3 rounded-full bg-yellow-500" />
         <div className="w-3 h-3 rounded-full bg-green-500" />
-        <a
-          href="https://github.com/alanagoyal"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="ml-2 text-sm text-gray-400 cursor-pointer hover:text-gray-300"
-        >
-          Commit history (last updated {new Date().toLocaleTimeString()})
-        </a>
+        <div className="flex items-center">
+          <a
+            href="https://github.com/alanagoyal"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="ml-2 text-sm text-gray-400 cursor-pointer hover:text-gray-300"
+          >
+            Commit history (last updated {new Date().toLocaleTimeString()})
+          </a>
+          <div
+            className={`ml-2 w-2 h-2 rounded-full ${
+              isRefreshing || isBlinking
+                ? "bg-emerald-500 animate-pulse"
+                : "bg-gray-500"
+            }`}
+          />
+        </div>
       </div>
 
       <div className="p-4 space-y-4">

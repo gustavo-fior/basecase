@@ -132,7 +132,7 @@ export const Portfolio = () => {
   ];
 
   return (
-    <div className="mt-20">
+    <div className="py-10">
       <h2 className="text-2xl mb-8">Early partner to iconic companies</h2>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
         {portfolio.map((client, index) => (

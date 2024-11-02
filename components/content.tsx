@@ -2,16 +2,16 @@
 
 import { Hero } from "./hero";
 import About from "./about";
-import GitHistory from "./git";
+import Code from "./code";
 import { Portfolio } from "./portfolio";
 import { Quotes } from "./quotes";
 
 export default function Content() {
   return (
-    <div className="max-w-6xl mx-auto px-4">
+    <div className="max-w-6xl mx-auto px-4 py-10">
       <Hero />
       <About />
-      <GitHistory />
+      <Code />
       <Portfolio />
       <Quotes />
     </div>

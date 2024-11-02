@@ -57,7 +57,7 @@ export const Quotes = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % quotes.length);
-    }, 5000);
+    }, 30000);
 
     // Cleanup interval on unmount
     return () => clearInterval(interval);
@@ -72,7 +72,7 @@ export const Quotes = () => {
   }, []);
 
   return (
-    <div className="mt-20 h-[150px]">
+    <div className="py-10 h-[150px]">
       <div
         className="border-l-4 border-orange-500 pl-6"
         tabIndex={0}
