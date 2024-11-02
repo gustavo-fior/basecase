@@ -1,13 +1,105 @@
-"use client"
+"use client";
+
+import { useState, useEffect } from "react";
+
+const quotes = [
+  {
+    text: "An investor that genuinely cares to understand, use your product, and recommend it. I still get great feedback from Alana and her network to improve our platform.",
+    author: "Guillermo Rauch",
+    title: "Founder & CEO",
+    company: "Vercel",
+    url: "https://vercel.com",
+  },
+  {
+    text: "Alana is easily one of the most unique investors I've met. She's a weekly active user of Braintrust and gives us some of the best feedback and helpful bug reports.",
+    author: "Ankur Goyal",
+    title: "Founder & CEO",
+    company: "Braintrust",
+    url: "https://braintrust.dev",
+  },
+  {
+    text: "Beyond capital, Alana dives deep into our product, regularly filing detailed bug reports and feature suggestions. Her hands-on approach and technical understanding have made her an invaluable partner.",
+    author: "Paul Klein IV",
+    title: "Founder & CEO",
+    company: "Browserbase",
+    url: "https://browserbase.com",
+  },
+  {
+    text: "What sets Alana apart is her commitment to being a power user. She's constantly exploring Supabase's features, helping us identify edge cases, and connecting us with developers. Her technical background makes her feedback incredibly actionable.",
+    author: "Paul Copplestone",
+    title: "Co-Founder & CEO",
+    company: "Supabase",
+    url: "https://supabase.com",
+  },
+  {
+    text: "Having an investor who actually uses your product daily is rare. Alana's deep understanding of developer tools has helped shape Resend's roadmap, and her bug reports are as detailed as they come.",
+    author: "Zeno Rocha",
+    title: "Founder & CEO",
+    company: "Resend",
+    url: "https://resend.com",
+  },
+];
 
 export const Quotes = () => {
-    return (
-      <div className="mt-20 border-l-4 border-orange-500 pl-6">
-        <p className="text-lg italic">
-          &ldquo;Basecase has transformed how our team develops and deploys applications.
-          The developer experience is unmatched.&rdquo;
-        </p>
-        <p className="mt-4 text-gray-500">— Engineering Lead at TechCorp</p>
-      </div>
-    );
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === "ArrowRight") {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % quotes.length);
+    } else if (e.key === "ArrowLeft") {
+      setCurrentIndex(
+        (prevIndex) => (prevIndex - 1 + quotes.length) % quotes.length
+      );
+    }
   };
+
+  // Auto-cycle quotes every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % quotes.length);
+    }, 5000);
+
+    // Cleanup interval on unmount
+    return () => clearInterval(interval);
+  }, []);
+
+  // Add event listeners when component mounts
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  return (
+    <div className="mt-20 h-[200px]">
+      <div
+        className="border-l-4 border-orange-500 pl-6"
+        tabIndex={0}
+        role="region"
+        aria-label="Testimonial quotes"
+      >
+        <p className="text-lg italic">
+          &ldquo;{quotes[currentIndex].text}&rdquo;
+        </p>
+        <p className="mt-4">
+          —{" "}
+          <a
+            href={quotes[currentIndex].url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-orange-500 hover:text-orange-400"
+          >
+            <span className="font-bold">{quotes[currentIndex].author}</span>
+            {quotes[currentIndex].title && (
+              <span>, {quotes[currentIndex].title}</span>
+            )}
+            {quotes[currentIndex].company && (
+              <span>, {quotes[currentIndex].company}</span>
+            )}
+          </a>
+        </p>
+      </div>
+    </div>
+  );
+};
