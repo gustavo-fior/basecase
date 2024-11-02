@@ -34,6 +34,7 @@ export const GitHistory: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isBlinking, setIsBlinking] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState(new Date());
 
   useEffect(() => {
     const fetchCommits = async () => {
@@ -67,6 +68,7 @@ export const GitHistory: React.FC = () => {
 
     const blinkInterval = setInterval(() => {
       setIsBlinking(true);
+      setLastUpdated(new Date());
       setTimeout(() => setIsBlinking(false), 1000);
     }, 3000); // Blink every 3 seconds
 
@@ -111,7 +113,7 @@ export const GitHistory: React.FC = () => {
             rel="noopener noreferrer"
             className="ml-2 text-sm text-gray-400 cursor-pointer hover:text-gray-300"
           >
-            Commit history (last updated {new Date().toLocaleTimeString()})
+            Commit history (last updated {lastUpdated.toLocaleTimeString()})
           </a>
           <div
             className={`ml-2 w-2 h-2 rounded-full ${
