@@ -150,9 +150,9 @@ export const Portfolio = () => {
                 className="h-8 group-hover:opacity-0 transition-opacity dark:invert" 
               />
               <div className="absolute inset-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-center">
-                <span className="text-sm">{client.title}</span>
+                <span className="text-2xl font-bold tracking-wide font-inter">{client.title}</span>
                 {typeof client.description === 'object' && (
-                  <span className="text-orange-500 text-xs mt-1">
+                  <span className="text-orange-500 text-xs mt-1 font-inter">
                     {client.description.props.children[0].props.children}
                   </span>
                 )}
