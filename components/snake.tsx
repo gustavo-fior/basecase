@@ -157,7 +157,7 @@ export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
   // Recalculate on window resize
   useEffect(() => {
     const handleResize = () => {
-      const { gridSize, cellSize } = calculateGameDimensions();
+      const { gridSize } = calculateGameDimensions();
       // Update snake position if needed to keep it in bounds
       setSnake(prev => prev.map(segment => ({
         x: Math.min(segment.x, gridSize - 1),
