@@ -35,6 +35,9 @@ export const GitHistory: React.FC = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isBlinking, setIsBlinking] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(new Date());
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
+  const [isClosed, setIsClosed] = useState(false);
 
   useEffect(() => {
     const fetchCommits = async () => {
@@ -81,6 +84,19 @@ export const GitHistory: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (isFullscreen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+
+    // Cleanup
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isFullscreen]);
+
   if (loading) {
     return (
       <div className="border border-gray-200 dark:border-gray-800 rounded-lg p-6 bg-white dark:bg-black">
@@ -100,12 +116,45 @@ export const GitHistory: React.FC = () => {
     );
   }
 
+  if (isClosed) {
+    return null;
+  }
+
+  if (isMinimized) {
+    return (
+      <div 
+        onClick={() => setIsMinimized(false)}
+        className="fixed bottom-4 right-4 w-48 h-8 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-black shadow-lg cursor-pointer hover:scale-105 transition-all duration-200"
+      >
+        <div className="h-full flex items-center space-x-2 px-3">
+          <div className="w-2 h-2 rounded-full bg-red-500" />
+          <div className="w-2 h-2 rounded-full bg-yellow-500" />
+          <div className="w-2 h-2 rounded-full bg-green-500" />
+          <span className="ml-2 text-xs text-gray-600 dark:text-gray-400 font-geist">Git History</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="border border-gray-200 dark:border-gray-800 rounded-lg bg-white dark:bg-black">
+    <div className={`${
+      isFullscreen 
+        ? 'fixed inset-0 z-50 flex flex-col overflow-hidden' 
+        : ''
+      } border border-gray-200 dark:border-gray-800 rounded-lg bg-white dark:bg-black`}>
       <div className="flex items-center space-x-2 border-b border-gray-200 dark:border-gray-800 p-3">
-        <div className="w-3 h-3 rounded-full bg-red-500" />
-        <div className="w-3 h-3 rounded-full bg-yellow-500" />
-        <div className="w-3 h-3 rounded-full bg-green-500" />
+        <div 
+          className="w-3 h-3 rounded-full bg-red-500 cursor-pointer" 
+          onClick={() => setIsClosed(true)} 
+        />
+        <div 
+          className="w-3 h-3 rounded-full bg-yellow-500 cursor-pointer" 
+          onClick={() => setIsMinimized(true)} 
+        />
+        <div 
+          className="w-3 h-3 rounded-full bg-green-500 cursor-pointer" 
+          onClick={() => setIsFullscreen(!isFullscreen)} 
+        />
         <div className="flex items-center">
           <a
             href="https://github.com/alanagoyal"
@@ -125,12 +174,14 @@ export const GitHistory: React.FC = () => {
         </div>
       </div>
 
-      <div className="p-4 space-y-3 max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-800 scrollbar-track-transparent">
+      <div className={`p-4 space-y-3 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-800 scrollbar-track-transparent ${
+        isFullscreen ? 'flex-1' : 'max-h-[400px]'
+      }`}>
         {commits.map((commit) => (
           <div key={commit.id} className="space-y-0.5">
             <div className="flex items-center space-x-2 text-xs text-emerald-600 dark:text-emerald-500">
               <GitCommit size={12} />
-              <span className="font-bold">{commit.repo}</span>
+              <span className="font-bold text-pink-400 dark:text-pink-300">{commit.repo}</span>
               <span className="text-gray-600 dark:text-gray-500">
                 {commit.timestamp.toLocaleDateString()}{" "}
                 {commit.timestamp.toLocaleTimeString()}
