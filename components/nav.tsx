@@ -63,9 +63,12 @@ export default function Navigation() {
             <div className="flex items-center space-x-4">
               <GitHub />
               <ModeToggle />
-              <button className="px-4 py-2 bg-orange-500 text-black rounded hover:bg-orange-400">
-                Get started
-              </button>
+              <a
+                href="mailto:hi@basecase.vc"
+                className="px-4 py-2 bg-orange-500 text-black rounded hover:bg-orange-400 inline-block"
+              >
+                Say Hi
+              </a>
             </div>
           </div>
         </div>
