@@ -192,7 +192,7 @@ export const Portfolio = () => {
 };
 
 const ScrambleText = ({ text }: { text: string }) => {
-  const { ref, replay } = useScramble({
+  const { ref } = useScramble({
     text,
     speed: 0.4,
     tick: 1,
