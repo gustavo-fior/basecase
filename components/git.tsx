@@ -47,7 +47,7 @@ export const GitHistory: React.FC = () => {
 
         const pushEvents = data
           .filter((event: GitHubEvent) => event.type === "PushEvent")
-          .slice(0, 5)
+          .slice(0, 30)
           .flatMap((event: GitHubEvent) =>
             event.payload.commits.map((commit) => ({
               id: commit.sha,
@@ -125,18 +125,18 @@ export const GitHistory: React.FC = () => {
         </div>
       </div>
 
-      <div className="p-4 space-y-4">
+      <div className="p-4 space-y-3 max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent">
         {commits.map((commit) => (
-          <div key={commit.id} className="space-y-1">
-            <div className="flex items-center space-x-2 text-sm text-emerald-500">
-              <GitCommit size={14} />
-              <span className="font-bold">{commit.repo.split("/")[1]}</span>
+          <div key={commit.id} className="space-y-0.5">
+            <div className="flex items-center space-x-2 text-xs text-emerald-500">
+              <GitCommit size={12} />
+              <span className="font-bold">{commit.repo}</span>
               <span className="text-gray-500">
                 {commit.timestamp.toLocaleDateString()}{" "}
                 {commit.timestamp.toLocaleTimeString()}
               </span>
             </div>
-            <p className="text-gray-300 pl-6">{commit.message}</p>
+            <p className="text-gray-300 pl-6 text-xs">{commit.message}</p>
           </div>
         ))}
       </div>
