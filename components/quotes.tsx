@@ -79,10 +79,10 @@ export const Quotes = () => {
   }, []);
 
   return (
-    <div className="py-10 min-h-[150px]">
+    <div className="pt-10 min-h-[150px]">
       <div
         {...handlers}
-        className="border-l-4 border-purple-600 pl-6"
+        className="border-l-4 border-purple-600 pl-6 h-[150px] flex flex-col justify-between"
         tabIndex={0}
         role="region"
         aria-label="Testimonial quotes"
