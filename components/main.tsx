@@ -1,8 +1,8 @@
 "use client";
 
-import AsciiAnimation from "./animation";
 import Content from "./content";
 import CTA from "./cta";
+import Marquee from "./marquee";
 import Navigation from "./nav";
 
 export default function HomePage() {
@@ -12,8 +12,8 @@ export default function HomePage() {
       <div className="max-w-6xl px-4 mx-auto">
         <Content />
         <CTA />
-        <AsciiAnimation />
       </div>
+      <Marquee />
     </div>
   );
 }
