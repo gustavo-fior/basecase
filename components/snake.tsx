@@ -237,7 +237,7 @@ export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
                   {snake.map((segment, i) => (
                     <div
                       key={i}
-                      className="absolute bg-purple-600"
+                      className="absolute bg-[#CE4B01]"
                       style={{
                         width: cellSize - 1,
                         height: cellSize - 1,

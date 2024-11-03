@@ -82,7 +82,7 @@ export const Quotes = () => {
     <div className="pt-10 min-h-[150px]">
       <div
         {...handlers}
-        className="border-l-4 border-purple-600 pl-6 h-[150px] flex flex-col justify-between"
+        className="border-l-4 border-[#CE4B01] pl-6 h-[150px] flex flex-col justify-between"
         tabIndex={0}
         role="region"
         aria-label="Testimonial quotes"
@@ -96,7 +96,7 @@ export const Quotes = () => {
             href={quotes[currentIndex].url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-purple-600 hover:text-purple-500"
+            className="text-[#CE4B01] hover:text-[#F25E01]"
           >
             <span className="font-bold">{quotes[currentIndex].author}</span>
             {quotes[currentIndex].title && (

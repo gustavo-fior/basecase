@@ -9,7 +9,7 @@ const Marquee = () => {
 
   return (
     <div className="relative overflow-hidden w-full">
-      <div className="whitespace-nowrap animate-marquee font-mono text-purple-600">
+      <div className="whitespace-nowrap animate-marquee font-mono text-[#CE4B01]">
         <pre>{asciiArt}</pre>
       </div>
     </div>

@@ -29,8 +29,8 @@ const AsciiAnimation = () => {
   }
 
   return (
-    <div className="hidden md:block h-[225px] border border-dashed border-purple-600 flex justify-center mb-10">
-      <pre className="font-mono text-center whitespace-pre text-purple-600 p-4 w-full pt-[45px]">
+    <div className="hidden md:block h-[225px] border border-dashed border-[#CE4B01] flex justify-center mb-10">
+      <pre className="font-mono text-center whitespace-pre text-[#CE4B01] p-4 w-full pt-[45px]">
         {lines.slice(0, position).join('\n')}
         {'\n'.repeat(Math.max(0, totalHeight - position))}
       </pre>
