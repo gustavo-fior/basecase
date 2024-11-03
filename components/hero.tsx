@@ -12,7 +12,7 @@ const BASECASE_ASCII = `
 export const Hero = () => {
   return (
     <div className="max-w-3xl py-10">
-      <div className="font-mono">
+      <div className="font-mono hidden md:block">
         <pre className="whitespace-pre text-base">
           <span className="font-bold text-purple-600">alanagoyal@Alanas-MacBook-Air basecase %</span>
           {" curl -L https://basecase.sh"}
