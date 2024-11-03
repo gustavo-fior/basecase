@@ -151,16 +151,16 @@ export const Portfolio = () => {
             onMouseLeave={() => setHoveredIndex(null)}
           >
             <div className="p-8 rounded relative flex items-center justify-center">
-              <div className="absolute top-0 left-0 text-gray-800 group-hover:text-orange-500">
+              <div className="absolute top-0 left-0 text-gray-800 group-hover:text-emerald-500">
                 +
               </div>
-              <div className="absolute top-0 right-0 text-gray-800 group-hover:text-orange-500">
+              <div className="absolute top-0 right-0 text-gray-800 group-hover:text-emerald-500">
                 +
               </div>
-              <div className="absolute bottom-0 left-0 text-gray-800 group-hover:text-orange-500">
+              <div className="absolute bottom-0 left-0 text-gray-800 group-hover:text-emerald-500">
                 +
               </div>
-              <div className="absolute bottom-0 right-0 text-gray-800 group-hover:text-orange-500">
+              <div className="absolute bottom-0 right-0 text-gray-800 group-hover:text-emerald-500">
                 +
               </div>
 
@@ -178,7 +178,7 @@ export const Portfolio = () => {
                   </span>
                 )}
                 {typeof client.description === "object" && (
-                  <span className="text-orange-500 text-xs mt-1 font-inter">
+                  <span className="text-emerald-500 text-xs mt-1 font-inter">
                     {client.description.props.children[0].props.children}
                   </span>
                 )}

@@ -43,7 +43,7 @@ export default function Navigation() {
             <div className="hidden md:flex space-x-4">
               <a 
                 href="https://github.com/alanagoyal" 
-                className="hover:text-orange-500"
+                className="hover:text-emerald-500"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -51,7 +51,7 @@ export default function Navigation() {
               </a>
               <a 
                 href="https://x.com/alanaagoyal" 
-                className="hover:text-orange-500"
+                className="hover:text-emerald-500"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -59,7 +59,7 @@ export default function Navigation() {
               </a>
               <a 
                 href="https://alanagoyal.com" 
-                className="hover:text-orange-500"
+                className="hover:text-emerald-500"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -70,10 +70,10 @@ export default function Navigation() {
               <GitHub />
               <ModeToggle />
               <a
-                href="mailto:hi@basecase.vc"
-                className="px-4 py-2 bg-orange-500 text-black rounded hover:bg-orange-400 inline-block"
+                href="mailto:hi@basecase.vc?subject=hello%20from%20basecase.sh!&body=hi%20alana%2C%20i%20saw%20your%20website%20and%20wanted%20to%20reach%20out..."
+                className="px-4 py-2 bg-emerald-500 text-black rounded hover:bg-emerald-400 inline-block"
               >
-                Say Hi
+                Say hello
               </a>
             </div>
           </div>

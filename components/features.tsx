@@ -15,7 +15,7 @@ export const Features = () => {
   return (
     <div className="grid md:grid-cols-3 gap-6 mt-16">
       {features.map((feature, index) => (
-        <div key={index} className="border border-gray-800 p-6 rounded hover:border-orange-500">
+        <div key={index} className="border border-gray-800 p-6 rounded hover:border-emerald-500">
           <div className="flex items-center space-x-3 mb-4">
             {feature.icon}
             <span>{feature.text}</span>

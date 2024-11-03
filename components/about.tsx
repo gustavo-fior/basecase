@@ -21,8 +21,8 @@ const DisintegratingText = ({
 
   // Convert Lucide icon to cursor URL
   useEffect(() => {
-    // Updated SVG string with stroke="#f97316" (text-orange-500) and smaller dimensions (16x16)
-    const svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>`;
+    // Updated SVG string with stroke="#10b981" (emerald-500) and smaller dimensions (16x16)
+    const svgString = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.64 3.64-1.28-1.28a1.21 1.21 0 0 0-1.72 0L2.36 18.64a1.21 1.21 0 0 0 0 1.72l1.28 1.28a1.2 1.2 0 0 0 1.72 0L21.64 5.36a1.2 1.2 0 0 0 0-1.72Z"/><path d="m14 7 3 3"/><path d="M5 6v4"/><path d="M19 14v4"/><path d="M10 2v2"/><path d="M7 8H3"/><path d="M21 16h-4"/><path d="M11 3H9"/></svg>`;
 
     // Convert SVG to base64
     const base64Svg = btoa(svgString);
@@ -91,7 +91,7 @@ const DisintegratingText = ({
 export const About = () => {
   return (
     <div className="max-w-6xl py-10">
-      <DisintegratingText className="text-2xl mb-8 text-orange-500">
+      <DisintegratingText className="text-2xl mb-8 text-emerald-500">
         No decks, no pitch meetings.
       </DisintegratingText>
       <div className="grid md:grid-cols-2 gap-12">
