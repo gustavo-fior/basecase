@@ -83,8 +83,8 @@ export const GitHistory: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="border border-gray-800 rounded-lg p-6 bg-black">
-        <div className="flex items-center space-x-2 text-emerald-500">
+      <div className="border border-gray-200 dark:border-gray-800 rounded-lg p-6 bg-white dark:bg-black">
+        <div className="flex items-center space-x-2 text-emerald-600 dark:text-emerald-500">
           <Clock size={16} className="animate-spin" />
           <span>Loading commit history...</span>
         </div>
@@ -94,15 +94,15 @@ export const GitHistory: React.FC = () => {
 
   if (error) {
     return (
-      <div className="border border-red-800 rounded-lg p-6 bg-black">
-        <div className="text-red-500">{error}</div>
+      <div className="border border-red-200 dark:border-red-800 rounded-lg p-6 bg-white dark:bg-black">
+        <div className="text-red-600 dark:text-red-500">{error}</div>
       </div>
     );
   }
 
   return (
-    <div className="border border-gray-800 rounded-lg bg-black">
-      <div className="flex items-center space-x-2 border-b border-gray-800 p-3">
+    <div className="border border-gray-200 dark:border-gray-800 rounded-lg bg-white dark:bg-black">
+      <div className="flex items-center space-x-2 border-b border-gray-200 dark:border-gray-800 p-3">
         <div className="w-3 h-3 rounded-full bg-red-500" />
         <div className="w-3 h-3 rounded-full bg-yellow-500" />
         <div className="w-3 h-3 rounded-full bg-green-500" />
@@ -111,7 +111,7 @@ export const GitHistory: React.FC = () => {
             href="https://github.com/alanagoyal"
             target="_blank"
             rel="noopener noreferrer"
-            className="ml-2 text-sm text-gray-400 cursor-pointer hover:text-gray-300"
+            className="ml-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer hover:text-gray-800 dark:hover:text-gray-300"
           >
             Commit history (last updated {lastUpdated.toLocaleTimeString()})
           </a>
@@ -119,24 +119,24 @@ export const GitHistory: React.FC = () => {
             className={`ml-2 w-2 h-2 rounded-full ${
               isRefreshing || isBlinking
                 ? "bg-emerald-500 animate-pulse"
-                : "bg-gray-500"
+                : "bg-gray-400 dark:bg-gray-500"
             }`}
           />
         </div>
       </div>
 
-      <div className="p-4 space-y-3 max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-transparent">
+      <div className="p-4 space-y-3 max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-800 scrollbar-track-transparent">
         {commits.map((commit) => (
           <div key={commit.id} className="space-y-0.5">
-            <div className="flex items-center space-x-2 text-xs text-emerald-500">
+            <div className="flex items-center space-x-2 text-xs text-emerald-600 dark:text-emerald-500">
               <GitCommit size={12} />
               <span className="font-bold">{commit.repo}</span>
-              <span className="text-gray-500">
+              <span className="text-gray-600 dark:text-gray-500">
                 {commit.timestamp.toLocaleDateString()}{" "}
                 {commit.timestamp.toLocaleTimeString()}
               </span>
             </div>
-            <p className="text-gray-300 pl-6 text-xs">{commit.message}</p>
+            <p className="text-gray-700 dark:text-gray-300 pl-6 text-xs">{commit.message}</p>
           </div>
         ))}
       </div>
