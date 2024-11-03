@@ -21,7 +21,7 @@ export const Hero = () => {
           {BASECASE_ASCII}
         </pre>
       </div>
-      <h1 className="text-2xl text-purple-600 md:text-black font-bold">
+      <h1 className="text-2xl font-bold mb-4 text-purple-600 md:text-black">
         A builder backing builders
       </h1>
       <p className="text-xl">

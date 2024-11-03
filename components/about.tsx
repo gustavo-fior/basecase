@@ -91,7 +91,7 @@ const DisintegratingText = ({
 export const About = () => {
   return (
     <div className="max-w-6xl py-10">
-      <DisintegratingText className="text-2xl mb-8 text-purple-600">
+      <DisintegratingText className="text-2xl font-bold mb-8 text-purple-600">
         No decks, no pitch meetings.
       </DisintegratingText>
       <div className="grid md:grid-cols-2 gap-12">
