@@ -10,7 +10,7 @@ export default function CTA() {
           href="https://x.com/alanaagoyal"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-emerald-500 hover:text-emerald-400"
+          className="text-purple-600 hover:text-purple-500"
         >
           Talk to a developer.
         </a>

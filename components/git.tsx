@@ -100,7 +100,7 @@ export const GitHistory: React.FC = () => {
   if (loading) {
     return (
       <div className="border border-gray-200 dark:border-gray-800 rounded-lg p-6 bg-white dark:bg-black">
-        <div className="flex items-center space-x-2 text-emerald-600 dark:text-emerald-500">
+        <div className="flex items-center space-x-2 text-purple-600 dark:text-purple-600">
           <Clock size={16} className="animate-spin" />
           <span>Loading commit history...</span>
         </div>
@@ -167,7 +167,7 @@ export const GitHistory: React.FC = () => {
           <div
             className={`ml-2 w-2 h-2 rounded-full ${
               isRefreshing || isBlinking
-                ? "bg-emerald-500 animate-pulse"
+                ? "bg-purple-600 animate-pulse"
                 : "bg-gray-400 dark:bg-gray-500"
             }`}
           />

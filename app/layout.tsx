@@ -44,7 +44,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className={inter.className}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased
-          bg-[hsl(137.43deg,13.21%,93.12%)] dark:bg-[hsl(137.43deg,30.5%,5%)]`}
+          bg-[hsl(270deg,13%,95%)] dark:bg-[hsl(270deg,40%,5%)]`}
       >
           <ThemeProvider
             attribute="class"
