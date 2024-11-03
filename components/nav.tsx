@@ -1,10 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ModeToggle } from "@/components/theme-toggle";
 import { GitHub } from "./github";
+import { SnakeGame} from "./snake";
 
 export default function Navigation() {
+  const [showSnake, setShowSnake] = useState(false);
+
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
       if (event.target instanceof HTMLInputElement || event.target instanceof HTMLTextAreaElement) {
@@ -20,6 +23,9 @@ export default function Navigation() {
           break;
         case 'w':
           window.open('https://alanagoyal.com', '_blank');
+          break;
+        case 's':
+          setShowSnake(true);
           break;
       }
     };
@@ -73,6 +79,10 @@ export default function Navigation() {
           </div>
         </div>
       </nav>
+
+      {showSnake && (
+        <SnakeGame onClose={() => setShowSnake(false)} />
+      )}
     </>
   );
 };
