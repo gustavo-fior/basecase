@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSwipeable } from "react-swipeable";
 
 const quotes = [
   {
@@ -36,15 +37,28 @@ const quotes = [
 export const Quotes = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (e.key === "ArrowRight") {
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === "ArrowLeft") {
+      setCurrentIndex((prevIndex) => (prevIndex - 1 + quotes.length) % quotes.length);
+    } else if (event.key === "ArrowRight") {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % quotes.length);
-    } else if (e.key === "ArrowLeft") {
-      setCurrentIndex(
-        (prevIndex) => (prevIndex - 1 + quotes.length) % quotes.length
-      );
     }
   };
+
+  // Add swipe handlers
+  const handlers = useSwipeable({
+    onSwipedLeft: () => {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % quotes.length);
+    },
+    onSwipedRight: () => {
+      setCurrentIndex((prevIndex) => (prevIndex - 1 + quotes.length) % quotes.length);
+    },
+    trackMouse: false,
+    preventScrollOnSwipe: true,
+    trackTouch: true,
+    delta: 10,
+    swipeDuration: 500
+  });
 
   // Auto-cycle quotes every 5 seconds
   useEffect(() => {
@@ -67,6 +81,7 @@ export const Quotes = () => {
   return (
     <div className="py-10 min-h-[150px]">
       <div
+        {...handlers}
         className="border-l-4 border-orange-500 pl-6"
         tabIndex={0}
         role="region"
