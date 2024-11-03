@@ -179,9 +179,9 @@ export const GitHistory: React.FC = () => {
       }`}>
         {commits.map((commit) => (
           <div key={commit.id} className="space-y-0.5">
-            <div className="flex items-center space-x-2 text-xs text-emerald-600 dark:text-emerald-500">
+            <div className="flex items-center space-x-2 text-xs text-pink-300">
               <GitCommit size={12} />
-              <span className="font-bold text-pink-400 dark:text-pink-300">{commit.repo}</span>
+              <span className="font-bold text-pink-300">{commit.repo}</span>
               <span className="text-gray-600 dark:text-gray-500">
                 {commit.timestamp.toLocaleDateString()}{" "}
                 {commit.timestamp.toLocaleTimeString()}
