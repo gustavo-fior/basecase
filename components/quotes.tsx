@@ -4,13 +4,6 @@ import { useState, useEffect } from "react";
 
 const quotes = [
   {
-    text: "Alana is easily one of the most unique investors I've met. She's a weekly active user of Braintrust and gives us some of the best feedback and helpful bug reports.",
-    author: "Ankur Goyal",
-    title: "Founder & CEO",
-    company: "Braintrust",
-    url: "https://braintrust.dev",
-  },
-  {
     text: "Alana is an investor who genuinely cares to understand, use your product, and recommend it. I still get great feedback from her and her network to improve our platform.",
     author: "Guillermo Rauch",
     title: "Founder & CEO",
