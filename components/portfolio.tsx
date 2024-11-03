@@ -134,59 +134,58 @@ export const Portfolio = () => {
     },
   ];
 
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+
   return (
     <div className="py-10">
       <h2 className="text-2xl mb-8">Early partner to iconic companies</h2>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-        {portfolio.map((client, index) => {
-          const [isHovered, setIsHovered] = useState(false);
-
-          return (
-            <a
-              href={client.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              key={index}
-              className="cursor-pointer group"
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-            >
-              <div className="p-8 rounded relative flex items-center justify-center">
-                <div className="absolute top-0 left-0 text-gray-800 group-hover:text-orange-500">
-                  +
-                </div>
-                <div className="absolute top-0 right-0 text-gray-800 group-hover:text-orange-500">
-                  +
-                </div>
-                <div className="absolute bottom-0 left-0 text-gray-800 group-hover:text-orange-500">
-                  +
-                </div>
-                <div className="absolute bottom-0 right-0 text-gray-800 group-hover:text-orange-500">
-                  +
-                </div>
-
-                <img
-                  src={client.icon}
-                  alt={client.title}
-                  className="h-10 group-hover:opacity-0 transition-opacity dark:invert"
-                />
-                <div className="absolute inset-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-center">
-                  {isHovered && <ScrambleText text={client.title} />}
-                  {!isHovered && (
-                    <span className="text-2xl font-bold tracking-wide font-geist">
-                      {client.title}
-                    </span>
-                  )}
-                  {typeof client.description === "object" && (
-                    <span className="text-orange-500 text-xs mt-1 font-inter">
-                      {client.description.props.children[0].props.children}
-                    </span>
-                  )}
-                </div>
+        {portfolio.map((client, index) => (
+          <a
+            href={client.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            key={index}
+            className="cursor-pointer group"
+            onMouseEnter={() => setHoveredIndex(index)}
+            onMouseLeave={() => setHoveredIndex(null)}
+          >
+            <div className="p-8 rounded relative flex items-center justify-center">
+              <div className="absolute top-0 left-0 text-gray-800 group-hover:text-orange-500">
+                +
               </div>
-            </a>
-          );
-        })}
+              <div className="absolute top-0 right-0 text-gray-800 group-hover:text-orange-500">
+                +
+              </div>
+              <div className="absolute bottom-0 left-0 text-gray-800 group-hover:text-orange-500">
+                +
+              </div>
+              <div className="absolute bottom-0 right-0 text-gray-800 group-hover:text-orange-500">
+                +
+              </div>
+
+              <img
+                src={client.icon}
+                alt={client.title}
+                className="h-10 group-hover:opacity-0 transition-opacity dark:invert"
+              />
+              <div className="absolute inset-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-center">
+                {hoveredIndex === index ? (
+                  <ScrambleText text={client.title} />
+                ) : (
+                  <span className="text-2xl font-bold tracking-wide font-geist">
+                    {client.title}
+                  </span>
+                )}
+                {typeof client.description === "object" && (
+                  <span className="text-orange-500 text-xs mt-1 font-inter">
+                    {client.description.props.children[0].props.children}
+                  </span>
+                )}
+              </div>
+            </div>
+          </a>
+        ))}
       </div>
     </div>
   );
