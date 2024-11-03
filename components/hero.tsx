@@ -1,7 +1,5 @@
 "use client";
 
-const TERMINAL_COMMAND = "alanagoyal@Alanas-MacBook-Air basecase % curl -L https://basecase.sh";
-
 const BASECASE_ASCII = `
 ██████╗  █████╗ ███████╗███████╗ ██████╗ █████╗ ███████╗███████╗
 ██╔══██╗██╔══██╗██╔════╝██╔════╝██╔════╝██╔══██╗██╔════╝██╔════╝
