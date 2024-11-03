@@ -1,54 +1,57 @@
 "use client";
 
+import { useState } from "react";
+import { useScramble } from "use-scramble";
+
 export const Portfolio = () => {
   const portfolio = [
     {
       title: "Ashby",
       icon: "/portfolio/ashby.png",
       description:
-        "ashby helps scaling companies achieve their ambitious growth targets. with ashby, teams of all sizes can run a fast and efficient hiring process.",
+        "Ashby helps scaling companies achieve their ambitious growth targets. With Ashby, teams of all sizes can run a fast and efficient hiring process.",
       url: "https://www.ashbyhq.com/",
     },
     {
       title: "Astral",
       icon: "/portfolio/astral.png",
       description:
-        "astral's mission is to make the python ecosystem more productive by building high-performance developer tools, starting with ruff.",
+        "Astral's mission is to make the Python ecosystem more productive by building high-performance developer tools, starting with Ruff.",
       url: "https://www.astral.sh/",
     },
     {
       title: "Baseten",
       icon: "/portfolio/baseten.png",
       description:
-        "baseten provides all the infrastructure you need to deploy and serve ml models performantly, scalably, and cost-efficiently.",
+        "Baseten provides all the infrastructure you need to deploy and serve ML models performantly, scalably, and cost-efficiently.",
       url: "https://www.baseten.co/",
     },
     {
       title: "Braintrust",
       icon: "/portfolio/braintrust.png",
       description:
-        "braintrust is the enterprise-grade stack for building ai products. from evaluations, to prompt playground, to data management, braintrust takes uncertainty and tedium out of incorporating ai into your business.",
+        "Braintrust is the enterprise-grade stack for building AI products. From evaluations, to prompt playground, to data management, Braintrust takes uncertainty and tedium out of incorporating AI into your business.",
       url: "https://www.braintrustdata.com/",
     },
     {
       title: "Browserbase",
       icon: "/portfolio/browserbase.png",
       description:
-        "browserbase is the all-in-one platform developers need to host, manage, and monitor headless browsers in the cloud.",
+        "Browserbase is the all-in-one platform developers need to host, manage, and monitor headless browsers in the cloud.",
       url: "https://www.browserbase.com/",
     },
     {
       title: "Codeium",
       icon: "/portfolio/codeium.png",
       description:
-        "codeium is the modern coding superpower, a code acceleration toolkit built on cutting edge ai technology.",
+        "Codeium is the modern coding superpower, a code acceleration toolkit built on cutting edge AI technology.",
       url: "https://codeium.com/",
     },
     {
       title: "Default",
       icon: "/portfolio/default.png",
       description:
-        "default is the all-in-one inbound lead platform that helps modern companies make the most of every lead by consolidating the usually fragmented inbound sales stack into one deeply integrated platform.",
+        "Default is the all-in-one inbound lead platform that helps modern companies make the most of every lead by consolidating the usually fragmented inbound sales stack into one deeply integrated platform.",
       url: "https://www.default.com/",
     },
     {
@@ -57,10 +60,10 @@ export const Portfolio = () => {
       description: (
         <>
           <span className="text-plum text-sm block mb-2 lowercase">
-            acquired by figma
+            Acquired by Figma
           </span>
-          diagram is a design tools company reimagining ui design in the era of
-          generative ai.
+          Diagram is a design tools company reimagining UI design in the era of
+          generative AI.
         </>
       ),
       url: "https://diagram.com/",
@@ -69,21 +72,21 @@ export const Portfolio = () => {
       title: "Doss",
       icon: "/portfolio/doss.png",
       description:
-        "doss is a lightweight erp and data platform that helps teams manage their operations from purchase order to point of sale.",
+        "Doss is a lightweight ERP and data platform that helps teams manage their operations from purchase order to point of sale.",
       url: "https://doss.com/",
     },
     {
       title: "Graphite",
       icon: "/portfolio/graphite.png",
       description:
-        "graphite is a fast, simple code review platform designed for engineers who want to write and review smaller pull requests, stay unblocked, and ship faster.",
+        "Graphite is a fast, simple code review platform designed for engineers who want to write and review smaller pull requests, stay unblocked, and ship faster.",
       url: "https://graphite.dev/",
     },
     {
       title: "Orb",
       icon: "/portfolio/orb.png",
       description:
-        "orb is developer-first billing infrastructure built to help companies succeed with usage-based pricing.",
+        "Orb is developer-first billing infrastructure built to help companies succeed with usage-based pricing.",
       url: "https://www.withorb.com/",
     },
     {
@@ -92,9 +95,9 @@ export const Portfolio = () => {
       description: (
         <>
           <span className="text-plum text-sm block mb-2 lowercase">
-            acquired by grafana
+            Acquired by Grafana
           </span>
-          pyroscope is an open source continuous profiling platform that helps
+          Pyroscope is an open source continuous profiling platform that helps
           you find performance issues in your code, locate and fix memory leaks,
           and track changes over time.
         </>
@@ -105,28 +108,28 @@ export const Portfolio = () => {
       title: "Replo",
       icon: "/portfolio/replo.png",
       description:
-        "replo is the fastest way to modify, customize, and build on every part of your shopify store pages, down to the pixel.",
+        "Replo is the fastest way to modify, customize, and build on every part of your Shopify store pages, down to the pixel.",
       url: "https://www.replo.app/",
     },
     {
       title: "Resend",
       icon: "/portfolio/resend.png",
       description:
-        "resend is the email api for developers to build, test, and deliver transactional emails at scale.",
+        "Resend is the email API for developers to build, test, and deliver transactional emails at scale.",
       url: "https://resend.com/",
     },
     {
       title: "Supabase",
       icon: "/portfolio/supabase.png",
       description:
-        "supabase is an open source firebase alternative. start your project with a postgres database, authentication, instant apis, edge functions, realtime subscriptions, and storage.",
+        "Supabase is an open source Firebase alternative. Start your project with a Postgres database, authentication, instant APIs, edge functions, realtime subscriptions, and storage.",
       url: "https://supabase.com/",
     },
     {
       title: "Vercel",
       icon: "/portfolio/vercel.png",
       description:
-        "vercel's frontend cloud provides the developer experience and infrastructure to build, scale, and secure a faster, more personalized web.",
+        "Vercel's frontend cloud provides the developer experience and infrastructure to build, scale, and secure a faster, more personalized web.",
       url: "https://vercel.com/",
     },
   ];
@@ -135,32 +138,71 @@ export const Portfolio = () => {
     <div className="py-10">
       <h2 className="text-2xl mb-8">Early partner to iconic companies</h2>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-        {portfolio.map((client, index) => (
-          <a
-            href={client.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            key={index}
-            className="cursor-pointer"
-          >
-            <div className="border border-gray-800 hover:border-orange-500 p-8 rounded flex items-center justify-center group relative">
-              <img 
-                src={client.icon} 
-                alt={client.title} 
-                className="h-10 group-hover:opacity-0 transition-opacity dark:invert" 
-              />
-              <div className="absolute inset-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-center">
-                <span className="text-2xl font-bold tracking-wide font-inter">{client.title}</span>
-                {typeof client.description === 'object' && (
-                  <span className="text-orange-500 text-xs mt-1 font-inter">
-                    {client.description.props.children[0].props.children}
-                  </span>
-                )}
+        {portfolio.map((client, index) => {
+          const [isHovered, setIsHovered] = useState(false);
+
+          return (
+            <a
+              href={client.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              key={index}
+              className="cursor-pointer group"
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
+              <div className="p-8 rounded relative flex items-center justify-center">
+                <div className="absolute top-0 left-0 text-gray-800 group-hover:text-orange-500">
+                  +
+                </div>
+                <div className="absolute top-0 right-0 text-gray-800 group-hover:text-orange-500">
+                  +
+                </div>
+                <div className="absolute bottom-0 left-0 text-gray-800 group-hover:text-orange-500">
+                  +
+                </div>
+                <div className="absolute bottom-0 right-0 text-gray-800 group-hover:text-orange-500">
+                  +
+                </div>
+
+                <img
+                  src={client.icon}
+                  alt={client.title}
+                  className="h-10 group-hover:opacity-0 transition-opacity dark:invert"
+                />
+                <div className="absolute inset-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-center">
+                  {isHovered && <ScrambleText text={client.title} />}
+                  {!isHovered && (
+                    <span className="text-2xl font-bold tracking-wide font-geist">
+                      {client.title}
+                    </span>
+                  )}
+                  {typeof client.description === "object" && (
+                    <span className="text-orange-500 text-xs mt-1 font-inter">
+                      {client.description.props.children[0].props.children}
+                    </span>
+                  )}
+                </div>
               </div>
-            </div>
-          </a>
-        ))}
+            </a>
+          );
+        })}
       </div>
     </div>
+  );
+};
+
+const ScrambleText = ({ text }: { text: string }) => {
+  const { ref, replay } = useScramble({
+    text,
+    speed: 0.4,
+    tick: 1,
+    step: 1,
+    scramble: 4,
+    seed: 3,
+  });
+
+  return (
+    <span ref={ref} className="text-2xl font-bold tracking-wide font-geist" />
   );
 };
