@@ -67,9 +67,16 @@ const DisintegratingText = ({
 export const About = () => {
   return (
     <div className="max-w-6xl py-5">
-      <DisintegratingText className="text-2xl font-bold mb-4 text-[var(--color-primary)]">
-        No decks, no pitch meetings
-      </DisintegratingText>
+      <div className="md:hidden">
+        <h1 className="text-2xl font-bold mb-4 text-[var(--color-primary)]">
+          No decks, no pitch meetings
+        </h1>
+      </div>
+      <div className="hidden md:block">
+        <DisintegratingText className="text-2xl font-bold mb-4 text-[var(--color-primary)]">
+          No decks, no pitch meetings
+        </DisintegratingText>
+      </div>
       <div className="grid md:grid-cols-2 gap-12">
         <div className="space-y-4">
           <h2 className="font-semibold text-lg">How We work</h2>
