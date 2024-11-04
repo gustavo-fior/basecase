@@ -17,6 +17,7 @@ export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
   const [gameStarted, setGameStarted] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [nextDirection, setNextDirection] = useState(INITIAL_DIRECTION);
 
   const generateFood = useCallback(() => {
     const newFood = {
@@ -29,49 +30,53 @@ export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
   const resetGame = useCallback(() => {
     setSnake(INITIAL_SNAKE);
     setDirection(INITIAL_DIRECTION);
+    setNextDirection(INITIAL_DIRECTION);
     setScore(0);
     setGameOver(false);
     generateFood();
   }, [generateFood]);
 
-  const checkCollision = (head: { x: number; y: number }) => {
-    if (
-      head.x < 0 ||
-      head.x >= MIN_GRID_SIZE ||
-      head.y < 0 ||
-      head.y >= MIN_GRID_SIZE
-    ) {
-      return true;
-    }
-    return snake.some(
-      (segment) => segment.x === head.x && segment.y === head.y
-    );
-  };
-
   const moveSnake = useCallback(() => {
+    setDirection(nextDirection);
+    
     setSnake((prevSnake) => {
       const head = {
-        x: prevSnake[0].x + direction.x,
-        y: prevSnake[0].y + direction.y,
+        x: prevSnake[0].x + nextDirection.x,
+        y: prevSnake[0].y + nextDirection.y,
       };
 
-      if (checkCollision(head)) {
+      // Check wall collisions
+      if (
+        head.x < 0 ||
+        head.x >= MIN_GRID_SIZE ||
+        head.y < 0 ||
+        head.y >= MIN_GRID_SIZE
+      ) {
+        setGameOver(true);
+        return prevSnake;
+      }
+
+      // For body collisions, check against all segments except the tail
+      // (since the tail will move out of the way)
+      const willEatFood = head.x === food.x && head.y === food.y;
+      const snakeWithoutTail = willEatFood ? prevSnake : prevSnake.slice(0, -1);
+      
+      if (snakeWithoutTail.some(segment => segment.x === head.x && segment.y === head.y)) {
         setGameOver(true);
         return prevSnake;
       }
 
       const newSnake = [head, ...prevSnake];
-
-      if (head.x === food.x && head.y === food.y) {
+      if (!willEatFood) {
+        newSnake.pop();
+      } else {
         setScore((prev) => prev + 1);
         generateFood();
-      } else {
-        newSnake.pop();
       }
 
       return newSnake;
     });
-  }, [direction, food, generateFood]);
+  }, [nextDirection, food, generateFood]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -108,7 +113,7 @@ export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
           newDirection.x === -direction.x && newDirection.y === -direction.y;
 
         if (!isOpposite) {
-          setDirection(newDirection);
+          setNextDirection(newDirection);
         }
       }
     },
@@ -158,16 +163,28 @@ export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
   useEffect(() => {
     const handleResize = () => {
       const { gridSize } = calculateGameDimensions();
-      // Update snake position if needed to keep it in bounds
+      // Update snake and food positions
       setSnake(prev => prev.map(segment => ({
         x: Math.min(segment.x, gridSize - 1),
         y: Math.min(segment.y, gridSize - 1)
       })));
+      setFood(prev => ({
+        x: Math.min(prev.x, gridSize - 1),
+        y: Math.min(prev.y, gridSize - 1)
+      }));
     };
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [isFullscreen]);
+
+  useEffect(() => {
+    return () => {
+      if (gameLoop) {
+        clearInterval(gameLoop);
+      }
+    };
+  }, []);
 
   if (isMinimized) {
     return (
@@ -261,7 +278,7 @@ export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
             
             {/* Score - directly under game board */}
             <div className={`h-10 p-3 flex items-center font-mono text-sm text-gray-700 dark:text-gray-300 ${!isFullscreen ? 'border-t border-gray-200 dark:border-gray-800' : ''}`}>
-              Score:{score}
+              <span className="font-bold">Score:</span>{score}
             </div>
           </div>
         </div>
