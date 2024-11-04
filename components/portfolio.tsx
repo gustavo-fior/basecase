@@ -41,13 +41,6 @@ export const Portfolio = () => {
       url: "https://www.browserbase.com/",
     },
     {
-      title: "Codeium",
-      icon: "/portfolio/codeium.png",
-      description:
-        "Codeium is the modern coding superpower, a code acceleration toolkit built on cutting edge AI technology.",
-      url: "https://codeium.com/",
-    },
-    {
       title: "Default",
       icon: "/portfolio/default.png",
       description:
@@ -81,6 +74,13 @@ export const Portfolio = () => {
       description:
         "Graphite is a fast, simple code review platform designed for engineers who want to write and review smaller pull requests, stay unblocked, and ship faster.",
       url: "https://graphite.dev/",
+    },
+    {
+      title: "Mainframe",
+      icon: "/portfolio/mainframe.png",
+      description:
+        "Mainframe's mission is to change the world's relationship with computers.",
+      url: "https://mainfra.me/",
     },
     {
       title: "Orb",
@@ -119,11 +119,11 @@ export const Portfolio = () => {
       url: "https://resend.com/",
     },
     {
-      title: "Supabase",
-      icon: "/portfolio/supabase.png",
+      title: "SF Compute",
+      icon: "/portfolio/sfcompute.png",
       description:
-        "Supabase is an open source Firebase alternative. Start your project with a Postgres database, authentication, instant APIs, edge functions, realtime subscriptions, and storage.",
-      url: "https://supabase.com/",
+        "SF Compute runs affordable pre-training clusters for startups, grad students, and research labs.",
+      url: "https://sfcompute.com/",
     },
     {
       title: "Vercel",
