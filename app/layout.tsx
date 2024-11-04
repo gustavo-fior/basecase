@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Inter } from "next/font/google";
-import "./globals.css";
 import { siteConfig } from "@/config/site";
+import { Analytics } from "@vercel/analytics/react";
+import localFont from "next/font/local";
+import "./globals.css";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -52,6 +53,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           {children}
+          <Analytics />
         </ThemeProvider>
       </body>
     </html>
