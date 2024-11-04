@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
 // Import the ASCII art from animation.tsx
 const FULL_ASCII = `
@@ -14,9 +14,10 @@ const FULL_CONTENT = `${FULL_ASCII}
 
 A BUILDER BACKING BUILDERS
 -------------------------
-Basecase invests in founders before their companies exist. We write the first check 
-to technical founders who are often still in the dreaming, building, and exploring 
-phase of their journey.
+Basecase invests in founders before their companies exist. We write the
+first check to technical founders who are often still dreaming, building, and
+exploring what they want to build. And we're building too.
+      
 
 HOW WE WORK
 -----------
@@ -29,12 +30,10 @@ HOW WE WORK
 WHO WE WORK WITH
 ---------------
 We may be a good fit for you if:
++ You're obsessed with building, tinkering, and creating your ideas
 + You've built a company before and think may want to start another
-+ You love building and think you want to build something of your own someday
-+ You are thinking about what to do next and not sure whether to start a company or join one
-
-We may not be the best fit for you if:
-- You are already fundraising and we have never met before
++ You're thinking about what to do next but not sure whether you want to start a company or join one
++ You love trying new products, discovering new markets, and thinking about the direction the world is going
 
 PORTFOLIO
 ---------
@@ -63,25 +62,25 @@ LINKS
 
 Made with ♥ by Alana Goyal
 
-`
+`;
 
 export function middleware(request: NextRequest) {
-  const userAgent = request.headers.get('user-agent') || ''
-  
+  const userAgent = request.headers.get("user-agent") || "";
+
   // Handle curl requests for both apex and www domains
-  if (userAgent.toLowerCase().includes('curl')) {
+  if (userAgent.toLowerCase().includes("curl")) {
     // Return the ASCII content directly for both domains
     return new NextResponse(FULL_CONTENT, {
       headers: {
-        'Content-Type': 'text/plain',
+        "Content-Type": "text/plain",
       },
-    })
+    });
   }
 
   // For non-curl requests, proceed with normal routing
-  return NextResponse.next()
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: '/:path*',
-}
+  matcher: "/:path*",
+};

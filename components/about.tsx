@@ -79,7 +79,7 @@ export const About = () => {
       </div>
       <div className="grid md:grid-cols-2 gap-12">
         <div className="space-y-4">
-          <h2 className="font-semibold text-lg">How We work</h2>
+          <h2 className="font-semibold text-lg">How we work</h2>
           {[
             "We write the very first check into companies",
             "We lead rounds with $1-2M checks and don't take board seats",
@@ -93,19 +93,26 @@ export const About = () => {
           ))}
         </div>
         <div className="space-y-4">
-          <h2 className="font-semibold text-lg">Who We work with</h2>
+          <h2 className="font-semibold text-lg">Who we work with</h2>
           <div className="text-sm">
             <p className="mb-4">We may be a good fit for you if:</p>
             <ul className="list-none space-y-2">
-              <li>+ You&apos;ve built a company before and think may want to start another</li>
-              <li>+ You love building and think you want to build something of your own someday</li>
-              <li>+ You are thinking about what to do next and not sure whether to start a company or join one</li>
-            </ul>
-          </div>
-          <div className="text-sm">
-            <p className="mb-4">We may not be the best fit for you if:</p>
-            <ul className="list-none">
-              <li>- You are already fundraising and we have never met before</li>
+              <li>
+                + You&apos;re obsessed with building, tinkering, and creating
+                your ideas
+              </li>
+              <li>
+                + You&apos;ve built a company before and think may want to start
+                another
+              </li>
+              <li>
+                + You&apos;re thinking about what to do next but not sure
+                whether you want to start a company or join one
+              </li>
+              <li>
+                + You love trying new products, discovering new markets, and
+                thinking about the direction the world is going
+              </li>
             </ul>
           </div>
         </div>
