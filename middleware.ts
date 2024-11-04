@@ -16,7 +16,7 @@ export function middleware(request: NextRequest) {
   if (userAgent.toLowerCase().includes('curl')) {
     const asciiResponse = `${FULL_ASCII}
 
-A builder backing builders
+A BUILDER BACKING BUILDERS
 -------------------------
 Basecase invests in founders before their companies exist. We write the first check 
 to technical founders who are often still in the dreaming, building, and exploring 
@@ -24,12 +24,21 @@ phase of their journey.
 
 HOW WE WORK
 -----------
-* I don't take pitch meetings. My conviction comes before you have a deck.
-* I write the very first check into companies
-* I lead rounds with $1-2M checks and don't take board seats
-* I work with founders from formation through ideation, validation, & product development
-* I am often an early beta tester, active user, & paying customer of my founders' products
-* I provide purely tactical support by making customer & candidate introductions
+* We write the very first check into companies
+* We lead rounds with $1-2M checks and don't take board seats
+* We work with founders from early ideation through validation & product development
+* We are often an early beta tester, active user, & paying customer of founders' products
+* We provide tactical support by making customer & candidate introductions from pre-product to post-IPO
+
+WHO WE WORK WITH
+---------------
+We may be a good fit for you if:
++ You've built a company before and think may want to start another
++ You love building and think you want to build something of your own someday
++ You are thinking about what to do next and not sure whether to start a company or join one
+
+We may not be the best fit for you if:
+- You are already fundraising and we have never met before
 
 PORTFOLIO
 ---------
