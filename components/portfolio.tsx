@@ -31,7 +31,7 @@ export const Portfolio = () => {
       icon: "/portfolio/braintrust.png",
       description:
         "Braintrust is the enterprise-grade stack for building AI products. From evaluations, to prompt playground, to data management, Braintrust takes uncertainty and tedium out of incorporating AI into your business.",
-      url: "https://www.braintrustdata.com/",
+      url: "https://www.braintrust.dev/",
     },
     {
       title: "Browserbase",
