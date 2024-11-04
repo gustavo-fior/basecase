@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { ModeToggle } from "@/components/theme-toggle";
-import { GitHub } from "./github";
 import { SnakeGame } from "./snake";
 import { ColorThemeSwitcher } from "./color-theme-switcher";
 

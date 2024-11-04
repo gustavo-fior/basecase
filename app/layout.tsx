@@ -4,7 +4,6 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { siteConfig } from "@/config/site";
-import { themeColors } from "@/config/colors";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
