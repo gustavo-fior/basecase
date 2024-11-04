@@ -17,7 +17,7 @@ export const Hero = () => {
   const copyCommand = () => {
     navigator.clipboard.writeText("curl https://www.basecase.sh");
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
@@ -70,13 +70,12 @@ export const Hero = () => {
         </pre>
       </div>
       <h1 className="text-4xl font-bold mb-4 text-[var(--color-primary)] md:text-black dark:md:text-white md:text-xl">
-        A builder backing builders
+        First check to future founders
       </h1>
       <p className="text-xl">
-        Basecase invests in founders before their companies exist. We write the
-        first check to technical founders who are often still dreaming,
-        building, and exploring what they want to build. And we&apos;re building
-        too.
+        Basecase exists to support founders before their companies exist. I
+        write the first check to builders who are often still dreaming,
+        tinkering, and exploring what they want to create.
       </p>
     </div>
   );

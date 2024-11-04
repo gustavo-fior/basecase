@@ -12,24 +12,23 @@ const FULL_ASCII = `
 
 const FULL_CONTENT = `${FULL_ASCII}
 
-A BUILDER BACKING BUILDERS
--------------------------
-Basecase invests in founders before their companies exist. We write the
-first check to technical founders who are often still dreaming, building, and
-exploring what they want to build. And we're building too.
-      
+FIRST CHECK TO FUTURE FOUNDERS
+------------------------------
+Basecase exists to support founders before their companies exist. I write the
+first check to builders who are often still dreaming, tinkering, and
+exploring what they want to create.
 
-HOW WE WORK
+HOW I WORK
 -----------
-* We write the very first check into companies
-* We lead rounds with $1-2M checks and don't take board seats
-* We work with founders from early ideation through validation & product development
-* We are often an early beta tester, active user, & paying customer of founders' products
-* We provide tactical support by making customer & candidate introductions from pre-product to post-IPO
+* I write the very first check into companies
+* I lead rounds with $1-2M checks and don't take board seats
+* I work with founders from early ideation through validation & product development
+* I am often an early beta tester, active user, & paying customer of founders' products
+* I provide tactical support by making customer & candidate introductions from pre-product to post-IPO
 
-WHO WE WORK WITH
+WHO I WORK WITH
 ---------------
-We may be a good fit for you if:
+I may be a good fit for you if:
 + You're obsessed with building, tinkering, and creating your ideas
 + You've built a company before and think may want to start another
 + You're thinking about what to do next but not sure whether you want to start a company or join one
@@ -54,11 +53,40 @@ PORTFOLIO
 * Supabase - Open source Firebase alternative (supabase.com)
 * Vercel - Frontend cloud (vercel.com)
 
+QUOTES
+------
+"Alana is a rare breed of investor who genuinely cares to understand, use your
+product, and recommend it. I still get great feedback from her and her network
+to improve Vercel, Next.js, v0, and more."
+- Guillermo Rauch, Founder & CEO, Vercel
+
+"Alana is building something special at Basecase. What sets her apart is her
+ability to get down into the details. She's constantly exploring new features,
+helping us identify edge cases, and connecting us with developers."
+- Paul Copplestone, Co-Founder & CEO, Supabase
+
+"Having an investor who actually uses your product daily is rare. Alana's deep
+understanding of developer tools has helped shape Resend's roadmap and her bug
+reports are as detailed as they come. She's been an instrumental part of our
+journey."
+- Zeno Rocha, Founder & CEO, Resend
+
+"Alana was the first check into Browserbase and has been an integral partner
+to us since. She is always tinkering with the product, reporting bugs, and
+jamming with the entire team to help us build a better product."
+- Paul Klein IV, Founder & CEO, Browserbase
+
+"Alana has a unique ability to believe in people before they believe in
+themselves. She was the first check into Braintrust and has supported us in
+hiring our first engineers, closing our first customers, and building a great
+product."
+- Ankur Goyal, Founder & CEO, Braintrust
+
 LINKS
 -----
+[W] Website : https://alanagoyal.com
 [G] GitHub  : https://github.com/alanagoyal
 [T] Twitter : https://x.com/alanaagoyal
-[W] Website : https://alanagoyal.com
 
 Made with ♥ by Alana Goyal
 
