@@ -7,7 +7,7 @@ export default function CTA() {
         Too early to talk to an investor?
         <br />
         <a
-          href="mailto:hi@basecase.vc?subject=hello%20from%20basecase.sh!"
+          href="mailto:hi@basecase.vc?subject=hello!"
           className="text-[var(--color-primary)] hover:text-[var(--color-secondary)]"
         >
           Talk to a developer.

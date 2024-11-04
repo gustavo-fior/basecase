@@ -82,7 +82,7 @@ export default function Navigation() {
               <ColorThemeSwitcher />
               <ModeToggle />
               <a
-                href="mailto:hi@basecase.vc?subject=hello%20from%20basecase.sh!"
+                href="mailto:hi@basecase.vc?subject=hello!"
                 className="px-4 py-2 bg-[var(--color-primary)] text-white rounded hover:bg-[var(--color-secondary)] inline-block text-base md:text-base text-sm"
               >
                 Talk to a developer
