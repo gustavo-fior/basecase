@@ -137,8 +137,9 @@ export const GitHistory: React.FC = () => {
   }
 
   return (
-    <div className={`${
-      isFullscreen 
+    <>
+      <div className={`${
+        isFullscreen 
         ? 'fixed inset-0 z-50 flex flex-col overflow-hidden' 
         : ''
       } border border-gray-200 dark:border-gray-800 rounded-lg bg-white dark:bg-black`}>
@@ -191,7 +192,9 @@ export const GitHistory: React.FC = () => {
           </div>
         ))}
       </div>
-    </div>
+      </div>
+      <div className="h-5"></div>
+    </>
   );
 };
 

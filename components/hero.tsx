@@ -21,7 +21,7 @@ export const Hero = () => {
   };
 
   return (
-    <div className="max-w-3xl pb-10">
+    <div className="max-w-3xl py-5">
       <div className="font-mono hidden md:block">
         <pre className="whitespace-pre text-base flex items-center gap-2">
           <span className="font-bold text-[#CE4B01]">alanagoyal@alanas-macbook-air basecase %</span>
@@ -56,5 +56,6 @@ export const Hero = () => {
         building, and exploring phase of their journey.
       </p>
     </div>
+    
   );
 };

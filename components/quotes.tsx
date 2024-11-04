@@ -79,7 +79,7 @@ export const Quotes = () => {
   }, []);
 
   return (
-    <div className="pt-10 sm:min-h-[150px] min-h-[300px]">
+    <div className="py-5 sm:min-h-[150px] min-h-[300px]">
       <div
         {...handlers}
         className="border-l-4 border-[#CE4B01] pl-6 sm:h-[150px] h-[300px] flex flex-col justify-between"

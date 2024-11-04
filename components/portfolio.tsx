@@ -137,8 +137,8 @@ export const Portfolio = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
-    <div className="py-10">
-      <h2 className="text-2xl mb-8">Early partner to iconic companies</h2>
+    <div className="py-5">
+      <h2 className="text-2xl mb-8 font-bold">Early partner to iconic companies</h2>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
         {portfolio.map((client, index) => (
           <a
