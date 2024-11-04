@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { X, Minus, Maximize2, Minimize2 } from "lucide-react";
 
 // Base size constants
 const BASE_CELL_SIZE = 20;
@@ -186,11 +187,18 @@ export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
     };
   }, []);
 
+  // Add new handler for click outside
+  const handleClickOutside = useCallback((e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  }, [onClose]);
+
   if (isMinimized) {
     return (
       <div 
         onClick={() => setIsMinimized(false)}
-        className="fixed bottom-4 right-4 w-48 h-8 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-black shadow-lg cursor-pointer hover:scale-105 transition-all duration-200"
+        className="fixed bottom-4 right-4 w-48 h-8 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-black shadow-lg cursor-pointer hover:scale-105 transition-all duration-200 z-50"
       >
         <div className="h-full flex items-center space-x-2 px-3">
           <div className="w-2 h-2 rounded-full bg-red-500" />
@@ -203,15 +211,46 @@ export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
   }
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
+    <div 
+      className="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
+      onClick={handleClickOutside}
+    >
       <div className={`flex flex-col bg-white dark:bg-black rounded-lg border border-gray-200 dark:border-gray-800 overflow-hidden transition-all duration-300 ${
         isFullscreen ? 'fixed inset-0 rounded-none' : 'max-h-[90vh] max-w-[90vw]'
       }`}>
         {/* Window Controls */}
         <div className="flex items-center space-x-2 border-b border-gray-200 dark:border-gray-800 p-3">
-          <div className="w-3 h-3 rounded-full bg-red-500 cursor-pointer" onClick={onClose} />
-          <div className="w-3 h-3 rounded-full bg-yellow-500 cursor-pointer" onClick={() => setIsMinimized(true)} />
-          <div className="w-3 h-3 rounded-full bg-green-500 cursor-pointer" onClick={() => setIsFullscreen(!isFullscreen)} />
+          <div 
+            className="w-3 h-3 rounded-full bg-red-500 cursor-pointer flex items-center justify-center group"
+            onClick={onClose}
+          >
+            <X size={8} className="text-red-800 opacity-0 group-hover:opacity-100" />
+          </div>
+          <div 
+            className="w-3 h-3 rounded-full bg-yellow-500 cursor-pointer flex items-center justify-center group"
+            onClick={() => setIsMinimized(true)}
+          >
+            <Minus size={8} className="text-yellow-800 opacity-0 group-hover:opacity-100" />
+          </div>
+          <div 
+            className="w-3 h-3 rounded-full bg-green-500 cursor-pointer flex items-center justify-center group"
+            onClick={() => setIsFullscreen(!isFullscreen)}
+          >
+            {isFullscreen ? (
+              <Minimize2 
+                size={8} 
+                className="text-green-800 opacity-0 group-hover:opacity-100 transform -rotate-90" 
+              />
+            ) : (
+              <Maximize2 
+                size={8} 
+                className="text-green-800 opacity-0 group-hover:opacity-100 transform -rotate-90" 
+              />
+            )}
+          </div>
+          <a className="text-sm cursor-pointer hover:text-gray-800 dark:hover:text-gray-300 ml-2">
+            Snake Game
+          </a>
         </div>
 
         {/* Game Board and Score Container */}
