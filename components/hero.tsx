@@ -15,7 +15,7 @@ export const Hero = () => {
   const [copied, setCopied] = useState(false);
 
   const copyCommand = () => {
-    navigator.clipboard.writeText("curl -L https://basecase.sh");
+    navigator.clipboard.writeText("curl https://www.basecase.sh");
     setCopied(true);
     setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
   };
@@ -25,7 +25,7 @@ export const Hero = () => {
       <div className="font-mono hidden md:block">
         <pre className="whitespace-pre text-base flex items-center gap-2">
           <span className="font-bold text-[#CE4B01]">alanagoyal@Alanas-MacBook-Air basecase %</span>
-          <span className="px-2">curl -L https://basecase.sh</span>
+          <span className="px-2"><code className="bg-gray-100 dark:bg-gray-800 rounded px-2 py-1">curl https://www.basecase.sh</code></span>
           <button 
             onClick={copyCommand}
             className="hover:opacity-70 transition"
