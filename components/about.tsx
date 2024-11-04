@@ -21,7 +21,7 @@ const DisintegratingText = ({
   return (
     <div className={className} style={{ position: "relative" }}>
       <motion.div
-        className="inline-block"
+        className="inline-block cursor-default"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
