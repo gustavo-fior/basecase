@@ -24,7 +24,7 @@ export const Hero = () => {
     <div className="max-w-3xl py-10">
       <div className="font-mono hidden md:block">
         <pre className="whitespace-pre text-base flex items-center gap-2">
-          <span className="font-bold text-[#CE4B01]">alanagoyal@Alanas-MacBook-Air basecase %</span>
+          <span className="font-bold text-[#CE4B01]">alanagoyal@alanas-macbook-air basecase %</span>
           <span className="px-2"><code className="bg-gray-100 dark:bg-gray-800 rounded px-2 py-1">curl https://www.basecase.sh</code></span>
           <button 
             onClick={copyCommand}
