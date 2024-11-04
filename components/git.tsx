@@ -8,26 +8,6 @@ interface Commit {
   timestamp: Date;
 }
 
-interface GitHubCommit {
-  sha: string;
-  message: string;
-}
-
-interface GitHubPayload {
-  commits: GitHubCommit[];
-}
-
-interface GitHubRepo {
-  name: string;
-}
-
-interface GitHubEvent {
-  type: string;
-  payload: GitHubPayload;
-  repo: GitHubRepo;
-  created_at: string;
-}
-
 export const GitHistory: React.FC = () => {
   const [commits, setCommits] = useState<Commit[]>([]);
   const [loading, setLoading] = useState(true);
@@ -44,25 +24,66 @@ export const GitHistory: React.FC = () => {
       setIsRefreshing(true);
       try {
         const response = await fetch(
-          "https://api.github.com/users/alanagoyal/events/public"
+          "https://api.github.com/user/repos?per_page=100",
+          {
+            headers: {
+              'Authorization': `token ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`,
+              'Accept': 'application/vnd.github.v3+json'
+            }
+          }
         );
-        const data: GitHubEvent[] = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(`GitHub API responded with status ${response.status}`);
+        }
 
-        const pushEvents = data
-          .filter((event: GitHubEvent) => event.type === "PushEvent")
-          .slice(0, 30)
-          .flatMap((event: GitHubEvent) =>
-            event.payload.commits.map((commit) => ({
-              id: commit.sha,
-              message: commit.message,
-              repo: event.repo.name,
-              timestamp: new Date(event.created_at),
-            }))
-          );
+        const repos = await response.json();
+        
+        if (!Array.isArray(repos)) {
+          throw new Error('GitHub API did not return an array of repositories');
+        }
 
-        setCommits(pushEvents);
+        const allCommits = await Promise.all(
+          repos.map(async (repo: any) => {
+            try {
+              const commitsResponse = await fetch(
+                `https://api.github.com/repos/${repo.full_name}/commits?per_page=10`,
+                {
+                  headers: {
+                    'Authorization': `token ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                  }
+                }
+              );
+              
+              if (!commitsResponse.ok) {
+                console.warn(`Failed to fetch commits for ${repo.full_name}:`, await commitsResponse.json());
+                return [];
+              }
+
+              const commits = await commitsResponse.json();
+              return commits.map((commit: any) => ({
+                id: commit.sha,
+                message: commit.commit.message,
+                repo: repo.full_name,
+                timestamp: new Date(commit.commit.author.date),
+              }));
+            } catch (error) {
+              console.warn(`Error fetching commits for ${repo.full_name}:`, error);
+              return [];
+            }
+          })
+        );
+
+        const flattenedCommits = allCommits
+          .flat()
+          .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
+          .slice(0, 30);
+
+        setCommits(flattenedCommits);
         setLoading(false);
-      } catch {
+      } catch (err) {
+        console.error('Error fetching commits:', err);
         setError("Failed to load commit history");
         setLoading(false);
       }
