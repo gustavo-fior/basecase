@@ -41,12 +41,20 @@ export default function Navigation() {
     <>
       <meta
         name="terminal-description"
-        content="Alana Goyal's Links - Use G/T/W keyboard shortcuts to navigate"
+        content="Use W/G/T/S keyboard shortcuts to navigate"
       />
       <nav className="border-b border-gray-800">
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
             <div className="hidden md:flex space-x-4">
+              <a
+                href="https://alanagoyal.com"
+                className="hover:text-[var(--color-primary)]"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                [W] Website
+              </a>
               <a
                 href="https://github.com/alanagoyal"
                 className="hover:text-[var(--color-primary)]"
@@ -63,14 +71,12 @@ export default function Navigation() {
               >
                 [T] Twitter
               </a>
-              <a
-                href="https://alanagoyal.com"
+              <button
+                onClick={() => setShowSnake(true)}
                 className="hover:text-[var(--color-primary)]"
-                target="_blank"
-                rel="noopener noreferrer"
               >
-                [W] Website
-              </a>
+                [S] Snake
+              </button>
             </div>
             <div className="flex items-center space-x-4">
               <ColorThemeSwitcher />
