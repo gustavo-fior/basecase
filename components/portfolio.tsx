@@ -167,8 +167,11 @@ export const Portfolio = () => {
               <img
                 src={client.icon}
                 alt={client.title}
-                className="h-10 group-hover:opacity-0 transition-opacity dark:invert"
+                className="h-10 group-hover:opacity-0 transition-opacity dark:invert hidden md:block"
               />
+              <span className="text-sm md:text-2xl font-bold tracking-wide font-geist md:hidden">
+                {client.title}
+              </span>
               <div className="absolute inset-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-center">
                 {hoveredIndex === index ? (
                   <ScrambleText text={client.title} />
