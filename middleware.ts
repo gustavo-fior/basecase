@@ -85,8 +85,8 @@ product."
 LINKS
 -----
 [W] Website : https://alanagoyal.com
-[G] GitHub  : https://github.com/alanagoyal
 [T] Twitter : https://x.com/alanaagoyal
+[G] GitHub  : https://github.com/alanagoyal
 
 Made with ♥ by Alana Goyal
 

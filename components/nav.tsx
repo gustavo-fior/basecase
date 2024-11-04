@@ -4,9 +4,11 @@ import { useEffect, useState } from "react";
 import { ModeToggle } from "@/components/theme-toggle";
 import { SnakeGame } from "./snake";
 import { ColorThemeSwitcher } from "./color-theme-switcher";
+import { GitHistory } from "./git";
 
 export default function Navigation() {
   const [showSnake, setShowSnake] = useState(false);
+  const [showGit, setShowGit] = useState(false);
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -18,14 +20,14 @@ export default function Navigation() {
       }
 
       switch (event.key.toLowerCase()) {
-        case "g":
-          window.open("https://github.com/alanagoyal", "_blank");
+        case "w":
+          window.open("https://alanagoyal.com", "_blank");
           break;
         case "t":
           window.open("https://x.com/alanaagoyal", "_blank");
           break;
-        case "w":
-          window.open("https://alanagoyal.com", "_blank");
+        case "g":
+          setShowGit(true);
           break;
         case "s":
           setShowSnake(true);
@@ -41,7 +43,7 @@ export default function Navigation() {
     <>
       <meta
         name="terminal-description"
-        content="Use W/G/T/S keyboard shortcuts to navigate"
+        content="Use W/T/G/S keyboard shortcuts to navigate"
       />
       <nav className="border-b border-gray-800">
         <div className="max-w-6xl mx-auto px-4 py-4">
@@ -55,14 +57,7 @@ export default function Navigation() {
               >
                 [W] Website
               </a>
-              <a
-                href="https://github.com/alanagoyal"
-                className="hover:text-[var(--color-primary)]"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                [G] GitHub
-              </a>
+
               <a
                 href="https://x.com/alanaagoyal"
                 className="hover:text-[var(--color-primary)]"
@@ -71,6 +66,12 @@ export default function Navigation() {
               >
                 [T] Twitter
               </a>
+              <button
+                onClick={() => setShowGit(true)}
+                className="hover:text-[var(--color-primary)]"
+              >
+                [G] GitHub
+              </button>
               <button
                 onClick={() => setShowSnake(true)}
                 className="hover:text-[var(--color-primary)]"
@@ -93,6 +94,7 @@ export default function Navigation() {
       </nav>
 
       {showSnake && <SnakeGame onClose={() => setShowSnake(false)} />}
+      {showGit && <GitHistory onClose={() => setShowGit(false)} />}
     </>
   );
 }
