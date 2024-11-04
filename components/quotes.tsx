@@ -82,7 +82,7 @@ export const Quotes = () => {
     <div className="py-5 sm:min-h-[150px] min-h-[300px]">
       <div
         {...handlers}
-        className="border-l-4 border-[#CE4B01] pl-6 sm:h-[150px] h-[300px] flex flex-col justify-between"
+        className="border-l-4 border-[var(--color-primary)] pl-6 sm:h-[150px] h-[300px] flex flex-col justify-between"
         tabIndex={0}
         role="region"
         aria-label="Testimonial quotes"
@@ -96,7 +96,7 @@ export const Quotes = () => {
             href={quotes[currentIndex].url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[#CE4B01] hover:text-[#F25E01]"
+            className="text-[var(--color-primary)] hover:text-[var(--color-secondary)]"
           >
             <span className="font-bold">{quotes[currentIndex].author}</span>
             {quotes[currentIndex].title && (

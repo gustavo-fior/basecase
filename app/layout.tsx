@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { siteConfig } from "@/config/site";
+import { themeColors } from "@/config/colors";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -43,7 +44,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className={inter.className}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased
-          bg-[#FEFAF8] dark:bg-[#0C0605]`}
+          bg-[var(--color-background-light)] dark:bg-[var(--color-background-dark)]`}
       >
         <ThemeProvider
           attribute="class"

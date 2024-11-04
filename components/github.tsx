@@ -8,7 +8,7 @@ export function GitHub() {
       href="https://github.com/alanagoyal/basecasesh"
       target="_blank"
       rel="noopener noreferrer"
-      className="px-4 py-2 border border-gray-700 hover:border-[#CE4B01] rounded"
+      className="px-4 py-2 border border-gray-700 hover:border-[var(--color-primary)] rounded"
     >
       <div className="w-[1.2rem] h-[1.2rem]">
         <GithubIcon className="h-[1.2rem] w-[1.2rem]" />

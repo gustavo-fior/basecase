@@ -33,6 +33,10 @@ body {
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+    --color-primary: #CE4B01;
+    --color-secondary: #F25E01;
+    --color-background-light: #FEFAF8;
+    --color-background-dark: #0C0605;
   }
   .dark {
     --background: 0 0% 3.9%;
