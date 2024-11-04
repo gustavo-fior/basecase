@@ -47,7 +47,7 @@ export const Hero = () => {
           {BASECASE_ASCII}
         </pre>
       </div>
-      <h1 className="text-2xl font-bold mb-4 text-[var(--color-primary)] md:text-black dark:md:text-white md:text-xl">
+      <h1 className="text-4xl font-bold mb-4 text-[var(--color-primary)] md:text-black dark:md:text-white md:text-xl">
         A builder backing builders
       </h1>
       <p className="text-xl">
