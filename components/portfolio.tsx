@@ -66,7 +66,7 @@ export const Portfolio = () => {
           generative AI.
         </>
       ),
-      url: "https://diagram.com/",
+      url: "https://diagram-figma.webflow.io/",
     },
     {
       title: "Doss",
@@ -138,7 +138,9 @@ export const Portfolio = () => {
 
   return (
     <div className="py-5">
-      <h2 className="text-2xl mb-8 font-bold">Early partner to iconic companies</h2>
+      <h2 className="text-2xl mb-8 font-bold">
+        Early partner to iconic companies
+      </h2>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
         {portfolio.map((client, index) => (
           <a
