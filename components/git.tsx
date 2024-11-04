@@ -27,20 +27,22 @@ export const GitHistory: React.FC = () => {
           "https://api.github.com/user/repos?per_page=100",
           {
             headers: {
-              'Authorization': `token ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`,
-              'Accept': 'application/vnd.github.v3+json'
-            }
+              Authorization: `token ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`,
+              Accept: "application/vnd.github.v3+json",
+            },
           }
         );
-        
+
         if (!response.ok) {
-          throw new Error(`GitHub API responded with status ${response.status}`);
+          throw new Error(
+            `GitHub API responded with status ${response.status}`
+          );
         }
 
         const repos = await response.json();
-        
+
         if (!Array.isArray(repos)) {
-          throw new Error('GitHub API did not return an array of repositories');
+          throw new Error("GitHub API did not return an array of repositories");
         }
 
         const allCommits = await Promise.all(
@@ -50,14 +52,17 @@ export const GitHistory: React.FC = () => {
                 `https://api.github.com/repos/${repo.full_name}/commits?per_page=10`,
                 {
                   headers: {
-                    'Authorization': `token ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`,
-                    'Accept': 'application/vnd.github.v3+json'
-                  }
+                    Authorization: `token ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`,
+                    Accept: "application/vnd.github.v3+json",
+                  },
                 }
               );
-              
+
               if (!commitsResponse.ok) {
-                console.warn(`Failed to fetch commits for ${repo.full_name}:`, await commitsResponse.json());
+                console.warn(
+                  `Failed to fetch commits for ${repo.full_name}:`,
+                  await commitsResponse.json()
+                );
                 return [];
               }
 
@@ -69,7 +74,10 @@ export const GitHistory: React.FC = () => {
                 timestamp: new Date(commit.commit.author.date),
               }));
             } catch (error) {
-              console.warn(`Error fetching commits for ${repo.full_name}:`, error);
+              console.warn(
+                `Error fetching commits for ${repo.full_name}:`,
+                error
+              );
               return [];
             }
           })
@@ -83,7 +91,7 @@ export const GitHistory: React.FC = () => {
         setCommits(flattenedCommits);
         setLoading(false);
       } catch (err) {
-        console.error('Error fetching commits:', err);
+        console.error("Error fetching commits:", err);
         setError("Failed to load commit history");
         setLoading(false);
       }
@@ -120,12 +128,38 @@ export const GitHistory: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="border border-gray-200 dark:border-gray-800 rounded-lg p-6 bg-white dark:bg-black">
-        <div className="flex items-center space-x-2 text-emerald-400 dark:text-emerald-400">
-          <Clock size={16} className="animate-spin" />
-          <span>Loading commit history...</span>
+      <>
+        <div className="border border-gray-200 dark:border-gray-800 rounded-lg bg-white dark:bg-black">
+          <div className="flex items-center space-x-2 border-b border-gray-200 dark:border-gray-800 p-3">
+            <div className="flex space-x-2">
+              <div className="w-3 h-3 rounded-full bg-red-500" />
+              <div className="w-3 h-3 rounded-full bg-yellow-500" />
+              <div className="w-3 h-3 rounded-full bg-green-500" />
+            </div>
+            <div className="flex items-center gap-1">
+              <span className="text-sm">Git Activity</span>
+              <span className="h-4"></span>
+              <div className="w-2 h-2 rounded-full bg-gray-400 dark:bg-gray-500" />
+            </div>
+          </div>
+
+          <div className="p-4 space-y-3 h-[400px] overflow-hidden">
+            {[...Array(15)].map((_, i) => (
+              <div key={i} className="space-y-0.5">
+                <div className="flex items-center space-x-2">
+                  <div className="w-3 h-3 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+                  <div className="h-3 w-32 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+                  <div className="h-3 w-24 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+                </div>
+                <div className="pl-6">
+                  <div className="h-3 w-1/4 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+        <div className="h-5"></div>
+      </>
     );
   }
 
@@ -172,47 +206,53 @@ export const GitHistory: React.FC = () => {
               className="w-3 h-3 rounded-full bg-red-500 cursor-pointer flex items-center justify-center group"
               onClick={() => setIsClosed(true)}
             >
-              <X size={8} className="text-red-800 opacity-0 group-hover:opacity-100" />
+              <X
+                size={8}
+                className="text-red-800 opacity-0 group-hover:opacity-100"
+              />
             </div>
             <div
               className="w-3 h-3 rounded-full bg-yellow-500 cursor-pointer flex items-center justify-center group"
               onClick={() => setIsMinimized(true)}
             >
-              <Minus size={8} className="text-yellow-800 opacity-0 group-hover:opacity-100" />
+              <Minus
+                size={8}
+                className="text-yellow-800 opacity-0 group-hover:opacity-100"
+              />
             </div>
             <div
               className="w-3 h-3 rounded-full bg-green-500 cursor-pointer flex items-center justify-center group"
               onClick={() => setIsFullscreen(!isFullscreen)}
             >
               {isFullscreen ? (
-                <Minimize2 
-                  size={8} 
-                  className="text-green-800 opacity-0 group-hover:opacity-100 transform -rotate-90" 
+                <Minimize2
+                  size={8}
+                  className="text-green-800 opacity-0 group-hover:opacity-100 transform -rotate-90"
                 />
               ) : (
-                <Maximize2 
-                  size={8} 
-                  className="text-green-800 opacity-0 group-hover:opacity-100 transform -rotate-90" 
+                <Maximize2
+                  size={8}
+                  className="text-green-800 opacity-0 group-hover:opacity-100 transform -rotate-90"
                 />
               )}
             </div>
           </div>
-          <div className="flex items-center flex-wrap gap-1">
+          <div className="flex items-center flex-wrap">
             <a
               href="https://github.com/alanagoyal"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm cursor-pointer hover:text-gray-800 dark:hover:text-gray-300"
+              className="text-sm cursor-pointer hover:text-gray-800 dark:hover:text-gray-300 mr-1"
             >
               Git Activity
             </a>
-            <span className="text-sm text-gray-500 dark:text-gray-400">
+            <span className="hidden sm:inline text-sm text-gray-500 dark:text-gray-400 mr-1">
               (Updated{" "}
               <span className="hidden sm:inline">
-                {lastUpdated.toLocaleTimeString()}
-              </span>
-              <span className="sm:hidden">
                 {lastUpdated.toLocaleDateString()}
+              </span>{" "}
+              <span className="hidden sm:inline">
+                {lastUpdated.toLocaleTimeString()}
               </span>
               )
             </span>
