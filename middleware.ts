@@ -41,7 +41,7 @@ PORTFOLIO
 * Ashby - Hiring software (ashbyhq.com)
 * Astral - Python developer tools (astral.sh)
 * Baseten - ML infrastructure (baseten.co)
-* Braintrust - Enterprise AI stack (braintrustdata.com)
+* Braintrust - Enterprise AI stack (braintrust.dev)
 * Browserbase - Headless browser platform (browserbase.com)
 * Codeium - AI code acceleration (codeium.com)
 * Default - Inbound lead platform (default.com)
@@ -70,24 +70,12 @@ export function middleware(request: NextRequest) {
   
   // Handle curl requests for both apex and www domains
   if (userAgent.toLowerCase().includes('curl')) {
-    // If it's www.basecase.sh, proceed with ASCII response
-    if (request.headers.get('host')?.startsWith('www.')) {
-      const asciiResponse = `${FULL_CONTENT}`
-      return new NextResponse(asciiResponse, {
-        headers: {
-          'Content-Type': 'text/plain',
-        },
-      })
-    }
-    // If it's basecase.sh, return ASCII response directly instead of redirecting
-    else {
-      const asciiResponse = `${FULL_CONTENT}`
-      return new NextResponse(asciiResponse, {
-        headers: {
-          'Content-Type': 'text/plain',
-        },
-      })
-    }
+    // Return the ASCII content directly for both domains
+    return new NextResponse(FULL_CONTENT, {
+      headers: {
+        'Content-Type': 'text/plain',
+      },
+    })
   }
 
   // For non-curl requests, proceed with normal routing
