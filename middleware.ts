@@ -10,11 +10,7 @@ const FULL_ASCII = `
 ██████╔╝██║  ██║███████║███████╗╚██████╗██║  ██║███████║███████╗
 ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚══════╝`;
 
-export function middleware(request: NextRequest) {
-  const userAgent = request.headers.get('user-agent') || ''
-  
-  if (userAgent.toLowerCase().includes('curl')) {
-    const asciiResponse = `${FULL_ASCII}
+const FULL_CONTENT = `${FULL_ASCII}
 
 A BUILDER BACKING BUILDERS
 -------------------------
@@ -68,13 +64,33 @@ LINKS
 Made with ♥ by Alana Goyal
 
 `
-    return new NextResponse(asciiResponse, {
-      headers: {
-        'Content-Type': 'text/plain',
-      },
-    })
+
+export function middleware(request: NextRequest) {
+  const userAgent = request.headers.get('user-agent') || ''
+  
+  // Handle curl requests for both apex and www domains
+  if (userAgent.toLowerCase().includes('curl')) {
+    // If it's www.basecase.sh, proceed with ASCII response
+    if (request.headers.get('host')?.startsWith('www.')) {
+      const asciiResponse = `${FULL_CONTENT}`
+      return new NextResponse(asciiResponse, {
+        headers: {
+          'Content-Type': 'text/plain',
+        },
+      })
+    }
+    // If it's basecase.sh, return ASCII response directly instead of redirecting
+    else {
+      const asciiResponse = `${FULL_CONTENT}`
+      return new NextResponse(asciiResponse, {
+        headers: {
+          'Content-Type': 'text/plain',
+        },
+      })
+    }
   }
 
+  // For non-curl requests, proceed with normal routing
   return NextResponse.next()
 }
 
