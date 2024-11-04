@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { GitCommit, Clock, X, Minus, Maximize2, Minimize2 } from "lucide-react";
+import { GitCommit, X, Minus, Maximize2, Minimize2 } from "lucide-react";
 
 interface Commit {
   id: string;
