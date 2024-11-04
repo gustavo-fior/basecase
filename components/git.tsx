@@ -100,7 +100,7 @@ export const GitHistory: React.FC = () => {
         const flattenedCommits = allCommits
           .flat()
           .sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
-          .slice(0, 30);
+          .slice(0, 25);
 
         setCommits(flattenedCommits);
         setLoading(false);
