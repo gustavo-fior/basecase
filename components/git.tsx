@@ -8,6 +8,20 @@ interface Commit {
   timestamp: Date;
 }
 
+interface GitHubRepo {
+  full_name: string;
+}
+
+interface GitHubCommit {
+  sha: string;
+  commit: {
+    message: string;
+    author: {
+      date: string;
+    };
+  };
+}
+
 export const GitHistory: React.FC = () => {
   const [commits, setCommits] = useState<Commit[]>([]);
   const [loading, setLoading] = useState(true);
@@ -46,7 +60,7 @@ export const GitHistory: React.FC = () => {
         }
 
         const allCommits = await Promise.all(
-          repos.map(async (repo: any) => {
+          repos.map(async (repo: GitHubRepo) => {
             try {
               const commitsResponse = await fetch(
                 `https://api.github.com/repos/${repo.full_name}/commits?per_page=10`,
@@ -67,7 +81,7 @@ export const GitHistory: React.FC = () => {
               }
 
               const commits = await commitsResponse.json();
-              return commits.map((commit: any) => ({
+              return commits.map((commit: GitHubCommit) => ({
                 id: commit.sha,
                 message: commit.commit.message,
                 repo: repo.full_name,
