@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { Gamepad } from "lucide-react";
 
 // Base size constants
 const BASE_CELL_SIZE = 15;
@@ -16,7 +17,6 @@ export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
   const [gameLoop, setGameLoop] = useState<NodeJS.Timeout | null>(null);
   const [gameStarted, setGameStarted] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false);
   const [nextDirection, setNextDirection] = useState(INITIAL_DIRECTION);
 
   const generateFood = useCallback(() => {
@@ -208,6 +208,7 @@ export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
         {/* Title Bar */}
         <div className="flex items-center justify-between border-b border-gray-800 dark:border-gray-200 p-2">
           <div className="flex items-center gap-2 font-mono text-sm">
+            <Gamepad className="w-4 h-4 text-gray-500" />
             <span>Snake Game</span>
           </div>
           <div className="flex gap-2 font-mono">
@@ -298,18 +299,6 @@ export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
       </div>
     </div>
   );
-
-  // Update minimized state to match the new style
-  if (isMinimized) {
-    return (
-      <div
-        onClick={() => setIsMinimized(false)}
-        className="fixed bottom-4 right-4 border border-gray-800 dark:border-gray-200 bg-white dark:bg-black p-2 cursor-pointer font-mono text-sm"
-      >
-        Snake Game
-      </div>
-    );
-  }
 };
 
 export default SnakeGame;

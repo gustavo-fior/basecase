@@ -30,7 +30,6 @@ export const GitHistory: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
   const [isBlinking, setIsBlinking] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(new Date());
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false);
 
   useEffect(() => {
     const fetchCommits = async () => {
@@ -244,17 +243,6 @@ export const GitHistory: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
             {error}
           </div>
         </div>
-      </div>
-    );
-  }
-
-  if (isMinimized) {
-    return (
-      <div
-        onClick={() => setIsMinimized(false)}
-        className="fixed bottom-4 right-4 border border-gray-800 dark:border-gray-200 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] p-2 cursor-pointer font-mono text-sm"
-      >
-        Commit History
       </div>
     );
   }
