@@ -9,7 +9,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen font-mono">
       <Navigation />
-      <div className="max-w-6xl px-4 mx-auto">
+      <div className="px-4 mx-auto">
         <Content />
         <CTA />
       </div>

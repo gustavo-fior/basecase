@@ -21,7 +21,7 @@ export function ModeToggle() {
   return (
     <button
       onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-      className="px-4 py-2 border border-gray-700 hover:border-[var(--color-primary)] rounded relative"
+      className="bg-gray-100 dark:bg-gray-800 px-4 py-2 border border-gray-700 hover:border-[var(--color-primary)] rounded relative"
     >
       <div className="w-[1.2rem] h-[1.2rem] relative">
         {theme === "dark" ? (
