@@ -7,7 +7,7 @@ import { About } from "./about";
 
 export default function Content() {
   return (
-    <div className="max-w-6xl mx-auto px-4 py-5">
+    <div className="mx-auto">
       <Hero />
       <About />
       <Portfolio />
