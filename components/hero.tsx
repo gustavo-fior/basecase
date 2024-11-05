@@ -108,7 +108,7 @@ export const Hero = () => {
             )}
           </button>
         </pre>
-        <pre className="font-mono whitespace-pre text-[var(--color-primary)] mb-4 flex">
+        <pre className="font-mono whitespace-pre text-[var(--color-primary)] mb-6 flex">
           {/* Example for B */}
           <span className="flex flex-col">
             <span
