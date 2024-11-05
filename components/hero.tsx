@@ -11,7 +11,7 @@ const B_ASCII = {
   line4Left: `██╔`,
   line4Right: `══██╗`,
   line5: `██████╔╝`,
-  line6: `╚═════╝`
+  line6: `╚═════╝`,
 };
 
 const A_ASCII = {
@@ -23,7 +23,7 @@ const A_ASCII = {
   line4Right: `══██║`,
   line5Left: `██║`,
   line5Right: `  ██║`,
-  line6: `╚═╝  ╚═╝`
+  line6: `╚═╝  ╚═╝`,
 };
 
 const S_ASCII = {
@@ -32,7 +32,7 @@ const S_ASCII = {
   line3: `███████╗`,
   line4: `╚════██║`,
   line5: `███████║`,
-  line6: `╚══════╝`
+  line6: `╚══════╝`,
 };
 
 const E_ASCII = {
@@ -41,7 +41,7 @@ const E_ASCII = {
   line3: `█████╗`,
   line4: `██╔══╝`,
   line5: `███████╗`,
-  line6: `╚══════╝`
+  line6: `╚══════╝`,
 };
 
 const C_ASCII = {
@@ -50,7 +50,7 @@ const C_ASCII = {
   line3: `██║`,
   line4: `██║`,
   line5: `╚██████╗`,
-  line6: ` ╚═════╝`
+  line6: ` ╚═════╝`,
 };
 
 export const Hero = () => {
@@ -113,9 +113,11 @@ export const Hero = () => {
           <span className="flex flex-col">
             <span
               className={`transition-colors duration-200 cursor-default ${
-                hoveredSection === 'B-line1' ? 'text-[var(--color-secondary)]' : ''
+                hoveredSection === "B-line1"
+                  ? "text-[var(--color-secondary)]"
+                  : ""
               }`}
-              onMouseEnter={() => setHoveredSection('B-line1')}
+              onMouseEnter={() => setHoveredSection("B-line1")}
               onMouseLeave={() => setHoveredSection(null)}
             >
               {B_ASCII.line1}
@@ -123,18 +125,22 @@ export const Hero = () => {
             <span className="flex">
               <span
                 className={`transition-colors duration-200 cursor-default ${
-                  hoveredSection === 'B-line2Left' ? 'text-[var(--color-secondary)]' : ''
+                  hoveredSection === "B-line2Left"
+                    ? "text-[var(--color-secondary)]"
+                    : ""
                 }`}
-                onMouseEnter={() => setHoveredSection('B-line2Left')}
+                onMouseEnter={() => setHoveredSection("B-line2Left")}
                 onMouseLeave={() => setHoveredSection(null)}
               >
                 {B_ASCII.line2Left}
               </span>
               <span
                 className={`transition-colors duration-200 cursor-default ${
-                  hoveredSection === 'B-line2Right' ? 'text-[var(--color-secondary)]' : ''
+                  hoveredSection === "B-line2Right"
+                    ? "text-[var(--color-secondary)]"
+                    : ""
                 }`}
-                onMouseEnter={() => setHoveredSection('B-line2Right')}
+                onMouseEnter={() => setHoveredSection("B-line2Right")}
                 onMouseLeave={() => setHoveredSection(null)}
               >
                 {B_ASCII.line2Right}
@@ -142,9 +148,11 @@ export const Hero = () => {
             </span>
             <span
               className={`transition-colors duration-200 cursor-default ${
-                hoveredSection === 'B-line3' ? 'text-[var(--color-secondary)]' : ''
+                hoveredSection === "B-line3"
+                  ? "text-[var(--color-secondary)]"
+                  : ""
               }`}
-              onMouseEnter={() => setHoveredSection('B-line3')}
+              onMouseEnter={() => setHoveredSection("B-line3")}
               onMouseLeave={() => setHoveredSection(null)}
             >
               {B_ASCII.line3}
@@ -152,18 +160,22 @@ export const Hero = () => {
             <span className="flex">
               <span
                 className={`transition-colors duration-200 cursor-default ${
-                  hoveredSection === 'B-line4Left' ? 'text-[var(--color-secondary)]' : ''
+                  hoveredSection === "B-line4Left"
+                    ? "text-[var(--color-secondary)]"
+                    : ""
                 }`}
-                onMouseEnter={() => setHoveredSection('B-line4Left')}
+                onMouseEnter={() => setHoveredSection("B-line4Left")}
                 onMouseLeave={() => setHoveredSection(null)}
               >
                 {B_ASCII.line4Left}
               </span>
               <span
                 className={`transition-colors duration-200 cursor-default ${
-                  hoveredSection === 'B-line4Right' ? 'text-[var(--color-secondary)]' : ''
+                  hoveredSection === "B-line4Right"
+                    ? "text-[var(--color-secondary)]"
+                    : ""
                 }`}
-                onMouseEnter={() => setHoveredSection('B-line4Right')}
+                onMouseEnter={() => setHoveredSection("B-line4Right")}
                 onMouseLeave={() => setHoveredSection(null)}
               >
                 {B_ASCII.line4Right}
@@ -171,18 +183,22 @@ export const Hero = () => {
             </span>
             <span
               className={`transition-colors duration-200 cursor-default ${
-                hoveredSection === 'B-line5' ? 'text-[var(--color-secondary)]' : ''
+                hoveredSection === "B-line5"
+                  ? "text-[var(--color-secondary)]"
+                  : ""
               }`}
-              onMouseEnter={() => setHoveredSection('B-line5')}
+              onMouseEnter={() => setHoveredSection("B-line5")}
               onMouseLeave={() => setHoveredSection(null)}
             >
               {B_ASCII.line5}
             </span>
             <span
               className={`transition-colors duration-200 cursor-default ${
-                hoveredSection === 'B-line6' ? 'text-[var(--color-secondary)]' : ''
+                hoveredSection === "B-line6"
+                  ? "text-[var(--color-secondary)]"
+                  : ""
               }`}
-              onMouseEnter={() => setHoveredSection('B-line6')}
+              onMouseEnter={() => setHoveredSection("B-line6")}
               onMouseLeave={() => setHoveredSection(null)}
             >
               {B_ASCII.line6}
@@ -193,9 +209,11 @@ export const Hero = () => {
           <span className="flex flex-col">
             <span
               className={`transition-colors duration-200 cursor-default ${
-                hoveredSection === 'A1-line1' ? 'text-[var(--color-secondary)]' : ''
+                hoveredSection === "A1-line1"
+                  ? "text-[var(--color-secondary)]"
+                  : ""
               }`}
-              onMouseEnter={() => setHoveredSection('A1-line1')}
+              onMouseEnter={() => setHoveredSection("A1-line1")}
               onMouseLeave={() => setHoveredSection(null)}
             >
               {A_ASCII.line1}
@@ -203,18 +221,22 @@ export const Hero = () => {
             <span className="flex">
               <span
                 className={`transition-colors duration-200 cursor-default ${
-                  hoveredSection === 'A1-line2Left' ? 'text-[var(--color-secondary)]' : ''
+                  hoveredSection === "A1-line2Left"
+                    ? "text-[var(--color-secondary)]"
+                    : ""
                 }`}
-                onMouseEnter={() => setHoveredSection('A1-line2Left')}
+                onMouseEnter={() => setHoveredSection("A1-line2Left")}
                 onMouseLeave={() => setHoveredSection(null)}
               >
                 {A_ASCII.line2Left}
               </span>
               <span
                 className={`transition-colors duration-200 cursor-default ${
-                  hoveredSection === 'A1-line2Right' ? 'text-[var(--color-secondary)]' : ''
+                  hoveredSection === "A1-line2Right"
+                    ? "text-[var(--color-secondary)]"
+                    : ""
                 }`}
-                onMouseEnter={() => setHoveredSection('A1-line2Right')}
+                onMouseEnter={() => setHoveredSection("A1-line2Right")}
                 onMouseLeave={() => setHoveredSection(null)}
               >
                 {A_ASCII.line2Right}
@@ -222,9 +244,11 @@ export const Hero = () => {
             </span>
             <span
               className={`transition-colors duration-200 cursor-default ${
-                hoveredSection === 'A1-line3' ? 'text-[var(--color-secondary)]' : ''
+                hoveredSection === "A1-line3"
+                  ? "text-[var(--color-secondary)]"
+                  : ""
               }`}
-              onMouseEnter={() => setHoveredSection('A1-line3')}
+              onMouseEnter={() => setHoveredSection("A1-line3")}
               onMouseLeave={() => setHoveredSection(null)}
             >
               {A_ASCII.line3}
@@ -232,18 +256,22 @@ export const Hero = () => {
             <span className="flex">
               <span
                 className={`transition-colors duration-200 cursor-default ${
-                  hoveredSection === 'A1-line4Left' ? 'text-[var(--color-secondary)]' : ''
+                  hoveredSection === "A1-line4Left"
+                    ? "text-[var(--color-secondary)]"
+                    : ""
                 }`}
-                onMouseEnter={() => setHoveredSection('A1-line4Left')}
+                onMouseEnter={() => setHoveredSection("A1-line4Left")}
                 onMouseLeave={() => setHoveredSection(null)}
               >
                 {A_ASCII.line4Left}
               </span>
               <span
                 className={`transition-colors duration-200 cursor-default ${
-                  hoveredSection === 'A1-line4Right' ? 'text-[var(--color-secondary)]' : ''
+                  hoveredSection === "A1-line4Right"
+                    ? "text-[var(--color-secondary)]"
+                    : ""
                 }`}
-                onMouseEnter={() => setHoveredSection('A1-line4Right')}
+                onMouseEnter={() => setHoveredSection("A1-line4Right")}
                 onMouseLeave={() => setHoveredSection(null)}
               >
                 {A_ASCII.line4Right}
@@ -252,18 +280,22 @@ export const Hero = () => {
             <span className="flex">
               <span
                 className={`transition-colors duration-200 cursor-default ${
-                  hoveredSection === 'A1-line5Left' ? 'text-[var(--color-secondary)]' : ''
+                  hoveredSection === "A1-line5Left"
+                    ? "text-[var(--color-secondary)]"
+                    : ""
                 }`}
-                onMouseEnter={() => setHoveredSection('A1-line5Left')}
+                onMouseEnter={() => setHoveredSection("A1-line5Left")}
                 onMouseLeave={() => setHoveredSection(null)}
               >
                 {A_ASCII.line5Left}
               </span>
               <span
                 className={`transition-colors duration-200 cursor-default ${
-                  hoveredSection === 'A1-line5Right' ? 'text-[var(--color-secondary)]' : ''
+                  hoveredSection === "A1-line5Right"
+                    ? "text-[var(--color-secondary)]"
+                    : ""
                 }`}
-                onMouseEnter={() => setHoveredSection('A1-line5Right')}
+                onMouseEnter={() => setHoveredSection("A1-line5Right")}
                 onMouseLeave={() => setHoveredSection(null)}
               >
                 {A_ASCII.line5Right}
@@ -271,9 +303,11 @@ export const Hero = () => {
             </span>
             <span
               className={`transition-colors duration-200 cursor-default ${
-                hoveredSection === 'A1-line6' ? 'text-[var(--color-secondary)]' : ''
+                hoveredSection === "A1-line6"
+                  ? "text-[var(--color-secondary)]"
+                  : ""
               }`}
-              onMouseEnter={() => setHoveredSection('A1-line6')}
+              onMouseEnter={() => setHoveredSection("A1-line6")}
               onMouseLeave={() => setHoveredSection(null)}
             >
               {A_ASCII.line6}
@@ -286,7 +320,9 @@ export const Hero = () => {
               <span
                 key={key}
                 className={`transition-colors duration-200 cursor-default ${
-                  hoveredSection === `S-${key}` ? 'text-[var(--color-secondary)]' : ''
+                  hoveredSection === `S-${key}`
+                    ? "text-[var(--color-secondary)]"
+                    : ""
                 }`}
                 onMouseEnter={() => setHoveredSection(`S-${key}`)}
                 onMouseLeave={() => setHoveredSection(null)}
@@ -302,7 +338,9 @@ export const Hero = () => {
               <span
                 key={key}
                 className={`transition-colors duration-200 cursor-default ${
-                  hoveredSection === `E-${key}` ? 'text-[var(--color-secondary)]' : ''
+                  hoveredSection === `E-${key}`
+                    ? "text-[var(--color-secondary)]"
+                    : ""
                 }`}
                 onMouseEnter={() => setHoveredSection(`E-${key}`)}
                 onMouseLeave={() => setHoveredSection(null)}
@@ -318,7 +356,9 @@ export const Hero = () => {
               <span
                 key={key}
                 className={`transition-colors duration-200 cursor-default ${
-                  hoveredSection === `C-${key}` ? 'text-[var(--color-secondary)]' : ''
+                  hoveredSection === `C-${key}`
+                    ? "text-[var(--color-secondary)]"
+                    : ""
                 }`}
                 onMouseEnter={() => setHoveredSection(`C-${key}`)}
                 onMouseLeave={() => setHoveredSection(null)}
@@ -328,14 +368,15 @@ export const Hero = () => {
             ))}
           </span>
 
-
           {/* Second A */}
           <span className="flex flex-col">
             <span
               className={`transition-colors duration-200 cursor-default ${
-                hoveredSection === 'A2-line1' ? 'text-[var(--color-secondary)]' : ''
+                hoveredSection === "A2-line1"
+                  ? "text-[var(--color-secondary)]"
+                  : ""
               }`}
-              onMouseEnter={() => setHoveredSection('A2-line1')}
+              onMouseEnter={() => setHoveredSection("A2-line1")}
               onMouseLeave={() => setHoveredSection(null)}
             >
               {A_ASCII.line1}
@@ -343,18 +384,22 @@ export const Hero = () => {
             <span className="flex">
               <span
                 className={`transition-colors duration-200 cursor-default ${
-                  hoveredSection === 'A2-line2Left' ? 'text-[var(--color-secondary)]' : ''
+                  hoveredSection === "A2-line2Left"
+                    ? "text-[var(--color-secondary)]"
+                    : ""
                 }`}
-                onMouseEnter={() => setHoveredSection('A2-line2Left')}
+                onMouseEnter={() => setHoveredSection("A2-line2Left")}
                 onMouseLeave={() => setHoveredSection(null)}
               >
                 {A_ASCII.line2Left}
               </span>
               <span
                 className={`transition-colors duration-200 cursor-default ${
-                  hoveredSection === 'A2-line2Right' ? 'text-[var(--color-secondary)]' : ''
+                  hoveredSection === "A2-line2Right"
+                    ? "text-[var(--color-secondary)]"
+                    : ""
                 }`}
-                onMouseEnter={() => setHoveredSection('A2-line2Right')}
+                onMouseEnter={() => setHoveredSection("A2-line2Right")}
                 onMouseLeave={() => setHoveredSection(null)}
               >
                 {A_ASCII.line2Right}
@@ -362,9 +407,11 @@ export const Hero = () => {
             </span>
             <span
               className={`transition-colors duration-200 cursor-default ${
-                hoveredSection === 'A2-line3' ? 'text-[var(--color-secondary)]' : ''
+                hoveredSection === "A2-line3"
+                  ? "text-[var(--color-secondary)]"
+                  : ""
               }`}
-              onMouseEnter={() => setHoveredSection('A2-line3')}
+              onMouseEnter={() => setHoveredSection("A2-line3")}
               onMouseLeave={() => setHoveredSection(null)}
             >
               {A_ASCII.line3}
@@ -372,18 +419,22 @@ export const Hero = () => {
             <span className="flex">
               <span
                 className={`transition-colors duration-200 cursor-default ${
-                  hoveredSection === 'A2-line4Left' ? 'text-[var(--color-secondary)]' : ''
+                  hoveredSection === "A2-line4Left"
+                    ? "text-[var(--color-secondary)]"
+                    : ""
                 }`}
-                onMouseEnter={() => setHoveredSection('A2-line4Left')}
+                onMouseEnter={() => setHoveredSection("A2-line4Left")}
                 onMouseLeave={() => setHoveredSection(null)}
               >
                 {A_ASCII.line4Left}
               </span>
               <span
                 className={`transition-colors duration-200 cursor-default ${
-                  hoveredSection === 'A2-line4Right' ? 'text-[var(--color-secondary)]' : ''
+                  hoveredSection === "A2-line4Right"
+                    ? "text-[var(--color-secondary)]"
+                    : ""
                 }`}
-                onMouseEnter={() => setHoveredSection('A2-line4Right')}
+                onMouseEnter={() => setHoveredSection("A2-line4Right")}
                 onMouseLeave={() => setHoveredSection(null)}
               >
                 {A_ASCII.line4Right}
@@ -392,18 +443,22 @@ export const Hero = () => {
             <span className="flex">
               <span
                 className={`transition-colors duration-200 cursor-default ${
-                  hoveredSection === 'A2-line5Left' ? 'text-[var(--color-secondary)]' : ''
+                  hoveredSection === "A2-line5Left"
+                    ? "text-[var(--color-secondary)]"
+                    : ""
                 }`}
-                onMouseEnter={() => setHoveredSection('A2-line5Left')}
+                onMouseEnter={() => setHoveredSection("A2-line5Left")}
                 onMouseLeave={() => setHoveredSection(null)}
               >
                 {A_ASCII.line5Left}
               </span>
               <span
                 className={`transition-colors duration-200 cursor-default ${
-                  hoveredSection === 'A2-line5Right' ? 'text-[var(--color-secondary)]' : ''
+                  hoveredSection === "A2-line5Right"
+                    ? "text-[var(--color-secondary)]"
+                    : ""
                 }`}
-                onMouseEnter={() => setHoveredSection('A2-line5Right')}
+                onMouseEnter={() => setHoveredSection("A2-line5Right")}
                 onMouseLeave={() => setHoveredSection(null)}
               >
                 {A_ASCII.line5Right}
@@ -411,9 +466,11 @@ export const Hero = () => {
             </span>
             <span
               className={`transition-colors duration-200 cursor-default ${
-                hoveredSection === 'A2-line6' ? 'text-[var(--color-secondary)]' : ''
+                hoveredSection === "A2-line6"
+                  ? "text-[var(--color-secondary)]"
+                  : ""
               }`}
-              onMouseEnter={() => setHoveredSection('A2-line6')}
+              onMouseEnter={() => setHoveredSection("A2-line6")}
               onMouseLeave={() => setHoveredSection(null)}
             >
               {A_ASCII.line6}
@@ -426,7 +483,9 @@ export const Hero = () => {
               <span
                 key={`S2-${key}`}
                 className={`transition-colors duration-200 cursor-default ${
-                  hoveredSection === `S2-${key}` ? 'text-[var(--color-secondary)]' : ''
+                  hoveredSection === `S2-${key}`
+                    ? "text-[var(--color-secondary)]"
+                    : ""
                 }`}
                 onMouseEnter={() => setHoveredSection(`S2-${key}`)}
                 onMouseLeave={() => setHoveredSection(null)}
@@ -442,7 +501,9 @@ export const Hero = () => {
               <span
                 key={`E2-${key}`}
                 className={`transition-colors duration-200 cursor-default ${
-                  hoveredSection === `E2-${key}` ? 'text-[var(--color-secondary)]' : ''
+                  hoveredSection === `E2-${key}`
+                    ? "text-[var(--color-secondary)]"
+                    : ""
                 }`}
                 onMouseEnter={() => setHoveredSection(`E2-${key}`)}
                 onMouseLeave={() => setHoveredSection(null)}
@@ -457,8 +518,7 @@ export const Hero = () => {
         First check to future founders
       </h1>
       <p className="text-xl">
-        Basecase exists to support founders before their companies exist. I
-        write the first check to builders who are often still dreaming,
+        Basecase writes the first check to builders who are still dreaming,
         tinkering, and exploring what they want to create.
       </p>
     </div>

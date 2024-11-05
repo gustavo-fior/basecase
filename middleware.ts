@@ -14,9 +14,8 @@ const FULL_CONTENT = `${FULL_ASCII}
 
 FIRST CHECK TO FUTURE FOUNDERS
 ------------------------------
-Basecase exists to support founders before their companies exist. I write the
-first check to builders who are often still dreaming, tinkering, and
-exploring what they want to create.
+Basecase writes the first check to builders who are still dreaming, tinkering,
+and exploring what they want to create.
 
 HOW I WORK
 -----------
