@@ -1,14 +1,25 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { X, Minus, Maximize2, Minimize2 } from "lucide-react";
+import { Gamepad } from "lucide-react";
 
 // Base size constants
-const BASE_CELL_SIZE = 20;
+const BASE_CELL_SIZE = 15;
 const MIN_GRID_SIZE = 30;
 const INITIAL_SNAKE = [{ x: 15, y: 15 }];
 const INITIAL_DIRECTION = { x: 1, y: 0 };
 const GAME_SPEED = 150;
 
-export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
+// Update the props interface
+interface SnakeGameProps {
+  onClose: () => void;
+  isMinimized: boolean;
+  onMinimize: (minimized: boolean) => void;
+}
+
+export const SnakeGame: React.FC<SnakeGameProps> = ({ 
+  onClose, 
+  isMinimized, 
+  onMinimize 
+}) => {
   const [snake, setSnake] = useState(INITIAL_SNAKE);
   const [direction, setDirection] = useState(INITIAL_DIRECTION);
   const [food, setFood] = useState({ x: 15, y: 10 });
@@ -17,13 +28,13 @@ export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
   const [gameLoop, setGameLoop] = useState<NodeJS.Timeout | null>(null);
   const [gameStarted, setGameStarted] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false);
   const [nextDirection, setNextDirection] = useState(INITIAL_DIRECTION);
 
   const generateFood = useCallback(() => {
+    const { gridSize } = calculateGameDimensions();
     const newFood = {
-      x: Math.floor(Math.random() * MIN_GRID_SIZE),
-      y: Math.floor(Math.random() * MIN_GRID_SIZE),
+      x: Math.floor(Math.random() * gridSize),
+      y: Math.floor(Math.random() * gridSize),
     };
     setFood(newFood);
   }, []);
@@ -46,19 +57,18 @@ export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
         y: prevSnake[0].y + nextDirection.y,
       };
 
-      // Check wall collisions
+      const { gridSize } = calculateGameDimensions();
+      
       if (
         head.x < 0 ||
-        head.x >= MIN_GRID_SIZE ||
+        head.x >= gridSize ||
         head.y < 0 ||
-        head.y >= MIN_GRID_SIZE
+        head.y >= gridSize
       ) {
         setGameOver(true);
         return prevSnake;
       }
 
-      // For body collisions, check against all segments except the tail
-      // (since the tail will move out of the way)
       const willEatFood = head.x === food.x && head.y === food.y;
       const snakeWithoutTail = willEatFood ? prevSnake : prevSnake.slice(0, -1);
       
@@ -194,20 +204,9 @@ export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
     }
   }, [onClose]);
 
+  // Update the minimized view to use props
   if (isMinimized) {
-    return (
-      <div 
-        onClick={() => setIsMinimized(false)}
-        className="fixed bottom-4 right-4 w-48 h-8 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-black shadow-lg cursor-pointer hover:scale-105 transition-all duration-200 z-50"
-      >
-        <div className="h-full flex items-center space-x-2 px-3">
-          <div className="w-2 h-2 rounded-full bg-red-500" />
-          <div className="w-2 h-2 rounded-full bg-yellow-500" />
-          <div className="w-2 h-2 rounded-full bg-green-500" />
-          <span className="ml-2 text-xs text-gray-600 dark:text-gray-400 font-geist">Snake Game</span>
-        </div>
-      </div>
-    );
+    return null; // Parent will handle the minimized view
   }
 
   return (
@@ -215,59 +214,56 @@ export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
       className="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
       onClick={handleClickOutside}
     >
-      <div className={`flex flex-col bg-white dark:bg-black rounded-lg border border-gray-200 dark:border-gray-800 overflow-hidden transition-all duration-300 ${
-        isFullscreen ? 'fixed inset-0 rounded-none' : 'max-h-[90vh] max-w-[90vw]'
-      }`}>
-        {/* Window Controls */}
-        <div className="flex items-center space-x-2 border-b border-gray-200 dark:border-gray-800 p-3">
-          <div 
-            className="w-3 h-3 rounded-full bg-red-500 cursor-pointer flex items-center justify-center group"
-            onClick={onClose}
-          >
-            <X size={8} className="text-red-800 opacity-0 group-hover:opacity-100" />
+      <div className={`
+        ${isFullscreen ? 'fixed inset-4' : `w-[${gridSize * cellSize + 4}px]`}
+        flex flex-col
+        border border-gray-800 dark:border-gray-200
+        [background-color:var(--color-background-light)]
+        dark:[background-color:var(--color-background-dark)]
+      `}>
+        {/* Title Bar */}
+        <div className="flex items-center justify-between border-b border-gray-800 dark:border-gray-200 p-2">
+          <div className="flex items-center gap-2 font-mono text-sm">
+            <Gamepad className="w-4 h-4 text-gray-500" />
+            <span>Snake Game</span>
           </div>
-          <div 
-            className="w-3 h-3 rounded-full bg-yellow-500 cursor-pointer flex items-center justify-center group"
-            onClick={() => setIsMinimized(true)}
-          >
-            <Minus size={8} className="text-yellow-800 opacity-0 group-hover:opacity-100" />
+          <div className="flex gap-2 font-mono">
+            <button 
+              onClick={() => onMinimize(true)}
+              className="px-2 hover:bg-gray-100 dark:hover:bg-gray-900"
+            >
+              -
+            </button>
+            <button 
+              onClick={() => setIsFullscreen(!isFullscreen)}
+              className="px-2 hover:bg-gray-100 dark:hover:bg-gray-900"
+            >
+              {isFullscreen ? '□' : '⊡'}
+            </button>
+            <button 
+              onClick={onClose}
+              className="px-2 hover:bg-gray-100 dark:hover:bg-gray-900"
+            >
+              ×
+            </button>
           </div>
-          <div 
-            className="w-3 h-3 rounded-full bg-green-500 cursor-pointer flex items-center justify-center group"
-            onClick={() => setIsFullscreen(!isFullscreen)}
-          >
-            {isFullscreen ? (
-              <Minimize2 
-                size={8} 
-                className="text-green-800 opacity-0 group-hover:opacity-100 transform -rotate-90" 
-              />
-            ) : (
-              <Maximize2 
-                size={8} 
-                className="text-green-800 opacity-0 group-hover:opacity-100 transform -rotate-90" 
-              />
-            )}
-          </div>
-          <a className="text-sm cursor-pointer hover:text-gray-800 dark:hover:text-gray-300 ml-2">
-            Snake Game
-          </a>
         </div>
 
         {/* Game Board and Score Container */}
-        <div className="flex-1 flex flex-col items-center justify-center">
+        <div className="flex-1 flex flex-col items-center justify-center p-4">
           <div className="flex flex-col">
             <div 
-              className={`relative overflow-hidden ${isFullscreen ? 'border border-gray-200 dark:border-gray-800' : ''}`}
+              className="relative border border-gray-800 dark:border-gray-200"
               style={{
                 width: gridSize * cellSize,
                 height: gridSize * cellSize,
               }}
             >
               {(!gameStarted || gameOver) && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center font-mono">
+                <div className="absolute inset-0 flex flex-col items-center justify-center font-mono z-10">
                   {!gameStarted && !gameOver && (
                     <>
-                      <div className="text-gray-700 dark:text-gray-300 text-lg">
+                      <div className="text-gray-800 dark:text-gray-200">
                         Press P to play
                       </div>
                       <div className="text-gray-600 dark:text-gray-400 mt-2">
@@ -277,7 +273,7 @@ export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
                   )}
                   {gameOver && (
                     <>
-                      <div className="text-gray-700 dark:text-gray-300 text-lg">
+                      <div className="text-gray-800 dark:text-gray-200">
                         GAME OVER
                       </div>
                       <div className="text-gray-600 dark:text-gray-400 mt-2">
@@ -293,7 +289,7 @@ export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
                   {snake.map((segment, i) => (
                     <div
                       key={i}
-                      className="absolute bg-[var(--color-primary)]"
+                      className="absolute bg-gray-800 dark:bg-gray-200"
                       style={{
                         width: cellSize - 1,
                         height: cellSize - 1,
@@ -303,21 +299,22 @@ export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
                     />
                   ))}
                   <div
-                    className="absolute bg-black dark:bg-white"
+                    className="absolute"
                     style={{
                       width: cellSize - 1,
                       height: cellSize - 1,
                       left: food.x * cellSize,
                       top: food.y * cellSize,
+                      backgroundColor: 'var(--color-primary)'
                     }}
                   />
                 </>
               )}
             </div>
             
-            {/* Score - directly under game board */}
-            <div className={`h-10 p-3 flex items-center font-mono text-sm text-gray-700 dark:text-gray-300 ${!isFullscreen ? 'border-t border-gray-200 dark:border-gray-800' : ''}`}>
-              <span className="font-bold">Score:</span>{score}
+            {/* Score */}
+            <div className="mt-2 font-mono text-sm text-gray-800 dark:text-gray-200">
+              Score: {score}
             </div>
           </div>
         </div>
