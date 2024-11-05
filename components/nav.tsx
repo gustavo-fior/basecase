@@ -26,7 +26,7 @@ export default function Navigation() {
         case "t":
           window.open("https://x.com/alanaagoyal", "_blank");
           break;
-        case "g":
+        case "c":
           setShowGit(true);
           break;
         case "s":
@@ -70,7 +70,7 @@ export default function Navigation() {
                 onClick={() => setShowGit(true)}
                 className="hover:text-[var(--color-primary)]"
               >
-                [G] GitHub
+                [C] Commits
               </button>
               <button
                 onClick={() => setShowSnake(true)}

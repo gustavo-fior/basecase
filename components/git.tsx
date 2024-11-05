@@ -170,7 +170,7 @@ export const GitHistory: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
               <div className="w-3 h-3 rounded-full bg-green-500" />
             </div>
             <div className="flex items-center gap-1">
-              <span className="text-sm">Git Activity</span>
+              <span className="text-sm">Commit History</span>
               <span className="h-4"></span>
               <div className="w-2 h-2 rounded-full bg-gray-400 dark:bg-gray-500" />
             </div>
@@ -218,7 +218,7 @@ export const GitHistory: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
           <div className="w-2 h-2 rounded-full bg-yellow-500" />
           <div className="w-2 h-2 rounded-full bg-green-500" />
           <span className="ml-2 text-xs text-gray-600 dark:text-gray-400 font-geist">
-            Git Activity
+            Commit History
           </span>
         </div>
       </div>
@@ -278,7 +278,7 @@ export const GitHistory: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
                 rel="noopener noreferrer"
                 className="text-sm cursor-pointer hover:text-gray-800 dark:hover:text-gray-300 mr-1"
               >
-                Git Activity
+                Commit History
               </a>
               <span className="hidden sm:inline text-sm text-gray-500 dark:text-gray-400 mr-1">
                 (Updated{" "}
@@ -379,7 +379,7 @@ export const GitHistory: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
               rel="noopener noreferrer"
               className="text-sm cursor-pointer hover:text-gray-800 dark:hover:text-gray-300 mr-1"
             >
-              Git Activity
+              Commit History
             </a>
             <span className="hidden sm:inline text-sm text-gray-500 dark:text-gray-400 mr-1">
               (Updated{" "}
