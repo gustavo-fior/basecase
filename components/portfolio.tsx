@@ -171,7 +171,7 @@ export const Portfolio = () => {
                 alt={client.title}
                 className="h-10 group-hover:opacity-0 transition-opacity dark:invert hidden md:block"
               />
-              <span className="text-sm font-bold tracking-wide font-geist md:hidden">
+              <span className="text-xs font-bold tracking-wide font-geist md:hidden text-center">
                 {client.title}
               </span>
               <div className="absolute inset-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-center hidden md:flex">
