@@ -5,10 +5,13 @@ import { ModeToggle } from "@/components/theme-toggle";
 import { SnakeGame } from "./snake";
 import { ColorThemeSwitcher } from "./color-theme-switcher";
 import { GitHistory } from "./git";
+import { Gamepad, GitCommit } from "lucide-react";
 
 export default function Navigation() {
   const [showSnake, setShowSnake] = useState(false);
   const [showGit, setShowGit] = useState(false);
+  const [minimizedSnake, setMinimizedSnake] = useState(false);
+  const [minimizedGit, setMinimizedGit] = useState(false);
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -91,8 +94,47 @@ export default function Navigation() {
         </div>
       </nav>
 
-      {showSnake && <SnakeGame onClose={() => setShowSnake(false)} />}
-      {showGit && <GitHistory onClose={() => setShowGit(false)} />}
+      {showSnake && (
+        <SnakeGame 
+          onClose={() => setShowSnake(false)} 
+          isMinimized={minimizedSnake}
+          onMinimize={setMinimizedSnake}
+        />
+      )}
+      {showGit && (
+        <GitHistory 
+          onClose={() => setShowGit(false)} 
+          isMinimized={minimizedGit}
+          onMinimize={setMinimizedGit}
+        />
+      )}
+
+      {(minimizedSnake || minimizedGit) && (
+        <div className="fixed bottom-4 right-4 flex gap-2 z-50">
+          {minimizedSnake && showSnake && (
+            <div 
+              className="cursor-pointer"
+              onClick={() => setMinimizedSnake(false)}
+            >
+              <div className="flex items-center gap-2 border border-gray-800 shadow dark:border-gray-200 py-2 px-4 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]">
+                <Gamepad className="w-4 h-4 text-gray-500" />
+                <span className="font-mono text-sm">Snake Game</span>
+              </div>
+            </div>
+          )}
+          {minimizedGit && showGit && (
+            <div 
+              className="cursor-pointer"
+              onClick={() => setMinimizedGit(false)}
+            >
+              <div className="flex items-center gap-2 border border-gray-800 shadow dark:border-gray-200 py-2 px-4 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]">
+                <GitCommit className="w-4 h-4 text-gray-500" />
+                <span className="font-mono text-sm">Git History</span>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </>
   );
 }

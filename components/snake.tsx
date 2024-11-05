@@ -8,7 +8,18 @@ const INITIAL_SNAKE = [{ x: 15, y: 15 }];
 const INITIAL_DIRECTION = { x: 1, y: 0 };
 const GAME_SPEED = 150;
 
-export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
+// Update the props interface
+interface SnakeGameProps {
+  onClose: () => void;
+  isMinimized: boolean;
+  onMinimize: (minimized: boolean) => void;
+}
+
+export const SnakeGame: React.FC<SnakeGameProps> = ({ 
+  onClose, 
+  isMinimized, 
+  onMinimize 
+}) => {
   const [snake, setSnake] = useState(INITIAL_SNAKE);
   const [direction, setDirection] = useState(INITIAL_DIRECTION);
   const [food, setFood] = useState({ x: 15, y: 10 });
@@ -18,7 +29,6 @@ export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
   const [gameStarted, setGameStarted] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [nextDirection, setNextDirection] = useState(INITIAL_DIRECTION);
-  const [isMinimized, setIsMinimized] = useState(false);
 
   const generateFood = useCallback(() => {
     const { gridSize } = calculateGameDimensions();
@@ -194,18 +204,9 @@ export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
     }
   }, [onClose]);
 
+  // Update the minimized view to use props
   if (isMinimized) {
-    return (
-      <div 
-        className="fixed bottom-4 right-4 cursor-pointer z-50"
-        onClick={() => setIsMinimized(false)}
-      >
-        <div className="flex items-center gap-2 border border-gray-800 shadow dark:border-gray-200 py-2 px-4 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]">
-          <Gamepad className="w-4 h-4 text-gray-500" />
-          <span className="font-mono text-sm">Snake Game</span>
-        </div>
-      </div>
-    );
+    return null; // Parent will handle the minimized view
   }
 
   return (
@@ -228,7 +229,7 @@ export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
           </div>
           <div className="flex gap-2 font-mono">
             <button 
-              onClick={() => setIsMinimized(true)}
+              onClick={() => onMinimize(true)}
               className="px-2 hover:bg-gray-100 dark:hover:bg-gray-900"
             >
               -

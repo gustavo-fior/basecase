@@ -22,7 +22,17 @@ interface GitHubCommit {
   };
 }
 
-export const GitHistory: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
+interface GitHistoryProps {
+  onClose?: () => void;
+  isMinimized: boolean;
+  onMinimize: (minimized: boolean) => void;
+}
+
+export const GitHistory: React.FC<GitHistoryProps> = ({ 
+  onClose, 
+  isMinimized, 
+  onMinimize 
+}) => {
   const [commits, setCommits] = useState<Commit[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -30,7 +40,6 @@ export const GitHistory: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
   const [isBlinking, setIsBlinking] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(new Date());
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false);
 
   useEffect(() => {
     const fetchCommits = async () => {
@@ -172,17 +181,7 @@ export const GitHistory: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
   }, [onClose]);
 
   if (isMinimized) {
-    return (
-      <div
-        className="fixed bottom-4 right-4 cursor-pointer z-50"
-        onClick={() => setIsMinimized(false)}
-      >
-        <div className="flex items-center gap-2 border border-gray-800 shadow dark:border-gray-200 py-2 px-4 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]">
-          <GitCommit className="w-4 h-4 text-gray-500" />
-          <span className="font-mono text-sm">Git History</span>
-        </div>
-      </div>
-    );
+    return null;
   }
 
   if (loading) {
@@ -202,19 +201,15 @@ export const GitHistory: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
         >
           <div className="flex items-center justify-between border-b border-gray-800 dark:border-gray-200 p-2">
             <div className="flex items-center gap-2 font-mono text-sm">
-              <GitCommit
-                className={`w-4 h-4 ${
-                  isBlinking ? "text-green-500" : "text-gray-500"
-                }`}
-              />
-              <span>Git Commit History</span>
+              <GitCommit className="w-4 h-4 text-gray-500" />
+              <span className="font-mono text-sm">Git History</span>
               <span className="text-xs text-gray-500">
                 (Last updated: {lastUpdated.toLocaleTimeString()})
               </span>
             </div>
             <div className="flex gap-2 font-mono">
               <button
-                onClick={() => setIsMinimized(true)}
+                onClick={() => onMinimize(true)}
                 className="px-2 hover:bg-gray-100 dark:hover:bg-gray-900"
               >
                 -
@@ -297,7 +292,7 @@ export const GitHistory: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
           </div>
           <div className="flex gap-2 font-mono">
             <button
-              onClick={() => setIsMinimized(true)}
+              onClick={() => onMinimize(true)}
               className="px-2 hover:bg-gray-100 dark:hover:bg-gray-900"
             >
               -
