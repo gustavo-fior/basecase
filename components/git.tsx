@@ -63,7 +63,7 @@ export const GitHistory: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
           repos.map(async (repo: GitHubRepo) => {
             try {
               const commitsResponse = await fetch(
-                `https://api.github.com/repos/${repo.full_name}/commits?per_page=10`,
+                `https://api.github.com/repos/${repo.full_name}/commits?per_page=25`,
                 {
                   headers: {
                     Authorization: `token ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`,
