@@ -514,10 +514,10 @@ export const Hero = () => {
           </span>
         </pre>
       </div>
-      <h1 className="text-4xl font-bold mb-4 text-[var(--color-primary)] md:text-black dark:md:text-white md:text-xl">
+      <h1 className="md:hidden text-2xl font-bold mb-4 text-[var(--color-primary)]">
         First check to future founders
       </h1>
-      <p className="text-xl">
+      <p className="text-base">
         Basecase writes the first check to builders who are still dreaming,
         tinkering, and exploring what they want to create.
       </p>

@@ -87,15 +87,15 @@ export const Quotes = () => {
   }, []);
 
   return (
-    <div className="py-5 sm:min-h-[150px] min-h-[350px]">
+    <div className="py-5 sm:min-h-[100px] min-h-[250px]">
       <div
         {...handlers}
-        className="border-l-4 border-[var(--color-primary)] pl-6 sm:h-[150px] h-[350px] flex flex-col justify-between"
+        className="border-l-4 border-[var(--color-primary)] pl-6 sm:h-[100px] h-[250px] flex flex-col justify-between"
         tabIndex={0}
         role="region"
         aria-label="Testimonial quotes"
       >
-        <p className="text-lg italic">
+        <p className="text-base italic">
           &ldquo;{quotes[currentIndex].text}&rdquo;
         </p>
         <p className="mt-4">
