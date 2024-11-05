@@ -45,50 +45,48 @@ export default function Navigation() {
         name="terminal-description"
         content="Use W/T/G/S keyboard shortcuts to navigate"
       />
-      <nav className="border-b border-gray-800">
-        <div className="max-w-6xl mx-auto px-4 py-4">
-          <div className="flex justify-between items-center">
-            <div className="hidden md:flex space-x-4">
-              <a
-                href="https://alanagoyal.com"
-                className="hover:text-[var(--color-primary)]"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                [W] Website
-              </a>
+      <nav className="w-full sticky top-0">
+        <div className="flex justify-between items-center px-4 py-4">
+          <div className="hidden md:flex space-x-4">
+            <a
+              href="https://alanagoyal.com"
+              className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded hover:text-[var(--color-primary)]"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              [W] Website
+            </a>
 
-              <a
-                href="https://x.com/alanaagoyal"
-                className="hover:text-[var(--color-primary)]"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                [T] Twitter
-              </a>
-              <button
-                onClick={() => setShowGit(true)}
-                className="hover:text-[var(--color-primary)]"
-              >
-                [C] Commits
-              </button>
-              <button
-                onClick={() => setShowSnake(true)}
-                className="hover:text-[var(--color-primary)]"
-              >
-                [S] Snake
-              </button>
-            </div>
-            <div className="flex items-center space-x-4">
-              <ColorThemeSwitcher />
-              <ModeToggle />
-              <a
-                href="mailto:hi@basecase.vc?subject=hello!"
-                className="px-4 py-2 bg-[var(--color-primary)] text-white rounded hover:bg-[var(--color-secondary)] inline-block text-base md:text-base text-sm"
-              >
-                Talk to a developer
-              </a>
-            </div>
+            <a
+              href="https://x.com/alanaagoyal"
+              className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded hover:text-[var(--color-primary)]"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              [T] Twitter
+            </a>
+            <button
+              onClick={() => setShowGit(true)}
+              className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded hover:text-[var(--color-primary)]"
+            >
+              [C] Commits
+            </button>
+            <button
+              onClick={() => setShowSnake(true)}
+              className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded hover:text-[var(--color-primary)]"
+            >
+              [S] Snake
+            </button>
+          </div>
+          <div className="flex items-center space-x-4">
+            <ColorThemeSwitcher />
+            <ModeToggle />
+            <a
+              href="mailto:hi@basecase.vc?subject=hello!"
+              className="px-4 py-2 bg-[var(--color-primary)] text-white rounded hover:bg-[var(--color-secondary)] inline-block text-base md:text-base text-sm"
+            >
+              Talk to a developer
+            </a>
           </div>
         </div>
       </nav>

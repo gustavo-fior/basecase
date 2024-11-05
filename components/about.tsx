@@ -66,7 +66,7 @@ const DisintegratingText = ({
 
 export const About = () => {
   return (
-    <div className="max-w-6xl py-5">
+    <div className="py-5">
       <div className="md:hidden">
         <h1 className="text-2xl font-bold mb-4 text-[var(--color-primary)]">
           No decks, no pitch meetings
