@@ -199,7 +199,7 @@ export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
       onClick={handleClickOutside}
     >
       <div className={`
-        ${isFullscreen ? 'fixed inset-4' : 'w-[800px] max-h-[90vh]'}
+        ${isFullscreen ? 'fixed inset-4' : `w-[${gridSize * cellSize + 4}px]`}
         flex flex-col
         border border-gray-800 dark:border-gray-200
         [background-color:var(--color-background-light)]
@@ -238,7 +238,7 @@ export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
               }}
             >
               {(!gameStarted || gameOver) && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center font-mono">
+                <div className="absolute inset-0 flex flex-col items-center justify-center font-mono z-10">
                   {!gameStarted && !gameOver && (
                     <>
                       <div className="text-gray-800 dark:text-gray-200">
