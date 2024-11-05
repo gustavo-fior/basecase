@@ -316,8 +316,8 @@ export const GitHistory: React.FC<GitHistoryProps> = ({
         <div className="flex-1 overflow-auto p-4">
           {commits.map((commit) => (
             <div key={commit.id} className="mb-4 font-mono text-xs">
-              <div className="flex items-baseline gap-4">
-                <span className="text-pink-500">{commit.repo}</span>
+              <div className="flex items-baseline gap-2">
+                <span className="font-semibold text-[var(--color-primary)]">{commit.repo}</span>
                 <span className="text-gray-500">
                   {commit.timestamp.toLocaleString()}
                 </span>
