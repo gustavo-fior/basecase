@@ -105,13 +105,6 @@ export const Portfolio = () => {
       url: "https://pyroscope.io/",
     },
     {
-      title: "Replo",
-      icon: "/portfolio/replo.png",
-      description:
-        "Replo is the fastest way to modify, customize, and build on every part of your Shopify store pages, down to the pixel.",
-      url: "https://www.replo.app/",
-    },
-    {
       title: "Resend",
       icon: "/portfolio/resend.png",
       description:
@@ -124,6 +117,13 @@ export const Portfolio = () => {
       description:
         "SF Compute runs affordable pre-training clusters for startups, grad students, and research labs.",
       url: "https://sfcompute.com/",
+    },
+    {
+      title: "Supabase",
+      icon: "/portfolio/supabase.png",
+      description:
+        "Supabase is an open source Firebase alternative. Start your project with a Postgres database, authentication, instant APIs, edge functions, realtime subscriptions, and storage.",
+      url: "https://supabase.com/",
     },
     {
       title: "Vercel",

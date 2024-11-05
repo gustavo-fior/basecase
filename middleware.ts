@@ -40,16 +40,17 @@ PORTFOLIO
 * Astral - Python developer tools (astral.sh)
 * Baseten - ML infrastructure (baseten.co)
 * Braintrust - Enterprise AI stack (braintrust.dev)
-* Browserbase - Headless browser platform (browserbase.com)
-* Codeium - AI code acceleration (codeium.com)
+* Browserbase - Headless browser infrastructure (browserbase.com)
 * Default - Inbound lead platform (default.com)
-* Diagram - [Acquired by Figma] Design tools
-* Doss - Operations platform (doss.com)
-* Graphite - Code review platform (graphite.dev)
-* Orb - Usage-based billing (withorb.com)
-* Pyroscope - [Acquired by Grafana] Profiling platform
-* Replo - Shopify customization (replo.app)
+* Diagram [Acquired by Figma] - Design tools
+* Doss - Next-gen ERP (doss.com)
+* Graphite - Developer productivity platform (graphite.dev)
+* Mainframe - Generative computing (mainfra.me)
+* Orb - Usage-based billing infrastructure (withorb.com)
+* Pyroscope [Acquired by Grafana] - Open source profiling platform
+* Replo - Tools for Shopify teams (replo.app)
 * Resend - Email API (resend.com)
+* SF Compute - Affordable pre-training clusters (sfcompute.com)
 * Supabase - Open source Firebase alternative (supabase.com)
 * Vercel - Frontend cloud (vercel.com)
 
