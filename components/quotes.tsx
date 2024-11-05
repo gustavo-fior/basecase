@@ -87,10 +87,10 @@ export const Quotes = () => {
   }, []);
 
   return (
-    <div className="py-5 sm:min-h-[150px] min-h-[300px]">
+    <div className="py-5 sm:min-h-[150px] min-h-[325px]">
       <div
         {...handlers}
-        className="border-l-4 border-[var(--color-primary)] pl-6 sm:h-[150px] h-[300px] flex flex-col justify-between"
+        className="border-l-4 border-[var(--color-primary)] pl-6 sm:h-[150px] h-[325px] flex flex-col justify-between"
         tabIndex={0}
         role="region"
         aria-label="Testimonial quotes"
