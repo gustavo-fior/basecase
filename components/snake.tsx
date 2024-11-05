@@ -18,6 +18,7 @@ export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
   const [gameStarted, setGameStarted] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [nextDirection, setNextDirection] = useState(INITIAL_DIRECTION);
+  const [isMinimized, setIsMinimized] = useState(false);
 
   const generateFood = useCallback(() => {
     const { gridSize } = calculateGameDimensions();
@@ -193,6 +194,20 @@ export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
     }
   }, [onClose]);
 
+  if (isMinimized) {
+    return (
+      <div 
+        className="fixed bottom-4 right-4 cursor-pointer z-50"
+        onClick={() => setIsMinimized(false)}
+      >
+        <div className="flex items-center gap-2 border border-gray-800 shadow dark:border-gray-200 py-2 px-4 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]">
+          <Gamepad className="w-4 h-4 text-gray-500" />
+          <span className="font-mono text-sm">Snake Game</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div 
       className="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
@@ -212,6 +227,12 @@ export const SnakeGame = ({ onClose }: { onClose: () => void }) => {
             <span>Snake Game</span>
           </div>
           <div className="flex gap-2 font-mono">
+            <button 
+              onClick={() => setIsMinimized(true)}
+              className="px-2 hover:bg-gray-100 dark:hover:bg-gray-900"
+            >
+              -
+            </button>
             <button 
               onClick={() => setIsFullscreen(!isFullscreen)}
               className="px-2 hover:bg-gray-100 dark:hover:bg-gray-900"

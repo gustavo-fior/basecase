@@ -30,6 +30,7 @@ export const GitHistory: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
   const [isBlinking, setIsBlinking] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(new Date());
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
 
   useEffect(() => {
     const fetchCommits = async () => {
@@ -170,6 +171,20 @@ export const GitHistory: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
     };
   }, [onClose]);
 
+  if (isMinimized) {
+    return (
+      <div
+        className="fixed bottom-4 right-4 cursor-pointer z-50"
+        onClick={() => setIsMinimized(false)}
+      >
+        <div className="flex items-center gap-2 border border-gray-800 shadow dark:border-gray-200 py-2 px-4 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]">
+          <GitCommit className="w-4 h-4 text-gray-500" />
+          <span className="font-mono text-sm">Git History</span>
+        </div>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div
@@ -199,8 +214,14 @@ export const GitHistory: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
             </div>
             <div className="flex gap-2 font-mono">
               <button
+                onClick={() => setIsMinimized(true)}
                 className="px-2 hover:bg-gray-100 dark:hover:bg-gray-900"
-                disabled
+              >
+                -
+              </button>
+              <button
+                onClick={() => setIsFullscreen(!isFullscreen)}
+                className="px-2 hover:bg-gray-100 dark:hover:bg-gray-900"
               >
                 {isFullscreen ? "□" : "⊡"}
               </button>
@@ -275,6 +296,12 @@ export const GitHistory: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
             </span>
           </div>
           <div className="flex gap-2 font-mono">
+            <button
+              onClick={() => setIsMinimized(true)}
+              className="px-2 hover:bg-gray-100 dark:hover:bg-gray-900"
+            >
+              -
+            </button>
             <button
               onClick={() => setIsFullscreen(!isFullscreen)}
               className="px-2 hover:bg-gray-100 dark:hover:bg-gray-900"
