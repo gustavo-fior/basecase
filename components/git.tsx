@@ -292,7 +292,7 @@ export const GitHistory: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
             </div>
             <div className="flex items-center flex-wrap">
               <a
-                href="https://github.com/alanagoyal"
+                href={`https://github.com/${process.env.NEXT_PUBLIC_GITHUB_USERNAME}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm cursor-pointer hover:text-gray-800 dark:hover:text-gray-300 mr-1"
@@ -393,7 +393,7 @@ export const GitHistory: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
           </div>
           <div className="flex items-center flex-wrap">
             <a
-              href="https://github.com/alanagoyal"
+              href={`https://github.com/${process.env.NEXT_PUBLIC_GITHUB_USERNAME}`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-sm cursor-pointer hover:text-gray-800 dark:hover:text-gray-300 mr-1"
