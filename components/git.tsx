@@ -154,6 +154,25 @@ export const GitHistory: React.FC<{ onClose?: () => void }> = ({ onClose }) => {
     }
   };
 
+  // Add escape key handler
+  useEffect(() => {
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        if (onClose) {
+          onClose();
+        } else {
+          setIsClosed(true);
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleEscapeKey);
+
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [onClose]);
+
   if (loading) {
     return (
       <div 
