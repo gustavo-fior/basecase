@@ -12,6 +12,16 @@ export default function Navigation() {
   const [showGit, setShowGit] = useState(false);
   const [minimizedSnake, setMinimizedSnake] = useState(false);
   const [minimizedGit, setMinimizedGit] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 0);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -53,7 +63,9 @@ export default function Navigation() {
           <div className="hidden md:flex space-x-4">
             <a
               href="https://alanagoyal.com"
-              className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded hover:text-[var(--color-primary)]"
+              className={`px-2 py-1 rounded hover:text-[var(--color-primary)] bg-gray-100 dark:bg-gray-800 ${
+                isScrolled ? 'backdrop-blur-sm bg-gray-100/30 dark:bg-gray-800/30' : ''
+              }`}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -62,7 +74,9 @@ export default function Navigation() {
 
             <a
               href="https://x.com/alanaagoyal"
-              className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded hover:text-[var(--color-primary)]"
+              className={`px-2 py-1 rounded hover:text-[var(--color-primary)] bg-gray-100 dark:bg-gray-800 ${
+                isScrolled ? 'backdrop-blur-sm bg-gray-100/30 dark:bg-gray-800/30' : ''
+              }`}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -70,23 +84,29 @@ export default function Navigation() {
             </a>
             <button
               onClick={() => setShowGit(true)}
-              className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded hover:text-[var(--color-primary)]"
+              className={`px-2 py-1 rounded hover:text-[var(--color-primary)] bg-gray-100 dark:bg-gray-800 ${
+                isScrolled ? 'backdrop-blur-sm bg-gray-100/30 dark:bg-gray-800/30' : ''
+              }`}
             >
               [C] Commits
             </button>
             <button
               onClick={() => setShowSnake(true)}
-              className="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded hover:text-[var(--color-primary)]"
+              className={`px-2 py-1 rounded hover:text-[var(--color-primary)] bg-gray-100 dark:bg-gray-800 ${
+                isScrolled ? 'backdrop-blur-sm bg-gray-100/30 dark:bg-gray-800/30' : ''
+              }`}
             >
               [S] Snake
             </button>
           </div>
           <div className="flex items-center space-x-4">
-            <ColorThemeSwitcher />
-            <ModeToggle />
+            <ColorThemeSwitcher isScrolled={isScrolled} />
+            <ModeToggle isScrolled={isScrolled} />
             <a
               href="mailto:hi@basecase.vc?subject=hello!"
-              className="px-4 py-2 bg-[var(--color-primary)] text-white rounded hover:bg-[var(--color-secondary)] inline-block text-base md:text-base text-sm"
+              className={`px-4 py-2 bg-[var(--color-primary)] text-white rounded hover:bg-[var(--color-secondary)] inline-block text-base md:text-base text-sm ${
+                isScrolled ? 'backdrop-blur-sm bg-[var(--color-primary)]/30' : ''
+              }`}
             >
               Talk to a developer
             </a>

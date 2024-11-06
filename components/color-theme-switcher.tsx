@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-export function ColorThemeSwitcher() {
+export function ColorThemeSwitcher({ isScrolled }: { isScrolled: boolean }) {
   const setThemeColor = useCallback((color: ThemeColor) => {
     const root = document.documentElement
     const colors = themeColors[color]
@@ -25,7 +25,9 @@ export function ColorThemeSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="bg-gray-100 dark:bg-gray-800 px-4 py-2 border border-gray-700 hover:border-[var(--color-primary)] rounded relative">
+        <button className={`bg-gray-100 dark:bg-gray-800 px-4 py-2 border border-gray-700 hover:border-[var(--color-primary)] rounded relative ${
+          isScrolled ? 'backdrop-blur-sm bg-gray-100/30 dark:bg-gray-800/30' : ''
+        }`}>
           <div className="w-[1.2rem] h-[1.2rem] relative">
             <Palette className="h-[1.2rem] w-[1.2rem]" />
           </div>

@@ -5,7 +5,7 @@ import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 import { useEffect } from "react"
 
-export function ModeToggle() {
+export function ModeToggle({ isScrolled }: { isScrolled: boolean }) {
   const { setTheme, theme } = useTheme()
   const [mounted, setMounted] = React.useState(false)
 
@@ -21,7 +21,9 @@ export function ModeToggle() {
   return (
     <button
       onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-      className="bg-gray-100 dark:bg-gray-800 px-4 py-2 border border-gray-700 hover:border-[var(--color-primary)] rounded relative"
+      className={`bg-gray-100 dark:bg-gray-800 px-4 py-2 border border-gray-700 hover:border-[var(--color-primary)] rounded relative ${
+        isScrolled ? 'backdrop-blur-sm bg-gray-100/30 dark:bg-gray-800/30' : ''
+      }`}
     >
       <div className="w-[1.2rem] h-[1.2rem] relative">
         {theme === "dark" ? (
