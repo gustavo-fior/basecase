@@ -48,7 +48,7 @@ export default function Navigation() {
         name="terminal-description"
         content="Use W/T/G/S keyboard shortcuts to navigate"
       />
-      <nav className="w-full sticky top-0">
+      <nav className="w-full sticky top-0 z-50">
         <div className="flex justify-between items-center max-w-6xl mx-auto py-4 sm:py-6">
           <div className="hidden md:flex space-x-4">
             <a
