@@ -64,7 +64,7 @@ export const Hero = () => {
   };
 
   return (
-    <div className="max-w-3xl py-5">
+    <div className="max-w-3xl py-4 sm:py-0">
       <div className="font-mono hidden md:block">
         <pre className="whitespace-pre text-base flex items-center gap-2 mb-6">
           <code className="bg-gray-100 dark:bg-gray-800 rounded px-2 py-1">
