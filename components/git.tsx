@@ -200,7 +200,7 @@ export const GitHistory: React.FC<GitHistoryProps> = ({
       >
         <div
           className={`
-            ${isFullscreen ? "fixed inset-4" : "w-[750px] max-h-[60vh]"}
+            ${isFullscreen ? "fixed inset-4" : "w-[750px] h-[500px]"}
             [background-color:var(--color-background-light)]
             dark:[background-color:var(--color-background-dark)]
             flex flex-col
@@ -297,7 +297,7 @@ export const GitHistory: React.FC<GitHistoryProps> = ({
         <div
           ref={nodeRef}
           className={`
-            ${isFullscreen ? "fixed inset-4" : "w-[750px] max-h-[60vh]"}
+            ${isFullscreen ? "fixed inset-4" : "w-[750px] h-[500px]"}
             [background-color:var(--color-background-light)]
             dark:[background-color:var(--color-background-dark)]
             flex flex-col
