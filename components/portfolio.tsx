@@ -141,55 +141,56 @@ export const Portfolio = () => {
       <h2 className="text-lg mb-8 font-bold">
         Early partner to iconic companies
       </h2>
-      <div className="grid grid-cols-2 md:grid-cols-4 relative">
-        {portfolio.map((client, index) => {
-          const row = Math.floor(index / 4);
-          const col = index % 4;
-          const isFirstRow = row === 0;
-          const isFirstCol = col === 0;
-
-          return (
-            <a
-              href={client.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              key={index}
-              className="cursor-pointer group relative"
-              onMouseEnter={() => setHoveredIndex(index)}
-              onMouseLeave={() => setHoveredIndex(null)}
-            >
-              {isFirstRow && isFirstCol && <div className="absolute -top-4 -left-4 text-gray-800">+</div>}
-              {isFirstRow && <div className="absolute -top-4 -right-4 text-gray-800">+</div>}
-              {isFirstCol && <div className="absolute -bottom-4 -left-4 text-gray-800">+</div>}
-              <div className="absolute -bottom-4 -right-4 text-gray-800">+</div>
-
-              <div className="p-8 flex items-center justify-center">
-                <img
-                  src={client.icon}
-                  alt={client.title}
-                  className="h-10 group-hover:opacity-0 transition-opacity dark:invert hidden md:block"
-                />
-                <span className="text-xs font-bold tracking-wide font-geist md:hidden text-center">
-                  {client.title}
-                </span>
-                <div className="absolute inset-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-center hidden md:flex">
-                  {hoveredIndex === index ? (
-                    <ScrambleText text={client.title} />
-                  ) : (
-                    <span className="text-2xl font-bold tracking-wide font-geist">
-                      {client.title}
-                    </span>
-                  )}
-                  {typeof client.description === "object" && (
-                    <span className="text-[var(--color-primary)] text-xs mt-1 font-inter">
-                      {client.description.props.children[0].props.children}
-                    </span>
-                  )}
-                </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        {portfolio.map((client, index) => (
+          <a
+            href={client.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            key={index}
+            className="cursor-pointer group"
+            onMouseEnter={() => setHoveredIndex(index)}
+            onMouseLeave={() => setHoveredIndex(null)}
+          >
+            <div className="p-8 rounded relative flex items-center justify-center">
+              <div className="absolute top-0 left-0 text-gray-800 group-hover:text-[var(--color-primary)]">
+                +
               </div>
-            </a>
-          );
-        })}
+              <div className="absolute top-0 right-0 text-gray-800 group-hover:text-[var(--color-primary)]">
+                +
+              </div>
+              <div className="absolute bottom-0 left-0 text-gray-800 group-hover:text-[var(--color-primary)]">
+                +
+              </div>
+              <div className="absolute bottom-0 right-0 text-gray-800 group-hover:text-[var(--color-primary)]">
+                +
+              </div>
+
+              <img
+                src={client.icon}
+                alt={client.title}
+                className="h-10 group-hover:opacity-0 transition-opacity dark:invert hidden md:block"
+              />
+              <span className="text-xs font-bold tracking-wide font-geist md:hidden text-center">
+                {client.title}
+              </span>
+              <div className="absolute inset-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-center hidden md:flex">
+                {hoveredIndex === index ? (
+                  <ScrambleText text={client.title} />
+                ) : (
+                  <span className="text-2xl font-bold tracking-wide font-geist">
+                    {client.title}
+                  </span>
+                )}
+                {typeof client.description === "object" && (
+                  <span className="text-[var(--color-primary)] text-xs mt-1 font-inter">
+                    {client.description.props.children[0].props.children}
+                  </span>
+                )}
+              </div>
+            </div>
+          </a>
+        ))}
       </div>
     </div>
   );
