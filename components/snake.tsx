@@ -4,9 +4,7 @@ import { Gamepad } from "lucide-react";
 // Base size constants
 const BASE_CELL_SIZE = 15;
 const MIN_GRID_SIZE = 30;
-const INITIAL_SNAKE = [{ x: 15, y: 15 }];
-const INITIAL_DIRECTION = { x: 1, y: 0 };
-const GAME_SPEED = 150;
+const GAME_SPEED = 100; // milliseconds between each move (lower = faster)
 
 // Update the props interface
 interface SnakeGameProps {
@@ -15,68 +13,95 @@ interface SnakeGameProps {
   onMinimize: (minimized: boolean) => void;
 }
 
+// Add this near the top with other constants
+interface Position {
+  x: number;
+  y: number;
+}
+
 export const SnakeGame: React.FC<SnakeGameProps> = ({ 
   onClose, 
   isMinimized, 
   onMinimize 
 }) => {
-  const [snake, setSnake] = useState(INITIAL_SNAKE);
-  const [direction, setDirection] = useState(INITIAL_DIRECTION);
-  const [food, setFood] = useState({ x: 15, y: 10 });
+  // Fix: Move isFullscreen state before calculateGameDimensions
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  
+  const calculateGameDimensions = useCallback(() => {
+    if (isFullscreen) {
+      const maxWidth = window.innerWidth - 200;
+      const maxHeight = window.innerHeight - 200;
+      
+      const horizontalCells = Math.floor(maxWidth / BASE_CELL_SIZE);
+      const verticalCells = Math.floor(maxHeight / BASE_CELL_SIZE);
+      
+      return {
+        gridSize: Math.max(Math.min(horizontalCells, verticalCells), MIN_GRID_SIZE),
+        cellSize: BASE_CELL_SIZE
+      };
+    }
+    return { gridSize: MIN_GRID_SIZE, cellSize: BASE_CELL_SIZE };
+  }, [isFullscreen]); // Fix: Add dependency
+
+  const { gridSize, cellSize } = calculateGameDimensions();
+
+  // Now we can use gridSize in our hooks
+  const [snake, setSnake] = useState<Position[]>([{ x: 15, y: 15 }]);
+  const [direction, setDirection] = useState<Position>({ x: 1, y: 0 });
+  const [food, setFood] = useState<Position>({ x: 15, y: 10 });
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [gameLoop, setGameLoop] = useState<NodeJS.Timeout | null>(null);
   const [gameStarted, setGameStarted] = useState(false);
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [nextDirection, setNextDirection] = useState(INITIAL_DIRECTION);
+  const [nextDirection, setNextDirection] = useState<Position>({ x: 1, y: 0 });
 
+  // Fix: Update generateFood to use current gridSize
   const generateFood = useCallback(() => {
     const { gridSize } = calculateGameDimensions();
-    const newFood = {
-      x: Math.floor(Math.random() * gridSize),
-      y: Math.floor(Math.random() * gridSize),
-    };
+    let newFood: Position;
+    do {
+      newFood = {
+        x: Math.floor(Math.random() * (gridSize - 1)),
+        y: Math.floor(Math.random() * (gridSize - 1)),
+      };
+    } while (snake.some(segment => segment.x === newFood.x && segment.y === newFood.y));
     setFood(newFood);
-  }, []);
+  }, [snake, calculateGameDimensions]);
 
+  // Fix: Update initial snake position based on gridSize
   const resetGame = useCallback(() => {
-    setSnake(INITIAL_SNAKE);
-    setDirection(INITIAL_DIRECTION);
-    setNextDirection(INITIAL_DIRECTION);
+    const startPos = Math.floor(gridSize / 3);
+    setSnake([{ x: startPos, y: startPos }]);
+    setDirection({ x: 1, y: 0 });
+    setNextDirection({ x: 1, y: 0 });
     setScore(0);
     setGameOver(false);
     generateFood();
-  }, [generateFood]);
+  }, [generateFood, gridSize]);
 
   const moveSnake = useCallback(() => {
     setDirection(nextDirection);
     
     setSnake((prevSnake) => {
-      const head = {
-        x: prevSnake[0].x + nextDirection.x,
-        y: prevSnake[0].y + nextDirection.y,
-      };
+      // Calculate new head position
+      const newX = prevSnake[0].x + nextDirection.x;
+      const newY = prevSnake[0].y + nextDirection.y;
 
-      const { gridSize } = calculateGameDimensions();
-      
-      if (
-        head.x < 0 ||
-        head.x >= gridSize ||
-        head.y < 0 ||
-        head.y >= gridSize
-      ) {
+      // Check for wall collisions
+      if (newX < 0 || newX >= gridSize || newY < 0 || newY >= gridSize) {
+        setGameOver(true);
+        return prevSnake;
+      }
+
+      const head = { x: newX, y: newY };
+
+      // Check for self collision
+      if (prevSnake.some(segment => segment.x === head.x && segment.y === head.y)) {
         setGameOver(true);
         return prevSnake;
       }
 
       const willEatFood = head.x === food.x && head.y === food.y;
-      const snakeWithoutTail = willEatFood ? prevSnake : prevSnake.slice(0, -1);
-      
-      if (snakeWithoutTail.some(segment => segment.x === head.x && segment.y === head.y)) {
-        setGameOver(true);
-        return prevSnake;
-      }
-
       const newSnake = [head, ...prevSnake];
       if (!willEatFood) {
         newSnake.pop();
@@ -87,7 +112,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
 
       return newSnake;
     });
-  }, [nextDirection, food, generateFood]);
+  }, [nextDirection, food, generateFood, gridSize]);
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -99,9 +124,9 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
         return;
       }
 
-      if (!gameStarted && key === "p") {
+      if (key === "p") {
         e.preventDefault();
-        setGameStarted(true);
+        setGameStarted(prev => !prev); // Toggle pause
         return;
       }
 
@@ -145,30 +170,6 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
       clearInterval(gameLoop);
     }
   }, [gameOver, gameStarted, moveSnake]);
-
-  // Calculate grid size based on window size and fullscreen state
-  const calculateGameDimensions = () => {
-    if (isFullscreen) {
-      // Calculate the available space with padding
-      const maxWidth = window.innerWidth - 200; // Increased padding
-      const maxHeight = window.innerHeight - 200; // Increased padding
-      
-      // Calculate how many cells we can fit while maintaining square cells
-      const horizontalCells = Math.floor(maxWidth / BASE_CELL_SIZE);
-      const verticalCells = Math.floor(maxHeight / BASE_CELL_SIZE);
-      
-      // Use the smaller dimension to ensure a square grid
-      const gridSize = Math.max(
-        Math.min(horizontalCells, verticalCells),
-        MIN_GRID_SIZE // Ensure we don't go smaller than minimum grid size
-      );
-
-      return { gridSize, cellSize: BASE_CELL_SIZE };
-    }
-    return { gridSize: MIN_GRID_SIZE, cellSize: BASE_CELL_SIZE };
-  };
-
-  const { gridSize, cellSize } = calculateGameDimensions();
 
   // Recalculate on window resize
   useEffect(() => {
@@ -289,7 +290,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
                   {snake.map((segment, i) => (
                     <div
                       key={i}
-                      className="absolute bg-gray-800 dark:bg-gray-200"
+                      className={`absolute bg-gray-800 dark:bg-gray-200 ${gameOver ? 'opacity-20' : ''}`}
                       style={{
                         width: cellSize - 1,
                         height: cellSize - 1,
@@ -299,7 +300,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
                     />
                   ))}
                   <div
-                    className="absolute"
+                    className={`absolute ${gameOver ? 'opacity-20' : ''}`}
                     style={{
                       width: cellSize - 1,
                       height: cellSize - 1,
