@@ -49,7 +49,7 @@ export default function Navigation() {
         content="Use W/T/G/S keyboard shortcuts to navigate"
       />
       <nav className="w-full sticky top-0">
-        <div className="flex justify-between items-center px-4 py-4 sm:px-6 sm:py-6">
+        <div className="flex justify-between items-center max-w-6xl mx-auto py-4 sm:py-6">
           <div className="hidden md:flex space-x-4">
             <a
               href="https://alanagoyal.com"
