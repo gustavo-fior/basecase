@@ -66,7 +66,7 @@ export const Hero = () => {
   return (
     <div className="max-w-3xl py-5">
       <div className="font-mono hidden md:block">
-        <pre className="whitespace-pre text-base flex items-center gap-2 mb-4">
+        <pre className="whitespace-pre text-base flex items-center gap-2 mb-6">
           <code className="bg-gray-100 dark:bg-gray-800 rounded px-2 py-1">
             curl https://www.basecase.sh
           </code>
@@ -108,7 +108,7 @@ export const Hero = () => {
             )}
           </button>
         </pre>
-        <pre className="font-mono whitespace-pre text-[var(--color-primary)] mb-6 flex">
+        <pre className="font-mono whitespace-pre text-[var(--color-primary)] mb-6 flex leading-[1] tracking-[0]">
           {/* Example for B */}
           <span className="flex flex-col">
             <span
