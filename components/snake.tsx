@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Gamepad } from "lucide-react";
+import Draggable from "react-draggable";
 
 // Base size constants
 const BASE_CELL_SIZE = 15;
@@ -19,25 +20,30 @@ interface Position {
   y: number;
 }
 
-export const SnakeGame: React.FC<SnakeGameProps> = ({ 
-  onClose, 
-  isMinimized, 
-  onMinimize 
+export const SnakeGame: React.FC<SnakeGameProps> = ({
+  onClose,
+  isMinimized,
+  onMinimize,
 }) => {
-  // Fix: Move isFullscreen state before calculateGameDimensions
+  // Move ALL hooks to the top, before any returns
   const [isFullscreen, setIsFullscreen] = useState(false);
-  
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const nodeRef = useRef(null);
+
   const calculateGameDimensions = useCallback(() => {
     if (isFullscreen) {
       const maxWidth = window.innerWidth - 200;
       const maxHeight = window.innerHeight - 200;
-      
+
       const horizontalCells = Math.floor(maxWidth / BASE_CELL_SIZE);
       const verticalCells = Math.floor(maxHeight / BASE_CELL_SIZE);
-      
+
       return {
-        gridSize: Math.max(Math.min(horizontalCells, verticalCells), MIN_GRID_SIZE),
-        cellSize: BASE_CELL_SIZE
+        gridSize: Math.max(
+          Math.min(horizontalCells, verticalCells),
+          MIN_GRID_SIZE
+        ),
+        cellSize: BASE_CELL_SIZE,
       };
     }
     return { gridSize: MIN_GRID_SIZE, cellSize: BASE_CELL_SIZE };
@@ -64,7 +70,11 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
         x: Math.floor(Math.random() * (gridSize - 1)),
         y: Math.floor(Math.random() * (gridSize - 1)),
       };
-    } while (snake.some(segment => segment.x === newFood.x && segment.y === newFood.y));
+    } while (
+      snake.some(
+        (segment) => segment.x === newFood.x && segment.y === newFood.y
+      )
+    );
     setFood(newFood);
   }, [snake, calculateGameDimensions]);
 
@@ -81,7 +91,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
 
   const moveSnake = useCallback(() => {
     setDirection(nextDirection);
-    
+
     setSnake((prevSnake) => {
       // Calculate new head position
       const newX = prevSnake[0].x + nextDirection.x;
@@ -96,7 +106,11 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
       const head = { x: newX, y: newY };
 
       // Check for self collision
-      if (prevSnake.some(segment => segment.x === head.x && segment.y === head.y)) {
+      if (
+        prevSnake.some(
+          (segment) => segment.x === head.x && segment.y === head.y
+        )
+      ) {
         setGameOver(true);
         return prevSnake;
       }
@@ -126,7 +140,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
 
       if (key === "p") {
         e.preventDefault();
-        setGameStarted(prev => !prev); // Toggle pause
+        setGameStarted((prev) => !prev); // Toggle pause
         return;
       }
 
@@ -162,32 +176,34 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
   }, [handleKeyDown]);
 
   useEffect(() => {
-    if (!gameOver && gameStarted) {
+    if (!gameOver && gameStarted && !isMinimized) {
       const interval = setInterval(moveSnake, GAME_SPEED);
       setGameLoop(interval);
       return () => clearInterval(interval);
     } else if (gameLoop) {
       clearInterval(gameLoop);
     }
-  }, [gameOver, gameStarted, moveSnake]);
+  }, [gameOver, gameStarted, moveSnake, isMinimized]);
 
   // Recalculate on window resize
   useEffect(() => {
     const handleResize = () => {
       const { gridSize } = calculateGameDimensions();
       // Update snake and food positions
-      setSnake(prev => prev.map(segment => ({
-        x: Math.min(segment.x, gridSize - 1),
-        y: Math.min(segment.y, gridSize - 1)
-      })));
-      setFood(prev => ({
+      setSnake((prev) =>
+        prev.map((segment) => ({
+          x: Math.min(segment.x, gridSize - 1),
+          y: Math.min(segment.y, gridSize - 1),
+        }))
+      );
+      setFood((prev) => ({
         x: Math.min(prev.x, gridSize - 1),
-        y: Math.min(prev.y, gridSize - 1)
+        y: Math.min(prev.y, gridSize - 1),
       }));
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, [isFullscreen]);
 
   useEffect(() => {
@@ -199,127 +215,151 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
   }, []);
 
   // Add new handler for click outside
-  const handleClickOutside = useCallback((e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  }, [onClose]);
+  const handleClickOutside = useCallback(
+    (e: React.MouseEvent) => {
+      if (e.target === e.currentTarget) {
+        onClose();
+      }
+    },
+    [onClose]
+  );
 
-  // Update the minimized view to use props
+  // Now we can safely have the conditional return
   if (isMinimized) {
-    return null; // Parent will handle the minimized view
+    return null;
   }
 
   return (
-    <div 
+    <div
       className="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
       onClick={handleClickOutside}
     >
-      <div className={`
-        ${isFullscreen ? 'fixed inset-4' : `w-[${gridSize * cellSize + 4}px]`}
-        flex flex-col
-        border border-gray-800 dark:border-gray-200
-        [background-color:var(--color-background-light)]
-        dark:[background-color:var(--color-background-dark)]
-      `}>
-        {/* Title Bar */}
-        <div className="flex items-center justify-between border-b border-gray-800 dark:border-gray-200 p-2">
-          <div className="flex items-center gap-2 font-mono text-sm">
-            <Gamepad className="w-4 h-4 text-gray-500" />
-            <span>Snake Game</span>
+      <Draggable
+        handle=".drag-handle"
+        bounds="parent"
+        nodeRef={nodeRef}
+        position={isFullscreen ? { x: 0, y: 0 } : position}
+        onDrag={(e, data) => {
+          if (!isFullscreen) {
+            setPosition({ x: data.x, y: data.y });
+          }
+        }}
+      >
+        <div
+          ref={nodeRef}
+          className={`
+            ${
+              isFullscreen
+                ? "fixed inset-4"
+                : `w-[${gridSize * cellSize + 4}px]`
+            }
+            flex flex-col
+            border border-gray-800 dark:border-gray-200
+            [background-color:var(--color-background-light)]
+            dark:[background-color:var(--color-background-dark)]
+          `}
+        >
+          {/* Title Bar */}
+          <div className="flex items-center justify-between border-b border-gray-800 dark:border-gray-200 p-2 drag-handle cursor-grab active:cursor-grabbing">
+            <div className="flex items-center gap-2 font-mono text-sm">
+              <Gamepad className="w-4 h-4 text-gray-500" />
+              <span>Snake game</span>
+            </div>
+            <div className="flex gap-2 font-mono">
+              <button
+                onClick={() => onMinimize(true)}
+                className="px-2 hover:bg-gray-100 dark:hover:bg-gray-900"
+              >
+                -
+              </button>
+              <button
+                onClick={() => setIsFullscreen(!isFullscreen)}
+                className="px-2 hover:bg-gray-100 dark:hover:bg-gray-900"
+              >
+                {isFullscreen ? "⊡" : "□"}
+              </button>
+              <button
+                onClick={onClose}
+                className="px-2 hover:bg-gray-100 dark:hover:bg-gray-900"
+              >
+                ×
+              </button>
+            </div>
           </div>
-          <div className="flex gap-2 font-mono">
-            <button 
-              onClick={() => onMinimize(true)}
-              className="px-2 hover:bg-gray-100 dark:hover:bg-gray-900"
-            >
-              -
-            </button>
-            <button 
-              onClick={() => setIsFullscreen(!isFullscreen)}
-              className="px-2 hover:bg-gray-100 dark:hover:bg-gray-900"
-            >
-              {isFullscreen ? '□' : '⊡'}
-            </button>
-            <button 
-              onClick={onClose}
-              className="px-2 hover:bg-gray-100 dark:hover:bg-gray-900"
-            >
-              ×
-            </button>
-          </div>
-        </div>
 
-        {/* Game Board and Score Container */}
-        <div className="flex-1 flex flex-col items-center justify-center p-4">
-          <div className="flex flex-col">
-            <div 
-              className="relative border border-gray-800 dark:border-gray-200"
-              style={{
-                width: gridSize * cellSize,
-                height: gridSize * cellSize,
-              }}
-            >
-              {(!gameStarted || gameOver) && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center font-mono z-10">
-                  {!gameStarted && !gameOver && (
-                    <>
-                      <div className="text-gray-800 dark:text-gray-200">
-                        Press P to play
-                      </div>
-                      <div className="text-gray-600 dark:text-gray-400 mt-2">
-                        Use arrow keys to move
-                      </div>
-                    </>
-                  )}
-                  {gameOver && (
-                    <>
-                      <div className="text-gray-800 dark:text-gray-200">
-                        GAME OVER
-                      </div>
-                      <div className="text-gray-600 dark:text-gray-400 mt-2">
-                        Press R to restart
-                      </div>
-                    </>
-                  )}
-                </div>
-              )}
-              
-              {gameStarted && (
-                <>
-                  {snake.map((segment, i) => (
+          {/* Game Board and Score Container */}
+          <div className="flex-1 flex flex-col items-center justify-center p-4">
+            <div className="flex flex-col">
+              <div
+                className="relative border border-gray-800 dark:border-gray-200"
+                style={{
+                  width: gridSize * cellSize,
+                  height: gridSize * cellSize,
+                }}
+              >
+                {(!gameStarted || gameOver) && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center font-mono z-10">
+                    {!gameStarted && !gameOver && (
+                      <>
+                        <div className="text-gray-800 dark:text-gray-200">
+                          Press P to play
+                        </div>
+                        <div className="text-gray-600 dark:text-gray-400 mt-2">
+                          Use arrow keys to move
+                        </div>
+                      </>
+                    )}
+                    {gameOver && (
+                      <>
+                        <div className="text-gray-800 dark:text-gray-200">
+                          GAME OVER
+                        </div>
+                        <div className="text-gray-600 dark:text-gray-400 mt-2">
+                          Press R to restart
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
+
+                {gameStarted && (
+                  <>
+                    {snake.map((segment, i) => (
+                      <div
+                        key={i}
+                        className={`absolute bg-gray-800 dark:bg-gray-200 ${
+                          gameOver ? "opacity-20" : ""
+                        }`}
+                        style={{
+                          width: cellSize - 1,
+                          height: cellSize - 1,
+                          left: segment.x * cellSize,
+                          top: segment.y * cellSize,
+                        }}
+                      />
+                    ))}
                     <div
-                      key={i}
-                      className={`absolute bg-gray-800 dark:bg-gray-200 ${gameOver ? 'opacity-20' : ''}`}
+                      className={`absolute ${gameOver ? "opacity-20" : ""}`}
                       style={{
                         width: cellSize - 1,
                         height: cellSize - 1,
-                        left: segment.x * cellSize,
-                        top: segment.y * cellSize,
+                        left: food.x * cellSize,
+                        top: food.y * cellSize,
+                        backgroundColor: "var(--color-primary)",
                       }}
                     />
-                  ))}
-                  <div
-                    className={`absolute ${gameOver ? 'opacity-20' : ''}`}
-                    style={{
-                      width: cellSize - 1,
-                      height: cellSize - 1,
-                      left: food.x * cellSize,
-                      top: food.y * cellSize,
-                      backgroundColor: 'var(--color-primary)'
-                    }}
-                  />
-                </>
-              )}
-            </div>
-            
-            {/* Score */}
-            <div className="mt-2 font-mono text-sm text-gray-800 dark:text-gray-200">
-              Score: {score}
+                  </>
+                )}
+              </div>
+
+              {/* Score */}
+              <div className="mt-2 font-mono text-sm text-gray-800 dark:text-gray-200">
+                Score: {score}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </Draggable>
     </div>
   );
 };

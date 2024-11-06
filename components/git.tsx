@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { GitCommit } from "lucide-react";
+import Draggable from "react-draggable";
 
 interface Commit {
   id: string;
@@ -28,10 +29,10 @@ interface GitHistoryProps {
   onMinimize: (minimized: boolean) => void;
 }
 
-export const GitHistory: React.FC<GitHistoryProps> = ({ 
-  onClose, 
-  isMinimized, 
-  onMinimize 
+export const GitHistory: React.FC<GitHistoryProps> = ({
+  onClose,
+  isMinimized,
+  onMinimize,
 }) => {
   const [commits, setCommits] = useState<Commit[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,6 +41,8 @@ export const GitHistory: React.FC<GitHistoryProps> = ({
   const [isBlinking, setIsBlinking] = useState(false);
   const [lastUpdated, setLastUpdated] = useState(new Date());
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const nodeRef = useRef(null);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const fetchCommits = async () => {
@@ -180,6 +183,11 @@ export const GitHistory: React.FC<GitHistoryProps> = ({
     };
   }, [onClose]);
 
+  const toggleFullscreen = () => {
+    setIsFullscreen(!isFullscreen);
+    setPosition({ x: 0, y: 0 }); // Reset position when toggling fullscreen
+  };
+
   if (isMinimized) {
     return null;
   }
@@ -202,7 +210,14 @@ export const GitHistory: React.FC<GitHistoryProps> = ({
           <div className="flex items-center justify-between border-b border-gray-800 dark:border-gray-200 p-2">
             <div className="flex items-center gap-2 font-mono text-sm">
               <GitCommit className="w-4 h-4 text-gray-500" />
-              <a href={`https://github.com/${process.env.NEXT_PUBLIC_GITHUB_USERNAME}`} target="_blank" rel="noopener noreferrer" className="hover:text-[var(--color-secondary)]">Git Commit History</a>
+              <a
+                href={`https://github.com/${process.env.NEXT_PUBLIC_GITHUB_USERNAME}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-[var(--color-secondary)]"
+              >
+                Git commit history
+              </a>
               <span className="text-xs text-gray-500">
                 (Last updated: {lastUpdated.toLocaleTimeString()})
               </span>
@@ -212,13 +227,13 @@ export const GitHistory: React.FC<GitHistoryProps> = ({
                 onClick={() => onMinimize(true)}
                 className="px-2 hover:bg-gray-100 dark:hover:bg-gray-900"
               >
-                -
+                ‒
               </button>
               <button
-                onClick={() => setIsFullscreen(!isFullscreen)}
+                onClick={toggleFullscreen}
                 className="px-2 hover:bg-gray-100 dark:hover:bg-gray-900"
               >
-                {isFullscreen ? "□" : "⊡"}
+                {isFullscreen ? "⊡" : "□"}
               </button>
               <button
                 onClick={handleClose}
@@ -268,67 +283,89 @@ export const GitHistory: React.FC<GitHistoryProps> = ({
       className="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
       onClick={handleClickOutside}
     >
-      <div
-        className={`
-        ${isFullscreen ? "fixed inset-4" : "w-[750px] max-h-[60vh]"}
-             [background-color:var(--color-background-light)]
-        dark:[background-color:var(--color-background-dark)]
-        flex flex-col
-        border border-gray-800 dark:border-gray-200
-      `}
+      <Draggable
+        handle=".drag-handle"
+        bounds="parent"
+        nodeRef={nodeRef}
+        position={isFullscreen ? { x: 0, y: 0 } : position}
+        onDrag={(e, data) => {
+          if (!isFullscreen) {
+            setPosition({ x: data.x, y: data.y });
+          }
+        }}
       >
-        {/* Title Bar */}
-        <div className="flex items-center justify-between border-b border-gray-800 dark:border-gray-200 p-2">
-          <div className="flex items-center gap-2 font-mono text-sm">
-            <GitCommit
-              className={`w-4 h-4 ${
-                isBlinking ? "text-green-500" : "text-gray-500"
-              }`}
-            />
-            <a href={`https://github.com/${process.env.NEXT_PUBLIC_GITHUB_USERNAME}`} target="_blank" rel="noopener noreferrer" className="hover:text-[var(--color-secondary)]">Git Commit History</a>
-            <span className="text-xs text-gray-500">
-              (Last updated: {lastUpdated.toLocaleTimeString()})
-            </span>
-          </div>
-          <div className="flex gap-2 font-mono">
-            <button
-              onClick={() => onMinimize(true)}
-              className="px-2 hover:bg-gray-100 dark:hover:bg-gray-900"
-            >
-              -
-            </button>
-            <button
-              onClick={() => setIsFullscreen(!isFullscreen)}
-              className="px-2 hover:bg-gray-100 dark:hover:bg-gray-900"
-            >
-              {isFullscreen ? "□" : "⊡"}
-            </button>
-            <button
-              onClick={handleClose}
-              className="px-2 hover:bg-gray-100 dark:hover:bg-gray-900"
-            >
-              ×
-            </button>
-          </div>
-        </div>
-
-        {/* Content Area */}
-        <div className="flex-1 overflow-auto p-4">
-          {commits.map((commit) => (
-            <div key={commit.id} className="mb-4 font-mono text-xs">
-              <div className="flex items-baseline gap-2">
-                <span className="font-semibold text-[var(--color-primary)]">{commit.repo}</span>
-                <span className="text-gray-500">
-                  {commit.timestamp.toLocaleString()}
-                </span>
-              </div>
-              <div className="mt-1 pl-4 border-l border-gray-300 dark:border-gray-700">
-                {commit.message}
-              </div>
+        <div
+          ref={nodeRef}
+          className={`
+            ${isFullscreen ? "fixed inset-4" : "w-[750px] max-h-[60vh]"}
+            [background-color:var(--color-background-light)]
+            dark:[background-color:var(--color-background-dark)]
+            flex flex-col
+            border border-gray-800 dark:border-gray-200
+          `}
+        >
+          {/* Title Bar */}
+          <div className="flex items-center justify-between border-b border-gray-800 dark:border-gray-200 p-2 drag-handle cursor-grab active:cursor-grabbing">
+            <div className="flex items-center gap-2 font-mono text-sm">
+              <GitCommit
+                className={`w-4 h-4 ${
+                  isBlinking ? "text-green-500" : "text-gray-500"
+                }`}
+              />
+              <a
+                href={`https://github.com/${process.env.NEXT_PUBLIC_GITHUB_USERNAME}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-[var(--color-secondary)]"
+              >
+                Git commit history
+              </a>
+              <span className="text-xs text-gray-500">
+                (Last updated: {lastUpdated.toLocaleTimeString()})
+              </span>
             </div>
-          ))}
+            <div className="flex gap-2 font-mono">
+              <button
+                onClick={() => onMinimize(true)}
+                className="px-2 hover:bg-gray-100 dark:hover:bg-gray-900"
+              >
+                ‒
+              </button>
+              <button
+                onClick={toggleFullscreen}
+                className="px-2 hover:bg-gray-100 dark:hover:bg-gray-900"
+              >
+                {isFullscreen ? "⊡" : "□"}
+              </button>
+              <button
+                onClick={handleClose}
+                className="px-2 hover:bg-gray-100 dark:hover:bg-gray-900"
+              >
+                ×
+              </button>
+            </div>
+          </div>
+
+          {/* Content Area */}
+          <div className="flex-1 overflow-auto p-4">
+            {commits.map((commit) => (
+              <div key={commit.id} className="mb-4 font-mono text-xs">
+                <div className="flex items-baseline gap-2">
+                  <span className="font-semibold text-[var(--color-primary)]">
+                    {commit.repo}
+                  </span>
+                  <span className="text-gray-500">
+                    {commit.timestamp.toLocaleString()}
+                  </span>
+                </div>
+                <div className="mt-1 pl-4 border-l border-gray-300 dark:border-gray-700">
+                  {commit.message}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      </Draggable>
     </div>
   );
 };

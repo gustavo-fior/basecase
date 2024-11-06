@@ -118,7 +118,7 @@ export default function Navigation() {
             >
               <div className="flex items-center gap-2 border border-gray-800 shadow dark:border-gray-200 py-2 px-4 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]">
                 <Gamepad className="w-4 h-4 text-gray-500" />
-                <span className="font-mono text-sm">Snake Game</span>
+                <span className="font-mono text-sm">Snake game</span>
               </div>
             </div>
           )}
@@ -129,7 +129,7 @@ export default function Navigation() {
             >
               <div className="flex items-center gap-2 border border-gray-800 shadow dark:border-gray-200 py-2 px-4 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]">
                 <GitCommit className="w-4 h-4 text-gray-500" />
-                <span className="font-mono text-sm">Git Commit History</span>
+                <span className="font-mono text-sm">Git commit history</span>
               </div>
             </div>
           )}
