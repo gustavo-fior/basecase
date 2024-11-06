@@ -138,7 +138,7 @@ export const Portfolio = () => {
 
   return (
     <div className="py-5">
-      <h2 className="text-2xl mb-8 font-bold">
+      <h2 className="text-lg mb-8 font-bold">
         Early partner to iconic companies
       </h2>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
