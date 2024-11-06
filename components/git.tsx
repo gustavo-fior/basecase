@@ -202,7 +202,7 @@ export const GitHistory: React.FC<GitHistoryProps> = ({
           <div className="flex items-center justify-between border-b border-gray-800 dark:border-gray-200 p-2">
             <div className="flex items-center gap-2 font-mono text-sm">
               <GitCommit className="w-4 h-4 text-gray-500" />
-              <span className="font-mono text-sm">Git History</span>
+              <a href={`https://github.com/${process.env.NEXT_PUBLIC_GITHUB_USERNAME}`} target="_blank" rel="noopener noreferrer" className="hover:text-[var(--color-secondary)]">Git Commit History</a>
               <span className="text-xs text-gray-500">
                 (Last updated: {lastUpdated.toLocaleTimeString()})
               </span>
@@ -285,7 +285,7 @@ export const GitHistory: React.FC<GitHistoryProps> = ({
                 isBlinking ? "text-green-500" : "text-gray-500"
               }`}
             />
-            <span>Git Commit History</span>
+            <a href={`https://github.com/${process.env.NEXT_PUBLIC_GITHUB_USERNAME}`} target="_blank" rel="noopener noreferrer" className="hover:text-[var(--color-secondary)]">Git Commit History</a>
             <span className="text-xs text-gray-500">
               (Last updated: {lastUpdated.toLocaleTimeString()})
             </span>
