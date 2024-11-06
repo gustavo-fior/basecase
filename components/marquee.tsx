@@ -9,8 +9,8 @@ const Marquee = () => {
 ░▒▓███████▓▒░░▒▓████████▓▒░  ░▒▓██▓▒░  ░▒▓████████▓▒░▒▓████████▓▒░▒▓██████▓▒░░▒▓█▓▒░      ░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░       ░▒▓███████▓▒░░▒▓████████▓▒░  ░▒▓██▓▒░  ░▒▓████████▓▒░▒▓████████▓▒░▒▓██████▓▒░░▒▓█▓▒░      ░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░       ░▒▓███████▓▒░░▒▓████████▓▒░  ░▒▓██▓▒░  ░▒▓████████▓▒░▒▓████████▓▒░▒▓██████▓▒░░▒▓█▓▒░      ░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓███████▓▒░`;
 
   return (
-    <div className="relative overflow-hidden w-full pt-5">
-      <div className="flex whitespace-nowrap animate-marquee font-mono text-[var(--color-primary)]">
+    <div className="relative overflow-hidden w-full pt-5 mb-8">
+      <div className="flex whitespace-nowrap animate-marquee font-mono text-[var(--color-primary)] leading-[1]">
         <pre className="inline-block">{asciiArt}</pre>
         <pre className="inline-block">{asciiArt}</pre>
         <pre className="inline-block">{asciiArt}</pre>
