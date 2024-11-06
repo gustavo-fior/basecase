@@ -14,8 +14,7 @@ const FULL_CONTENT = `${FULL_ASCII}
 
 FIRST CHECK TO FUTURE FOUNDERS
 ------------------------------
-Basecase writes the first check to builders who are still dreaming, tinkering,
-and exploring what they want to create.
+Basecase writes the first check to builders who are still dreaming, tinkering, and exploring what they want to create.
 
 HOW I WORK
 -----------
@@ -41,46 +40,15 @@ PORTFOLIO
 * Braintrust - Enterprise AI stack (braintrust.dev)
 * Browserbase - Headless browser infrastructure (browserbase.com)
 * Default - Inbound lead platform (default.com)
-* Diagram [Acquired by Figma] - Design tools
 * Doss - Next-gen ERP (doss.com)
 * Graphite - Developer productivity platform (graphite.dev)
 * Mainframe - Generative computing (mainfra.me)
 * Orb - Usage-based billing infrastructure (withorb.com)
-* Pyroscope [Acquired by Grafana] - Open source profiling platform
 * Replo - Tools for Shopify teams (replo.app)
 * Resend - Email API (resend.com)
 * SF Compute - Affordable pre-training clusters (sfcompute.com)
 * Supabase - Open source Firebase alternative (supabase.com)
 * Vercel - Frontend cloud (vercel.com)
-
-QUOTES
-------
-"Alana is a rare breed of investor who genuinely cares to understand, use your
-product, and recommend it. I still get great feedback from her and her network
-to improve Vercel, Next.js, v0, and more."
-- Guillermo Rauch, Founder & CEO, Vercel
-
-"Alana is building something special at Basecase. What sets her apart is her
-ability to get down into the details. She's constantly exploring new features,
-helping us identify edge cases, and connecting us with developers."
-- Paul Copplestone, Co-Founder & CEO, Supabase
-
-"Having an investor who actually uses your product daily is rare. Alana's deep
-understanding of developer tools has helped shape Resend's roadmap and her bug
-reports are as detailed as they come. She's been an instrumental part of our
-journey."
-- Zeno Rocha, Founder & CEO, Resend
-
-"Alana was the first check into Browserbase and has been an integral partner
-to us since. She is always tinkering with the product, reporting bugs, and
-jamming with the entire team to help us build a better product."
-- Paul Klein IV, Founder & CEO, Browserbase
-
-"Alana has a unique ability to believe in people before they believe in
-themselves. She was the first check into Braintrust and has supported us in
-hiring our first engineers, closing our first customers, and building a great
-product."
-- Ankur Goyal, Founder & CEO, Braintrust
 
 LINKS
 -----
