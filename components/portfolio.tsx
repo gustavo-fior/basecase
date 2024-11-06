@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useScramble } from "use-scramble";
 
 export const Portfolio = () => {
@@ -135,62 +135,98 @@ export const Portfolio = () => {
   ];
 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [cols, setCols] = useState(4);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setCols(window.innerWidth < 768 ? 2 : 4);
+    };
+    
+    // Set initial value
+    handleResize();
+    
+    // Add resize listener
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const renderGridIntersections = () => {
+    const rows = Math.ceil(portfolio.length / cols);
+    const intersections = [];
+
+    // Generate intersection points based on the current layout
+    const horizontalPoints = cols + 1;
+    const verticalPoints = rows + 1;
+
+    // Generate all intersection points
+    for (let row = 0; row < verticalPoints; row++) {
+      for (let col = 0; col < horizontalPoints; col++) {
+        intersections.push(
+          <div
+            key={`intersection-${row}-${col}`}
+            className="absolute w-3 h-3 flex items-center justify-center text-gray-800"
+            style={{
+              top: `${(row * 100) / rows}%`,
+              left: col === 0 ? '0%' : 
+                    col === horizontalPoints - 1 ? '100%' : 
+                    `${(col * 100) / (cols)}%`,
+              transform: 'translate(-50%, -50%)'
+            }}
+          >
+            +
+          </div>
+        );
+      }
+    }
+
+    return intersections;
+  };
 
   return (
     <div className="py-5">
       <h2 className="text-lg mb-8 font-bold">
         Early partner to iconic companies
       </h2>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-        {portfolio.map((client, index) => (
-          <a
-            href={client.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            key={index}
-            className="cursor-pointer group"
-            onMouseEnter={() => setHoveredIndex(index)}
-            onMouseLeave={() => setHoveredIndex(null)}
-          >
-            <div className="p-8 rounded relative flex items-center justify-center">
-              <div className="absolute top-0 left-0 text-gray-800 group-hover:text-[var(--color-primary)]">
-                +
+      <div className="relative">
+        {renderGridIntersections()}
+        <div className="grid grid-cols-2 md:grid-cols-4">
+          {portfolio.map((client, index) => (
+            <a
+              href={client.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              key={index}
+              className="cursor-pointer group"
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
+            >
+              <div className="h-28 relative flex items-center justify-center">
+                <img
+                  src={client.icon}
+                  alt={client.title}
+                  className="h-8 w-auto object-contain group-hover:opacity-0 transition-opacity dark:invert hidden md:block"
+                />
+                <span className="text-xs font-bold tracking-wide font-geist md:hidden text-center">
+                  {client.title}
+                </span>
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-center hidden md:flex">
+                  {hoveredIndex === index ? (
+                    <ScrambleText text={client.title} />
+                  ) : (
+                    <span className="text-2xl font-bold tracking-wide font-geist">
+                      {client.title}
+                    </span>
+                  )}
+                  {typeof client.description === "object" && (
+                    <span className="text-[var(--color-primary)] text-xs mt-1 font-inter">
+                      {client.description.props.children[0].props.children}
+                    </span>
+                  )}
+                </div>
               </div>
-              <div className="absolute top-0 right-0 text-gray-800 group-hover:text-[var(--color-primary)]">
-                +
-              </div>
-              <div className="absolute bottom-0 left-0 text-gray-800 group-hover:text-[var(--color-primary)]">
-                +
-              </div>
-              <div className="absolute bottom-0 right-0 text-gray-800 group-hover:text-[var(--color-primary)]">
-                +
-              </div>
-
-              <img
-                src={client.icon}
-                alt={client.title}
-                className="h-10 group-hover:opacity-0 transition-opacity dark:invert hidden md:block"
-              />
-              <span className="text-xs font-bold tracking-wide font-geist md:hidden text-center">
-                {client.title}
-              </span>
-              <div className="absolute inset-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-center hidden md:flex">
-                {hoveredIndex === index ? (
-                  <ScrambleText text={client.title} />
-                ) : (
-                  <span className="text-2xl font-bold tracking-wide font-geist">
-                    {client.title}
-                  </span>
-                )}
-                {typeof client.description === "object" && (
-                  <span className="text-[var(--color-primary)] text-xs mt-1 font-inter">
-                    {client.description.props.children[0].props.children}
-                  </span>
-                )}
-              </div>
-            </div>
-          </a>
-        ))}
+            </a>
+          ))}
+        </div>
       </div>
     </div>
   );
