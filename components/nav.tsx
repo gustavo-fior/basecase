@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ModeToggle } from "@/components/theme-toggle";
 import { SnakeGame } from "./snake";
-import { ColorThemeSwitcher } from "./color-theme-switcher";
+import { ColorThemeSwitcher } from "./color-switcher";
+import { ModeToggle } from "./theme-switcher";
 import { GitHistory } from "./git";
 import { Gamepad, GitCommit } from "lucide-react";
 
