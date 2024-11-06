@@ -69,7 +69,39 @@ body {
 @layer base {
   * {
     @apply border-border;
+    
+    /* Custom Scrollbar Styles - Light Mode */
+    &::-webkit-scrollbar {
+      width: 14px;
+      height: 14px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: var(--color-background-light);
+      border: 1px solid #a1a1a1;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      @apply bg-gray-100;
+      border: 1px solid #7f7f7f;
+      box-shadow: inset 1px 1px #dfdfdf, inset -1px -1px #808080;
+    }
   }
+
+  /* Dark mode overrides */
+  .dark * {
+    &::-webkit-scrollbar-track {
+      background: var(--color-background-dark);
+      border: 1px solid #404040;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      @apply bg-gray-800;
+      border: 1px solid #606060;
+      box-shadow: inset 1px 1px #606060, inset -1px -1px #303030;
+    }
+  }
+  
   body {
     @apply bg-background text-foreground;
   }
