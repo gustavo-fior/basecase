@@ -60,10 +60,10 @@ export default function Navigation() {
       />
       <nav className="w-full sticky top-0 z-50">
         <div className="flex justify-between items-center px-4 max-w-5xl mx-auto py-4 sm:py-6">
-          <div className="hidden md:flex space-x-4">
+          <div className="hidden md:flex space-x-2">
             <a
               href="https://alanagoyal.com"
-              className={`px-2 py-1 rounded hover:text-[var(--color-primary)] bg-gray-100 dark:bg-gray-800 ${
+              className={`px-1.5 py-1.5 rounded hover:text-[var(--color-primary)] bg-gray-100 dark:bg-gray-800 inline-block text-xs sm:text-sm sm:px-2 sm:py-2 ${
                 isScrolled ? 'backdrop-blur-sm bg-gray-100/30 dark:bg-gray-800/30' : ''
               }`}
               target="_blank"
@@ -74,7 +74,7 @@ export default function Navigation() {
 
             <a
               href="https://x.com/alanaagoyal"
-              className={`px-2 py-1 rounded hover:text-[var(--color-primary)] bg-gray-100 dark:bg-gray-800 ${
+              className={`px-1.5 py-1.5 rounded hover:text-[var(--color-primary)] bg-gray-100 dark:bg-gray-800 inline-block text-xs sm:text-sm sm:px-2 sm:py-2 ${
                 isScrolled ? 'backdrop-blur-sm bg-gray-100/30 dark:bg-gray-800/30' : ''
               }`}
               target="_blank"
@@ -84,7 +84,7 @@ export default function Navigation() {
             </a>
             <button
               onClick={() => setShowGit(true)}
-              className={`px-2 py-1 rounded hover:text-[var(--color-primary)] bg-gray-100 dark:bg-gray-800 ${
+              className={`px-1.5 py-1.5 rounded hover:text-[var(--color-primary)] bg-gray-100 dark:bg-gray-800 inline-block text-xs sm:text-sm sm:px-2 sm:py-2 ${
                 isScrolled ? 'backdrop-blur-sm bg-gray-100/30 dark:bg-gray-800/30' : ''
               }`}
             >
@@ -92,7 +92,7 @@ export default function Navigation() {
             </button>
             <button
               onClick={() => setShowSnake(true)}
-              className={`px-2 py-1 rounded hover:text-[var(--color-primary)] bg-gray-100 dark:bg-gray-800 ${
+              className={`px-1.5 py-1.5 rounded hover:text-[var(--color-primary)] bg-gray-100 dark:bg-gray-800 inline-block text-xs sm:text-sm sm:px-2 sm:py-2 ${
                 isScrolled ? 'backdrop-blur-sm bg-gray-100/30 dark:bg-gray-800/30' : ''
               }`}
             >
@@ -104,7 +104,7 @@ export default function Navigation() {
             <ModeToggle isScrolled={isScrolled} />
             <a
               href="mailto:hi@basecase.vc?subject=hello!"
-              className={`px-4 py-2 bg-[var(--color-primary)] text-white rounded hover:bg-[var(--color-secondary)] inline-block text-base md:text-base text-sm ${
+              className={`px-4 py-2 bg-[var(--color-primary)] text-white rounded hover:bg-[var(--color-secondary)] inline-block text-sm ${
                 isScrolled ? 'backdrop-blur-sm bg-[var(--color-primary)]/30' : ''
               }`}
             >
