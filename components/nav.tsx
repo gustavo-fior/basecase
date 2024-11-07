@@ -67,7 +67,7 @@ export default function Navigation() {
             <a
               href={process.env.NEXT_PUBLIC_URL}
               className={`px-4 py-2 rounded hover:text-[var(--color-primary)] bg-gray-100 dark:bg-gray-800 ${
-                isScrolled ? 'backdrop-blur-sm bg-gray-100/30 dark:bg-gray-800/30' : ''
+                isScrolled ? 'backdrop-blur-sm bg-gray-100/50 dark:bg-gray-800/50' : ''
               }`}
             >
               <svg width="28" height="16" viewBox="0 0 596 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-gray-900 dark:text-white hover:text-[var(--color-primary)] dark:hover:text-[var(--color-primary)]">
@@ -86,7 +86,7 @@ export default function Navigation() {
               <a
                 href="https://alanagoyal.com"
                 className={`px-1.5 py-1.5 rounded hover:text-[var(--color-primary)] bg-gray-100 dark:bg-gray-800 inline-block text-xs sm:px-2 sm:py-2 ${
-                  isScrolled ? 'backdrop-blur-sm bg-gray-100/30 dark:bg-gray-800/30' : ''
+                  isScrolled ? 'backdrop-blur-sm bg-gray-100/50 dark:bg-gray-800/50' : ''
                 }`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -96,7 +96,7 @@ export default function Navigation() {
               <a
                 href="https://x.com/alanaagoyal"
                 className={`px-1.5 py-1.5 rounded hover:text-[var(--color-primary)] bg-gray-100 dark:bg-gray-800 inline-block text-xs sm:px-2 sm:py-2 ${
-                  isScrolled ? 'backdrop-blur-sm bg-gray-100/30 dark:bg-gray-800/30' : ''
+                  isScrolled ? 'backdrop-blur-sm bg-gray-100/50 dark:bg-gray-800/50' : ''
                 }`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -106,7 +106,7 @@ export default function Navigation() {
               <button
                 onClick={() => setShowGit(true)}
                 className={`px-1.5 py-1.5 rounded hover:text-[var(--color-primary)] bg-gray-100 dark:bg-gray-800 inline-block text-xs sm:px-2 sm:py-2 ${
-                  isScrolled ? 'backdrop-blur-sm bg-gray-100/30 dark:bg-gray-800/30' : ''
+                  isScrolled ? 'backdrop-blur-sm bg-gray-100/50 dark:bg-gray-800/50' : ''
                 }`}
               >
                 [C] Commits
@@ -114,7 +114,7 @@ export default function Navigation() {
               <button
                 onClick={() => setShowSnake(true)}
                 className={`px-1.5 py-1.5 rounded hover:text-[var(--color-primary)] bg-gray-100 dark:bg-gray-800 inline-block text-xs sm:px-2 sm:py-2 ${
-                  isScrolled ? 'backdrop-blur-sm bg-gray-100/30 dark:bg-gray-800/30' : ''
+                  isScrolled ? 'backdrop-blur-sm bg-gray-100/50 dark:bg-gray-800/50' : ''
                 }`}
               >
                 [S] Snake

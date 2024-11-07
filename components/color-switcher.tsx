@@ -26,7 +26,7 @@ export function ColorThemeSwitcher({ isScrolled }: { isScrolled: boolean }) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button className={`bg-gray-100 dark:bg-gray-800 px-4 py-2 hover:text-[var(--color-primary)] rounded relative ${
-          isScrolled ? 'backdrop-blur-sm bg-gray-100/30 dark:bg-gray-800/30' : ''
+          isScrolled ? 'backdrop-blur-sm bg-gray-100/50 dark:bg-gray-800/50' : ''
         }`}>
           <div className="w-[1rem] h-[1rem] relative">
             <Palette className="h-[1rem] w-[1rem]" />
