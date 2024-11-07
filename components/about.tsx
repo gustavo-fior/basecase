@@ -105,7 +105,7 @@ export const About = () => {
               "Anyone who has been told they are too intense, too curious, or too impatient",
             ].map((item, i) => (
               <div key={i} className="flex items-center space-x-3 text-sm">
-                <span>+ {item}</span>
+                <span>* {item}</span>
               </div>
             ))}
           </div>
