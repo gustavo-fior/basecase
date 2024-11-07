@@ -59,7 +59,7 @@ export default function Navigation() {
         content="Use W/T/G/S keyboard shortcuts to navigate"
       />
       <nav className="w-full sticky top-0 z-50">
-        <div className="flex justify-between items-center px-4 max-w-5xl mx-auto py-4 sm:py-6">
+        <div className="flex justify-end sm:justify-between items-center px-4 max-w-5xl mx-auto py-4 sm:py-6">
           <div className="hidden md:flex space-x-2">
             <a
               href="https://alanagoyal.com"
@@ -108,7 +108,7 @@ export default function Navigation() {
                 isScrolled ? 'backdrop-blur-sm bg-[var(--color-primary)]/30' : ''
               }`}
             >
-              Talk to a developer
+              Email me
             </a>
           </div>
         </div>
