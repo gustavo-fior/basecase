@@ -135,6 +135,7 @@ export const Portfolio = () => {
   ];
 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [isIconicHovered, setIsIconicHovered] = useState(false);
   const [cols, setCols] = useState(4);
 
   useEffect(() => {
@@ -191,8 +192,18 @@ export const Portfolio = () => {
 
   return (
     <div className="py-5">
-      <h2 className="text-lg mb-6 sm:mb-8 font-bold">
-        Early partner to iconic companies
+      <h2 className="text-lg mb-6 sm:mb-8 font-bold cursor-default">
+        Early partner to{" "}
+        <span 
+          className={`inline-block transition-all duration-300 ${
+            isIconicHovered ? 'scale-110' : 'scale-100'
+          }`}
+          onMouseEnter={() => setIsIconicHovered(true)}
+          onMouseLeave={() => setIsIconicHovered(false)}
+        >
+          iconic
+        </span>{" "}
+        companies
       </h2>
       <div className="relative">
         {/* Only show grid intersections on desktop */}
