@@ -5,7 +5,7 @@ import { useSwipeable } from "react-swipeable";
 
 const quotes = [
   {
-    text: "Alana is a rare breed of investor who genuinely cares to understand your product, use it, and recommend it. I still get great feedback from her and her network to improve Vercel, Next.js, v0, and more. We're proud to have her as an investor at Vercel.",
+    text: "Alana is a rare breed of investor who genuinely cares to understand your product, use it, and recommend it. I still get great feedback from her and her network to improve Vercel, Next.js, v0, and more. We're proud to have her as an investor.",
     author: "Guillermo Rauch",
     title: "Founder & CEO",
     company: "Vercel",
@@ -13,7 +13,7 @@ const quotes = [
     image: "/images/guillermo.jpg",
   },
   {
-    text: "Alana is building something special at Basecase. What sets her apart is her ability to get down into the details. She's constantly exploring new features, helping us identify edge cases, and connecting us with developers. She's our number one supporter.",
+    text: "Alana is building something special. What sets her apart is her ability to get down into the details. She's constantly exploring new features, helping us identify edge cases, and connecting us with developers. She's our number one supporter.",
     author: "Paul Copplestone",
     title: "Co-Founder & CEO",
     company: "Supabase",
