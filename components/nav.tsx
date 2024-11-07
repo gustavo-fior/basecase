@@ -99,9 +99,11 @@ export default function Navigation() {
               [S] Snake
             </button>
           </div>
-          <div className="flex items-center space-x-4">
-            <ColorThemeSwitcher isScrolled={isScrolled} />
-            <ModeToggle isScrolled={isScrolled} />
+          <div className="w-full flex items-center justify-between sm:justify-end sm:w-auto sm:space-x-4">
+            <div className="flex items-center space-x-4">
+              <ColorThemeSwitcher isScrolled={isScrolled} />
+              <ModeToggle isScrolled={isScrolled} />
+            </div>
             <a
               href="mailto:hi@basecase.vc?subject=hello!"
               className={`px-4 py-2 bg-[var(--color-primary)] text-white rounded hover:bg-[var(--color-secondary)] inline-block text-sm ${
