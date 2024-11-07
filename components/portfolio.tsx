@@ -170,7 +170,7 @@ export const Portfolio = () => {
           <div
             key={`intersection-${row}-${col}`}
             className={`absolute w-3 h-3 flex items-center justify-center transition-colors duration-200 ${
-              isHighlighted ? 'text-[var(--color-primary)]' : 'text-gray-800'
+              isHighlighted ? 'text-[var(--color-primary)]' : 'text-gray-800 dark:text-gray-400'
             }`}
             style={{
               top: `${(row * 100) / rows}%`,
@@ -208,10 +208,10 @@ export const Portfolio = () => {
               target="_blank"
               rel="noopener noreferrer"
               key={index}
-              className="flex items-center gap-2 text-sm hover:underline underline-offset-4"
+              className="flex items-center gap-2 text-sm"
             >
-              <span className="text-gray-800">+</span>
-              {client.title}
+              <span className="text-gray-800 dark:text-gray-400">+</span>
+              <span className="underline">{client.title}</span>
             </a>
           ))}
         </div>
@@ -234,20 +234,12 @@ export const Portfolio = () => {
                   alt={client.title}
                   className="h-8 w-auto object-contain group-hover:opacity-0 transition-opacity dark:invert hidden md:block"
                 />
-                <span className="text-xs md:hidden">
-                  + {client.title}
-                </span>
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-center hidden md:flex">
                   {hoveredIndex === index ? (
                     <ScrambleText text={client.title} />
                   ) : (
                     <span className="text-2xl font-bold tracking-wide font-geist">
                       {client.title}
-                    </span>
-                  )}
-                  {typeof client.description === "object" && (
-                    <span className="text-[var(--color-primary)] text-xs mt-1 font-inter">
-                      {client.description.props.children[0].props.children}
                     </span>
                   )}
                 </div>
