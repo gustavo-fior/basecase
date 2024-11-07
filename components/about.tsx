@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const DisintegratingText = ({
   children,
@@ -17,6 +17,15 @@ const DisintegratingText = ({
     position: index,
     isSpace: char === " ",
   }));
+
+  useEffect(() => {
+    if (isHovered) {
+      const timer = setTimeout(() => {
+        setIsHovered(false);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isHovered]);
 
   return (
     <div className={className} style={{ position: "relative" }}>
