@@ -10,6 +10,7 @@ const quotes = [
     title: "Founder & CEO",
     company: "Vercel",
     url: "https://vercel.com",
+    image: "/images/guillermo.jpg",
   },
   {
     text: "Alana is building something special at Basecase. What sets her apart is her ability to get down into the details. She's constantly exploring new features, helping us identify edge cases, and connecting us with developers.",
@@ -17,6 +18,7 @@ const quotes = [
     title: "Co-Founder & CEO",
     company: "Supabase",
     url: "https://supabase.com",
+    image: "/images/paul.jpg",
   },
   {
     text: "Having an investor who actually uses your product daily is rare. Alana's deep understanding of developer tools has helped shape Resend's roadmap and her bug reports are as detailed as they come. She's been an instrumental part of our journey.",
@@ -24,6 +26,7 @@ const quotes = [
     title: "Founder & CEO",
     company: "Resend",
     url: "https://resend.com",
+    image: "/images/zeno.jpg",
   },
   {
     text: "Alana was the first check into Browserbase and has been an integral partner to us since. She is always tinkering with the product, reporting bugs, and jamming with the entire team to help us build a better product.",
@@ -31,6 +34,7 @@ const quotes = [
     title: "Founder & CEO",
     company: "Browserbase",
     url: "https://browserbase.com",
+    image: "/images/paul-klein.jpg",
   },
   {
     text: "Alana has a unique ability to believe in people before they believe in themselves. She was the first check into Braintrust and has supported us in hiring our first engineers, closing our first customers, and building a great product.",
@@ -38,6 +42,7 @@ const quotes = [
     title: "Founder & CEO",
     company: "Braintrust",
     url: "https://braintrust.dev",
+    image: "/images/ankur.jpg",
   },
 
 ];
@@ -68,11 +73,11 @@ export const Quotes = () => {
     swipeDuration: 500
   });
 
-  // Auto-cycle quotes every 5 seconds
+  // Auto-cycle quotes every 3 seconds
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % quotes.length);
-    }, 30000);
+    }, 3000);
 
     // Cleanup interval on unmount
     return () => clearInterval(interval);
@@ -87,34 +92,43 @@ export const Quotes = () => {
   }, []);
 
   return (
-    <div className="py-5 sm:min-h-[100px] min-h-[250px]">
+    <div className="py-5 sm:min-h-[125px] min-h-[350px]">
       <div
-        {...handlers}
-        className="border-l-4 border-[var(--color-primary)] pl-6 sm:h-[100px] h-[250px] flex flex-col justify-between"
+        {...handlers} 
+        className="flex gap-6 sm:h-[125px] h-[350px]"
         tabIndex={0}
         role="region"
         aria-label="Testimonial quotes"
       >
-        <p className="text-base italic">
-          &ldquo;{quotes[currentIndex].text}&rdquo;
-        </p>
-        <p className="mt-4">
-          —{" "}
-          <a
-            href={quotes[currentIndex].url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-[var(--color-primary)] hover:text-[var(--color-secondary)]"
-          >
-            <span className="font-bold">{quotes[currentIndex].author}</span>
-            {quotes[currentIndex].title && (
-              <span>, {quotes[currentIndex].title}</span>
-            )}
-            {quotes[currentIndex].company && (
-              <span>, {quotes[currentIndex].company}</span>
-            )}
-          </a>
-        </p>
+        <div className="flex-shrink-0">
+          <img
+            src={quotes[currentIndex].image}
+            alt={quotes[currentIndex].author}
+            className="w-12 h-12 rounded-full object-cover"
+          />
+        </div>
+        <div className="border-l-4 border-[var(--color-primary)] pl-6 flex flex-col justify-between">
+          <p className="text-base italic">
+            &ldquo;{quotes[currentIndex].text}&rdquo;
+          </p>
+          <p className="mt-4">
+            —{" "}
+            <a
+              href={quotes[currentIndex].url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[var(--color-primary)] hover:text-[var(--color-secondary)]"
+            >
+              <span className="font-bold">{quotes[currentIndex].author}</span>
+              {quotes[currentIndex].title && (
+                <span>, {quotes[currentIndex].title}</span>
+              )}
+              {quotes[currentIndex].company && (
+                <span>, {quotes[currentIndex].company}</span>
+              )}
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   );
