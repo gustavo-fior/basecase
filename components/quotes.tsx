@@ -92,10 +92,10 @@ export const Quotes = () => {
   }, []);
 
   return (
-    <div className="py-5 sm:min-h-[125px] min-h-[350px]">
+    <div className="py-5 sm:min-h-[125px] min-h-[250px]">
       <div
         {...handlers} 
-        className="flex gap-6 sm:h-[125px] h-[350px]"
+        className="flex gap-6 sm:h-[125px] h-[250px]"
         tabIndex={0}
         role="region"
         aria-label="Testimonial quotes"
