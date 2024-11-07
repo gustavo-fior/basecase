@@ -27,7 +27,10 @@ export default function Navigation() {
     const handleKeyPress = (event: KeyboardEvent) => {
       if (
         event.target instanceof HTMLInputElement ||
-        event.target instanceof HTMLTextAreaElement
+        event.target instanceof HTMLTextAreaElement ||
+        event.metaKey ||
+        event.ctrlKey ||
+        window.getSelection()?.toString()
       ) {
         return;
       }
