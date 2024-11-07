@@ -137,7 +137,7 @@ export const Portfolio = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isIconicHovered, setIsIconicHovered] = useState(false);
   const [cols, setCols] = useState(4);
-  const [isGridView, setIsGridView] = useState(true);
+  const [isGridView, setIsGridView] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -250,8 +250,8 @@ export const Portfolio = () => {
           </div>
         )}
         
-        {/* List view - show on small screens or when grid view is disabled */}
-        {(!isGridView || cols === 2) && (
+        {/* List view - Changed condition to show by default */}
+        {(!isGridView) && (
           <div className="flex flex-col gap-4">
             {portfolio.map((client, index) => (
               <a
