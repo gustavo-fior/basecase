@@ -302,7 +302,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
                     {!gameStarted && !gameOver && (
                       <>
                         <div className="text-gray-800 dark:text-gray-200">
-                          Press P to play
+                          Press P to play or pause
                         </div>
                         <div className="text-gray-600 dark:text-gray-400 mt-2">
                           Use arrow keys to move
