@@ -21,15 +21,15 @@ export function ModeToggle({ isScrolled }: { isScrolled: boolean }) {
   return (
     <button
       onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-      className={`bg-gray-100 dark:bg-gray-800 px-4 py-2 border border-gray-700 hover:border-[var(--color-primary)] rounded relative ${
+      className={`bg-gray-100 dark:bg-gray-800 px-4 py-2 hover:text-[var(--color-primary)] rounded relative ${
         isScrolled ? 'backdrop-blur-sm bg-gray-100/30 dark:bg-gray-800/30' : ''
       }`}
     >
-      <div className="w-[1.2rem] h-[1.2rem] relative">
+      <div className="w-[1rem] h-[1rem] relative">
         {theme === "dark" ? (
-          <Sun className="h-[1.2rem] w-[1.2rem]" />
+          <Sun className="h-[1rem] w-[1rem]" />
         ) : (
-          <Moon className="h-[1.2rem] w-[1.2rem]" />
+          <Moon className="h-[1rem] w-[1rem]" />
         )}
       </div>
       <span className="sr-only">Toggle theme</span>
