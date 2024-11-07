@@ -105,17 +105,17 @@ export const Quotes = () => {
   }, [isFocused]);
 
   return (
-    <div className="py-5 sm:min-h-[100px] min-h-[250px]">
+    <div className="py-5 sm:min-h-[100px] min-h-[225px]">
       <div
         {...handlers}
-        className="flex gap-6 sm:h-[100px] h-[250px]"
+        className="flex gap-6 sm:h-[100px] h-[225px]"
         tabIndex={0}
         role="region"
         aria-label="Testimonial quotes"
         onMouseEnter={() => setIsFocused(true)}
         onMouseLeave={() => setIsFocused(false)}
       >
-        <div className="flex-shrink-0">
+        <div className="flex-shrink-0 hidden sm:block">
           <img
             src={quotes[currentIndex].image}
             alt={quotes[currentIndex].author}
