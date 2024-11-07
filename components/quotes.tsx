@@ -5,7 +5,7 @@ import { useSwipeable } from "react-swipeable";
 
 const quotes = [
   {
-    text: "Alana is a rare breed of investor. She genuinely cares to understand, use your product, and recommend it to others. I still get great feedback from her and her network to improve Vercel, Next.js, v0, and more. We're proud to have her as an investor at Vercel.",
+    text: "Alana is a rare breed of investor who genuinely cares to understand your product, use it, and recommend it. I still get great feedback from her and her network to improve Vercel, Next.js, v0, and more. We're proud to have her as an investor at Vercel.",
     author: "Guillermo Rauch",
     title: "Founder & CEO",
     company: "Vercel",
@@ -21,7 +21,7 @@ const quotes = [
     image: "/images/paul.jpg",
   },
   {
-    text: "It's rare to have an investor who uses your product regularly. Alana's deep understanding of developer tools has helped shape Resend's roadmap and her bug reports are as detailed as they come. She's been an instrumental part of our journey.",
+    text: "It's rare to have an investor who uses your product regularly. Alana's deep understanding of developer tools has helped shape Resend's roadmap and her bug reports are as detailed as they come. She's played an important role in our journey.",
     author: "Zeno Rocha",
     title: "Founder & CEO",
     company: "Resend",
@@ -29,7 +29,7 @@ const quotes = [
     image: "/images/zeno.jpg",
   },
   {
-    text: "Alana was the first check into Browserbase and has been an integral partner to us since. She is always tinkering with the product, reporting bugs, and jamming with the entire team to help us build a better product. We are proud members to have her as an investor.",
+    text: "Alana was the first check into Browserbase and has been an indispensable partner to us as we've scaled. She is always tinkering with the product, reporting bugs, and jamming with the entire team to help us build a better product.",
     author: "Paul Klein IV",
     title: "Founder & CEO",
     company: "Browserbase",
@@ -37,7 +37,7 @@ const quotes = [
     image: "/images/paul-klein.jpg",
   },
   {
-    text: "Alana is everything you want in an investor. She is proactively helpful, responds instantly, and builds a community of founders that feels like a family. If you’re a future founder, she should be your first call.",
+    text: "Alana is everything you want in an investor. She is proactively helpful, responds instantly, and builds a community of founders that feels like a family. If you’re considering starting a company, she should be your first call.",
     author: "Jordan Singer",
     title: "Founder & CEO",
     company: "Mainframe",
@@ -45,7 +45,7 @@ const quotes = [
     image: "/images/jordan.jpg",
   },
   {
-    text: "Alana's network is unlike any investor out there. She's helped introduce us to key talent and connect with dozens of potential customers. Her hands-on approach to recruiting and customer development has been instrumental in Ashby's growth.",
+    text: "Alana's network is unlike any investor out there. She's helped introduce us to key talent and dozens of potential customers. Her hands-on approach to recruiting and customer development has been instrumental in Ashby's growth.",
     author: "Benji Encz",
     title: "Founder & CEO",
     company: "Ashby",
