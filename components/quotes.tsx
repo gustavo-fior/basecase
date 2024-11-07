@@ -108,7 +108,7 @@ export const Quotes = () => {
           />
         </div>
         <div className="border-l-4 border-[var(--color-primary)] pl-6 flex flex-col justify-between">
-          <p className="text-base italic">
+          <p className="text-sm italic">
             &ldquo;{quotes[currentIndex].text}&rdquo;
           </p>
           <p className="mt-4">

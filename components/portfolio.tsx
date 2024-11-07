@@ -184,12 +184,33 @@ export const Portfolio = () => {
 
   return (
     <div className="py-5">
-      <h2 className="text-lg mb-8 font-bold">
+      <h2 className="text-lg mb-6 sm:mb-8 font-bold">
         Early partner to iconic companies
       </h2>
       <div className="relative">
-        {renderGridIntersections()}
-        <div className="grid grid-cols-2 md:grid-cols-4">
+        {/* Only show grid intersections on desktop */}
+        <div className="hidden md:block">
+          {renderGridIntersections()}
+        </div>
+        
+        {/* Mobile view */}
+        <div className="flex md:hidden flex-col gap-4">
+          {portfolio.map((client, index) => (
+            <a
+              href={client.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              key={index}
+              className="flex items-center gap-2 text-sm hover:underline underline-offset-4"
+            >
+              <span className="text-gray-800">+</span>
+              {client.title}
+            </a>
+          ))}
+        </div>
+
+        {/* Desktop view */}
+        <div className="hidden md:grid grid-cols-4">
           {portfolio.map((client, index) => (
             <a
               href={client.url}
@@ -206,8 +227,8 @@ export const Portfolio = () => {
                   alt={client.title}
                   className="h-8 w-auto object-contain group-hover:opacity-0 transition-opacity dark:invert hidden md:block"
                 />
-                <span className="text-xs font-bold tracking-wide font-geist md:hidden text-center">
-                  {client.title}
+                <span className="text-xs md:hidden">
+                  + {client.title}
                 </span>
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-center hidden md:flex">
                   {hoveredIndex === index ? (
