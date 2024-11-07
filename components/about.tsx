@@ -68,54 +68,46 @@ export const About = () => {
   return (
     <div className="py-5">
       <div className="md:hidden">
-        <h1 className="text-lg font-bold mb-4 text-[var(--color-primary)]">
-          No decks, no pitch meetings
-        </h1>
+        <h1 className="text-lg font-bold mb-4">No decks, no pitch meetings</h1>
       </div>
       <div className="hidden md:block">
-        <DisintegratingText className="text-lg font-bold mb-4 text-[var(--color-primary)]">
+        <DisintegratingText className="text-lg font-bold mb-4">
           No decks, no pitch meetings
         </DisintegratingText>
       </div>
       <div className="grid md:grid-cols-2 gap-12">
         <div className="space-y-4">
-          <h2 className="font-semibold text-base">How I work</h2>
-          <div className="space-y-3">
+          <h2 className="font-semibold text-sm">How I work</h2>
+          <div className="space-y-3 text-sm">
             {[
               "I write the very first check into companies",
-              "I lead rounds with $1-2M checks and don't take board seats",
-              "I work with founders from early ideation through validation & product development",
-              "I am often an early beta tester, active user, & paying customer of founders' products",
-              "I provide tactical support by making customer & candidate introductions from pre-product to post-IPO",
+              "I lead rounds with $1-2M checks, no board seat",
+              "I work with founders pre-traction, pre-product, and pre-idea",
+              "I am often an early beta tester, active user, and paying customer of the products founders build",
+              "I put my network to work for founders, making introductions to candidates, customers, and investors",
+              "I spend most of my time with people who have not yet started companies and don't take pitch meetings",
             ].map((item, i) => (
-              <div key={i} className="flex items-center space-x-3 text-base">
+              <div key={i} className="flex items-center space-x-3 text-sm">
                 <span>* {item}</span>
               </div>
             ))}
           </div>
         </div>
         <div className="space-y-4">
-          <h2 className="font-semibold text-base">Who I work with</h2>
-          <div className="text-base">
-            <p className="mb-3">I would love to talk to you if:</p>
-            <ul className="list-none space-y-3">
-              <li>
-                + You&apos;re obsessed with building, tinkering, and creating
-                your ideas
-              </li>
-              <li>
-                + You&apos;ve built a company before and think may want to start
-                another
-              </li>
-              <li>
-                + You&apos;re thinking about what to do next but not sure
-                whether you want to start a company or join one
-              </li>
-              <li>
-                + You love trying new products, discovering new markets, and
-                thinking about the direction the world is going
-              </li>
-            </ul>
+          <h2 className="font-semibold text-sm">Who I work with</h2>
+          <div className="space-y-3 text-sm">
+            {[
+              "Former founders who are driven to make a comeback",
+              "Solo founders who've been told they need a co-founder",
+              "Underdogs who feel deeply compelled to prove people wrong",
+              "Builders who can't help themselves from bringing ideas to life",
+              "Futurists who have strong convictions about where the world is going",
+              "Anyone who has been told they are too intense, too curious, or too impatient",
+            ].map((item, i) => (
+              <div key={i} className="flex items-center space-x-3 text-sm">
+                <span>+ {item}</span>
+              </div>
+            ))}
           </div>
         </div>
       </div>

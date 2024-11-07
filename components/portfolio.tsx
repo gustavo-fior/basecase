@@ -135,6 +135,7 @@ export const Portfolio = () => {
   ];
 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [isIconicHovered, setIsIconicHovered] = useState(false);
   const [cols, setCols] = useState(4);
 
   useEffect(() => {
@@ -153,18 +154,25 @@ export const Portfolio = () => {
   const renderGridIntersections = () => {
     const rows = Math.ceil(portfolio.length / cols);
     const intersections = [];
-
-    // Generate intersection points based on the current layout
     const horizontalPoints = cols + 1;
     const verticalPoints = rows + 1;
 
-    // Generate all intersection points
     for (let row = 0; row < verticalPoints; row++) {
       for (let col = 0; col < horizontalPoints; col++) {
+        const isHighlighted = hoveredIndex !== null && (
+          // Check if this intersection point is one of the four corners of the hovered item
+          (row === Math.floor(hoveredIndex / cols) && col === hoveredIndex % cols) || // top-left
+          (row === Math.floor(hoveredIndex / cols) && col === (hoveredIndex % cols) + 1) || // top-right
+          (row === Math.floor(hoveredIndex / cols) + 1 && col === hoveredIndex % cols) || // bottom-left
+          (row === Math.floor(hoveredIndex / cols) + 1 && col === (hoveredIndex % cols) + 1) // bottom-right
+        );
+
         intersections.push(
           <div
             key={`intersection-${row}-${col}`}
-            className="absolute w-3 h-3 flex items-center justify-center text-gray-800"
+            className={`absolute w-3 h-3 flex items-center justify-center transition-colors duration-200 ${
+              isHighlighted ? 'text-[var(--color-primary)]' : 'text-gray-800 dark:text-gray-400'
+            }`}
             style={{
               top: `${(row * 100) / rows}%`,
               left: col === 0 ? '0%' : 
@@ -184,12 +192,43 @@ export const Portfolio = () => {
 
   return (
     <div className="py-5">
-      <h2 className="text-lg mb-8 font-bold">
-        Early partner to iconic companies
+      <h2 className="text-lg mb-6 sm:mb-8 font-bold cursor-default">
+        Early partner to{" "}
+        <span 
+          className={`inline-block transition-all duration-300 ${
+            isIconicHovered ? 'scale-110' : 'scale-100'
+          }`}
+          onMouseEnter={() => setIsIconicHovered(true)}
+          onMouseLeave={() => setIsIconicHovered(false)}
+        >
+          iconic
+        </span>{" "}
+        companies
       </h2>
       <div className="relative">
-        {renderGridIntersections()}
-        <div className="grid grid-cols-2 md:grid-cols-4">
+        {/* Only show grid intersections on desktop */}
+        <div className="hidden md:block">
+          {renderGridIntersections()}
+        </div>
+        
+        {/* Mobile view */}
+        <div className="flex md:hidden flex-col gap-4">
+          {portfolio.map((client, index) => (
+            <a
+              href={client.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              key={index}
+              className="flex items-center gap-2 text-sm"
+            >
+              <span className="text-gray-800 dark:text-gray-400">+</span>
+              <span className="underline">{client.title}</span>
+            </a>
+          ))}
+        </div>
+
+        {/* Desktop view */}
+        <div className="hidden md:grid grid-cols-4">
           {portfolio.map((client, index) => (
             <a
               href={client.url}
@@ -206,20 +245,12 @@ export const Portfolio = () => {
                   alt={client.title}
                   className="h-8 w-auto object-contain group-hover:opacity-0 transition-opacity dark:invert hidden md:block"
                 />
-                <span className="text-xs font-bold tracking-wide font-geist md:hidden text-center">
-                  {client.title}
-                </span>
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-center hidden md:flex">
                   {hoveredIndex === index ? (
                     <ScrambleText text={client.title} />
                   ) : (
                     <span className="text-2xl font-bold tracking-wide font-geist">
                       {client.title}
-                    </span>
-                  )}
-                  {typeof client.description === "object" && (
-                    <span className="text-[var(--color-primary)] text-xs mt-1 font-inter">
-                      {client.description.props.children[0].props.children}
                     </span>
                   )}
                 </div>
