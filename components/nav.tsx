@@ -6,7 +6,6 @@ import { ColorThemeSwitcher } from "./color-switcher";
 import { ModeToggle } from "./theme-switcher";
 import { GitHistory } from "./git";
 import { Gamepad, GitCommit } from "lucide-react";
-import Image from "next/image";
 
 export default function Navigation() {
   const [showSnake, setShowSnake] = useState(false);
