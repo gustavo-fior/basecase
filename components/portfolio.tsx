@@ -148,6 +148,9 @@ export const Portfolio = () => {
   useEffect(() => {
     const handleResize = () => {
       setCols(window.innerWidth < 768 ? 2 : 4);
+      if (window.innerWidth < 768 && isGridView) {
+        setIsGridView(false);
+      }
     };
     
     // Set initial value
@@ -156,7 +159,7 @@ export const Portfolio = () => {
     // Add resize listener
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [isGridView]);
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
