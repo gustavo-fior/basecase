@@ -3,21 +3,14 @@
 import * as React from "react"
 import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
-import { useEffect } from "react"
 
-export function ModeToggle() {
+interface ModeToggleProps {
+  isScrolled: boolean;
+}
+
+export function ModeToggle({ isScrolled }: ModeToggleProps) {
   const { setTheme, theme } = useTheme()
-  const [mounted, setMounted] = React.useState(false)
   const [isAnimating, setIsAnimating] = React.useState(false)
-
-  // Only render component after first client-side render
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted) {
-    return null
-  }
 
   return (
     <button
@@ -31,6 +24,7 @@ export function ModeToggle() {
         ${isAnimating ? 'animate-bounce scale-110' : ''}
         hover:scale-110 transition-all duration-500
         max-sm:bg-gray-100 max-sm:dark:bg-gray-800
+        ${isScrolled ? 'max-sm:backdrop-blur-sm max-sm:bg-gray-100/50 max-sm:dark:bg-gray-800/50' : ''}
         w-10 h-10
       `}
     >
