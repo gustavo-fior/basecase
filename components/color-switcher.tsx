@@ -1,70 +1,58 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { useCallback } from "react"
-import { themeColors, type ThemeColor } from "@/config/colors"
+import * as React from "react";
+import { useCallback, useState } from "react";
+import { themeColors, type ThemeColor } from "@/config/colors";
 
 export function ColorThemeSwitcher() {
-  const [currentColorKey, setCurrentColorKey] = React.useState<ThemeColor>("blue")
-  const [isAnimating, setIsAnimating] = React.useState(false)
-  const [prevColor, setPrevColor] = React.useState<string>("")
-  const [nextColorPreview, setNextColorPreview] = React.useState<string>("")
+  const [currentColorKey, setCurrentColorKey] = useState<ThemeColor>("red");
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  // Get the next color key
+  const getNextColorKey = (current: ThemeColor): ThemeColor => {
+    const colorKeys = Object.keys(themeColors) as ThemeColor[];
+    const currentIndex = colorKeys.indexOf(current);
+    return colorKeys[(currentIndex + 1) % colorKeys.length];
+  };
+
+  const nextColorKey = getNextColorKey(currentColorKey);
 
   const setThemeColor = useCallback(() => {
-    const colorKeys = Object.keys(themeColors) as ThemeColor[]
-    const currentIndex = colorKeys.indexOf(currentColorKey)
-    const nextIndex = (currentIndex + 1) % colorKeys.length
-    const nextColor = colorKeys[nextIndex]
-    
-    const currentColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim()
-    setNextColorPreview(themeColors[nextColor].primary)
-    
-    setIsAnimating(true)
-    
+    setIsAnimating(true);
+
     setTimeout(() => {
-      const colors = themeColors[nextColor]
-      const root = document.documentElement
-      
-      root.style.setProperty('--color-primary', colors.primary)
-      root.style.setProperty('--color-secondary', colors.secondary)
-      root.style.setProperty('--color-background-light', colors.light)
-      root.style.setProperty('--color-background-dark', colors.dark)
+      const colors = themeColors[nextColorKey];
+      const root = document.documentElement;
 
-      setCurrentColorKey(nextColor)
-      setIsAnimating(false)
-    }, 500)
-    
-    setPrevColor(currentColor)
-  }, [currentColorKey])
+      root.style.setProperty("--color-primary", colors.primary);
+      root.style.setProperty("--color-secondary", colors.secondary);
+      root.style.setProperty("--color-background-light", colors.light);
+      root.style.setProperty("--color-background-dark", colors.dark);
 
-  const getNextColor = () => {
-    const colorKeys = Object.keys(themeColors) as ThemeColor[]
-    const currentIndex = colorKeys.indexOf(currentColorKey)
-    const nextIndex = (currentIndex + 1) % colorKeys.length
-    return themeColors[colorKeys[nextIndex]].primary
-  }
+      setCurrentColorKey(nextColorKey);
+      setIsAnimating(false);
+    }, 500);
+  }, [currentColorKey, nextColorKey]);
 
   return (
     <button
       onClick={setThemeColor}
       className={`
         p-2 rounded-full relative
-        ${isAnimating ? 'animate-bounce scale-110' : ''}
+        ${isAnimating ? "animate-bounce scale-110" : ""}
         hover:scale-110 transition-all duration-500
         w-10 h-10
       `}
     >
       <div className="w-6 h-6 relative">
-        <div 
+        <div
           className="absolute inset-0 rounded-full transition-all duration-500"
-          style={{ 
-            background: `linear-gradient(45deg, ${prevColor || 'var(--color-primary)'}, ${
-              isAnimating ? nextColorPreview : getNextColor()
-            })`
+          style={{
+            background: `linear-gradient(45deg, ${themeColors[currentColorKey].primary}, ${themeColors[nextColorKey].primary})`,
           }}
         />
       </div>
       <span className="sr-only">Change theme color</span>
     </button>
-  )
+  );
 }
