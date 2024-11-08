@@ -66,9 +66,9 @@ export default function Navigation() {
           <div className="flex items-center">
             <a
               href={process.env.NEXT_PUBLIC_URL}
-              className={`px-4 py-2 rounded hover:text-[var(--color-primary)] bg-gray-100 dark:bg-gray-800 ${
+              className={`px-2 py-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:text-[var(--color-primary)] [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] ${
                 isScrolled
-                  ? "backdrop-blur-sm bg-gray-100/50 dark:bg-gray-800/50"
+                  ? "backdrop-blur-[20px] bg-opacity-50 dark:bg-opacity-50"
                   : ""
               }`}
             >
@@ -97,15 +97,15 @@ export default function Navigation() {
               </svg>
             </a>
             <div className="md:hidden flex items-center space-x-2 ml-2">
-              <ColorThemeSwitcher isScrolled={isScrolled} />
-              <ModeToggle isScrolled={isScrolled} />
+              <ColorThemeSwitcher />
+              <ModeToggle />
             </div>
             <div className="hidden md:flex items-center space-x-2 ml-2">
               <a
                 href="https://alanagoyal.com"
-                className={`px-1.5 py-1.5 rounded hover:text-[var(--color-primary)] bg-gray-100 dark:bg-gray-800 inline-block text-xs sm:px-2 sm:py-2 ${
+                className={`px-1.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 hover:text-[var(--color-primary)] [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-block text-xs sm:px-2 sm:py-2 ${
                   isScrolled
-                    ? "backdrop-blur-sm bg-gray-100/50 dark:bg-gray-800/50"
+                    ? "backdrop-blur-[20px] bg-opacity-50 dark:bg-opacity-50"
                     : ""
                 }`}
                 target="_blank"
@@ -115,9 +115,9 @@ export default function Navigation() {
               </a>
               <a
                 href="https://x.com/alanaagoyal"
-                className={`px-1.5 py-1.5 rounded hover:text-[var(--color-primary)] bg-gray-100 dark:bg-gray-800 inline-block text-xs sm:px-2 sm:py-2 ${
+                className={`px-1.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 hover:text-[var(--color-primary)] [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-block text-xs sm:px-2 sm:py-2 ${
                   isScrolled
-                    ? "backdrop-blur-sm bg-gray-100/50 dark:bg-gray-800/50"
+                    ? "backdrop-blur-[20px] bg-opacity-50 dark:bg-opacity-50"
                     : ""
                 }`}
                 target="_blank"
@@ -127,9 +127,9 @@ export default function Navigation() {
               </a>
               <button
                 onClick={() => setShowGit(true)}
-                className={`px-1.5 py-1.5 rounded hover:text-[var(--color-primary)] bg-gray-100 dark:bg-gray-800 inline-block text-xs sm:px-2 sm:py-2 ${
+                className={`px-1.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 hover:text-[var(--color-primary)] [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-block text-xs sm:px-2 sm:py-2 ${
                   isScrolled
-                    ? "backdrop-blur-sm bg-gray-100/50 dark:bg-gray-800/50"
+                    ? "backdrop-blur-[20px] bg-opacity-50 dark:bg-opacity-50"
                     : ""
                 }`}
               >
@@ -137,9 +137,9 @@ export default function Navigation() {
               </button>
               <button
                 onClick={() => setShowSnake(true)}
-                className={`px-1.5 py-1.5 rounded hover:text-[var(--color-primary)] bg-gray-100 dark:bg-gray-800 inline-block text-xs sm:px-2 sm:py-2 ${
+                className={`px-1.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 hover:text-[var(--color-primary)] [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-block text-xs sm:px-2 sm:py-2 ${
                   isScrolled
-                    ? "backdrop-blur-sm bg-gray-100/50 dark:bg-gray-800/50"
+                    ? "backdrop-blur-[20px] bg-opacity-50 dark:bg-opacity-50"
                     : ""
                 }`}
               >
@@ -149,8 +149,8 @@ export default function Navigation() {
           </div>
           <div className="flex items-center space-x-2">
             <div className="hidden md:flex items-center space-x-2">
-              <ColorThemeSwitcher isScrolled={isScrolled} />
-              <ModeToggle isScrolled={isScrolled} />
+              <ColorThemeSwitcher />
+              <ModeToggle />
             </div>
             <a
               href="https://x.com/alanaagoyal"

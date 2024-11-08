@@ -4,11 +4,7 @@ import * as React from "react"
 import { useCallback } from "react"
 import { themeColors, type ThemeColor } from "@/config/colors"
 
-interface ColorThemeSwitcherProps {
-  isScrolled: boolean;
-}
-
-export function ColorThemeSwitcher({ isScrolled }: ColorThemeSwitcherProps) {
+export function ColorThemeSwitcher() {
   const [currentColorKey, setCurrentColorKey] = React.useState<ThemeColor>("blue")
   const [isAnimating, setIsAnimating] = React.useState(false)
   const [prevColor, setPrevColor] = React.useState<string>("")
@@ -55,8 +51,6 @@ export function ColorThemeSwitcher({ isScrolled }: ColorThemeSwitcherProps) {
         p-2 rounded-full relative
         ${isAnimating ? 'animate-bounce scale-110' : ''}
         hover:scale-110 transition-all duration-500
-        max-sm:bg-gray-100 max-sm:dark:bg-gray-800
-        ${isScrolled ? 'max-sm:backdrop-blur-sm max-sm:bg-gray-100/50 max-sm:dark:bg-gray-800/50' : ''}
         w-10 h-10
       `}
     >

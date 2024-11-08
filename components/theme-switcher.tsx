@@ -4,11 +4,7 @@ import * as React from "react"
 import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 
-interface ModeToggleProps {
-  isScrolled: boolean;
-}
-
-export function ModeToggle({ isScrolled }: ModeToggleProps) {
+export function ModeToggle() {
   const { setTheme, theme } = useTheme()
   const [isAnimating, setIsAnimating] = React.useState(false)
 
@@ -23,8 +19,6 @@ export function ModeToggle({ isScrolled }: ModeToggleProps) {
         p-2 rounded-full relative
         ${isAnimating ? 'animate-bounce scale-110' : ''}
         hover:scale-110 transition-all duration-500
-        max-sm:bg-gray-100 max-sm:dark:bg-gray-800
-        ${isScrolled ? 'max-sm:backdrop-blur-sm max-sm:bg-gray-100/50 max-sm:dark:bg-gray-800/50' : ''}
         w-10 h-10
       `}
     >

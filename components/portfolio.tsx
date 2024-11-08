@@ -228,7 +228,7 @@ export const Portfolio = () => {
 
   return (
     <div className="py-5">
-      <div className={`flex justify-between items-center ${!isGridView ? 'mb-6' : 'mb-8'}`}>
+      <div className={`flex justify-between items-center ${!isGridView ? 'mb-4' : 'mb-8'}`}>
         <h2 className="text-lg font-bold cursor-default">
           Early partner to{" "}
           <span 
@@ -245,7 +245,7 @@ export const Portfolio = () => {
         {/* Only show toggle button on medium screens and up */}
         <button
           onClick={() => setIsGridView(!isGridView)}
-          className="hidden md:block text-sm px-3 py-1 rounded-full border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors"
+          className="hidden md:block text-sm px-1.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors"
         >
           {isGridView ? '[L] List view' : '[G] Grid view'}
         </button>
@@ -261,7 +261,7 @@ export const Portfolio = () => {
         
         {/* List view */}
         {!isGridView && (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
             {portfolio.map((client, index) => (
               <div
                 key={index}
