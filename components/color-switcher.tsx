@@ -17,6 +17,18 @@ export function ColorThemeSwitcher() {
 
   const nextColorKey = getNextColorKey(currentColorKey);
 
+  // Move DOM manipulation to useEffect
+  React.useEffect(() => {
+    // Set initial theme color
+    const colors = themeColors[currentColorKey];
+    const root = document.documentElement;
+    
+    root.style.setProperty("--color-primary", colors.primary);
+    root.style.setProperty("--color-secondary", colors.secondary);
+    root.style.setProperty("--color-background-light", colors.light);
+    root.style.setProperty("--color-background-dark", colors.dark);
+  }, []); // Run once on mount
+
   const setThemeColor = useCallback(() => {
     setIsAnimating(true);
 
@@ -32,7 +44,7 @@ export function ColorThemeSwitcher() {
       setCurrentColorKey(nextColorKey);
       setIsAnimating(false);
     }, 500);
-  }, [currentColorKey, nextColorKey]);
+  }, [nextColorKey]);
 
   return (
     <button
