@@ -16,20 +16,25 @@ export function ColorThemeSwitcher() {
     const nextIndex = (currentIndex + 1) % colorKeys.length
     const nextColor = colorKeys[nextIndex]
     
-    setPrevColor(getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim())
+    const currentColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim()
     setNextColorPreview(themeColors[nextColor].primary)
     
-    const colors = themeColors[nextColor]
-    const root = document.documentElement
-    
-    root.style.setProperty('--color-primary', colors.primary)
-    root.style.setProperty('--color-secondary', colors.secondary)
-    root.style.setProperty('--color-background-light', colors.light)
-    root.style.setProperty('--color-background-dark', colors.dark)
-
-    setCurrentColorKey(nextColor)
     setIsAnimating(true)
-    setTimeout(() => setIsAnimating(false), 500)
+    
+    setTimeout(() => {
+      const colors = themeColors[nextColor]
+      const root = document.documentElement
+      
+      root.style.setProperty('--color-primary', colors.primary)
+      root.style.setProperty('--color-secondary', colors.secondary)
+      root.style.setProperty('--color-background-light', colors.light)
+      root.style.setProperty('--color-background-dark', colors.dark)
+
+      setCurrentColorKey(nextColor)
+      setIsAnimating(false)
+    }, 500)
+    
+    setPrevColor(currentColor)
   }, [currentColorKey])
 
   const getNextColor = () => {
@@ -54,9 +59,9 @@ export function ColorThemeSwitcher() {
         <div 
           className="absolute inset-0 rounded-full transition-all duration-500"
           style={{ 
-            background: isAnimating 
-              ? `linear-gradient(45deg, ${prevColor}, ${nextColorPreview})`
-              : `linear-gradient(45deg, var(--color-primary), ${getNextColor()})`
+            background: `linear-gradient(45deg, ${prevColor || 'var(--color-primary)'}, ${
+              isAnimating ? nextColorPreview : getNextColor()
+            })`
           }}
         />
       </div>
