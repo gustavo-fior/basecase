@@ -29,7 +29,7 @@ export function ColorThemeSwitcher() {
 
     setCurrentColorKey(nextColor)
     setIsAnimating(true)
-    setTimeout(() => setIsAnimating(false), 600)
+    setTimeout(() => setIsAnimating(false), 500)
   }, [currentColorKey])
 
   const getNextColor = () => {

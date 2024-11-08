@@ -24,12 +24,12 @@ export function ModeToggle() {
       onClick={() => {
         setTheme(theme === "light" ? "dark" : "light")
         setIsAnimating(true)
-        setTimeout(() => setIsAnimating(false), 600)
+        setTimeout(() => setIsAnimating(false), 500)
       }}
       className={`
         p-2 rounded-full relative
         ${isAnimating ? 'animate-bounce scale-110' : ''}
-        hover:scale-110 transition-all duration-300
+        hover:scale-110 transition-all duration-500
       `}
     >
       <div className="w-6 h-6 relative">
