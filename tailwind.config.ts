@@ -61,11 +61,16 @@ const config: Config = {
   		},
   		animation: {
   			marquee: 'marquee 20s linear infinite',
+  			bounce: 'bounce 0.5s cubic-bezier(0.4, 0, 0.6, 1)',
   		},
   		keyframes: {
   			marquee: {
   				'0%': { transform: 'translateX(0)' },
   				'100%': { transform: 'translateX(-100%)' },
+  			},
+  			bounce: {
+  				'0%, 100%': { transform: 'translateY(0)' },
+  				'50%': { transform: 'translateY(-15%)' },
   			},
   		},
   	}

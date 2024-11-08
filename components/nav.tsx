@@ -66,27 +66,47 @@ export default function Navigation() {
           <div className="flex items-center">
             <a
               href={process.env.NEXT_PUBLIC_URL}
-              className={`px-4 py-2 rounded hover:text-[var(--color-primary)] bg-gray-100 dark:bg-gray-800 ${
-                isScrolled ? 'backdrop-blur-sm bg-gray-100/50 dark:bg-gray-800/50' : ''
+              className={`px-2 py-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:text-[var(--color-primary)] [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] ${
+                isScrolled
+                  ? "backdrop-blur-[20px] bg-opacity-50 dark:bg-opacity-50"
+                  : ""
               }`}
             >
-              <svg width="28" height="16" viewBox="0 0 596 200" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-gray-900 dark:text-white hover:text-[var(--color-primary)] dark:hover:text-[var(--color-primary)]">
+              <svg
+                width="28"
+                height="16"
+                viewBox="0 0 596 200"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="text-gray-900 dark:text-white hover:text-[var(--color-primary)] dark:hover:text-[var(--color-primary)]"
+              >
                 <g>
-                  <path d="M159.732 47.9949C131.464 47.9949 110.397 57.3286 98.1299 73.8625V0H0V194.666H119.157C129.611 198.127 141.731 200 155.465 200C209.6 200 239.201 170.399 239.201 126.131V121.864C239.201 77.5959 209.6 47.9949 159.732 47.9949ZM119.731 107.997C134.931 107.997 141.065 113.864 141.065 123.997C141.065 134.131 134.931 139.998 119.731 139.998C104.53 139.998 98.1299 133.864 98.1299 123.997C98.1299 114.13 104.263 107.997 119.731 107.997Z" fill="currentColor"/>
-                  <path d="M245.455 121.864C245.455 81.0624 278.522 47.9946 363.859 47.9946C449.195 47.9946 476.129 75.9956 482.529 116.53H383.059C380.926 111.197 376.126 107.197 363.859 107.197C349.725 107.197 343.324 113.33 343.324 123.997C343.324 134.664 349.725 140.798 363.859 140.798C376.126 140.798 380.926 136.798 383.059 131.464H482.796C476.396 171.999 447.061 200 363.859 200C280.656 200 245.455 166.932 245.455 126.131V121.864Z" fill="currentColor"/>
-                  <path d="M483.685 166.667H597.018V193.333H483.685V166.667Z" fill="currentColor"/>
+                  <path
+                    d="M159.732 47.9949C131.464 47.9949 110.397 57.3286 98.1299 73.8625V0H0V194.666H119.157C129.611 198.127 141.731 200 155.465 200C209.6 200 239.201 170.399 239.201 126.131V121.864C239.201 77.5959 209.6 47.9949 159.732 47.9949ZM119.731 107.997C134.931 107.997 141.065 113.864 141.065 123.997C141.065 134.131 134.931 139.998 119.731 139.998C104.53 139.998 98.1299 133.864 98.1299 123.997C98.1299 114.13 104.263 107.997 119.731 107.997Z"
+                    fill="currentColor"
+                  />
+                  <path
+                    d="M245.455 121.864C245.455 81.0624 278.522 47.9946 363.859 47.9946C449.195 47.9946 476.129 75.9956 482.529 116.53H383.059C380.926 111.197 376.126 107.197 363.859 107.197C349.725 107.197 343.324 113.33 343.324 123.997C343.324 134.664 349.725 140.798 363.859 140.798C376.126 140.798 380.926 136.798 383.059 131.464H482.796C476.396 171.999 447.061 200 363.859 200C280.656 200 245.455 166.932 245.455 126.131V121.864Z"
+                    fill="currentColor"
+                  />
+                  <path
+                    d="M483.685 166.667H597.018V193.333H483.685V166.667Z"
+                    fill="currentColor"
+                  />
                 </g>
               </svg>
             </a>
             <div className="md:hidden flex items-center space-x-2 ml-2">
-              <ColorThemeSwitcher isScrolled={isScrolled} />
-              <ModeToggle isScrolled={isScrolled} />
+              <ColorThemeSwitcher />
+              <ModeToggle />
             </div>
             <div className="hidden md:flex items-center space-x-2 ml-2">
               <a
                 href="https://alanagoyal.com"
-                className={`px-1.5 py-1.5 rounded hover:text-[var(--color-primary)] bg-gray-100 dark:bg-gray-800 inline-block text-xs sm:px-2 sm:py-2 ${
-                  isScrolled ? 'backdrop-blur-sm bg-gray-100/50 dark:bg-gray-800/50' : ''
+                className={`px-1.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 hover:text-[var(--color-primary)] [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-block text-xs sm:px-2 sm:py-2 ${
+                  isScrolled
+                    ? "backdrop-blur-[20px] bg-opacity-50 dark:bg-opacity-50"
+                    : ""
                 }`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -95,8 +115,10 @@ export default function Navigation() {
               </a>
               <a
                 href="https://x.com/alanaagoyal"
-                className={`px-1.5 py-1.5 rounded hover:text-[var(--color-primary)] bg-gray-100 dark:bg-gray-800 inline-block text-xs sm:px-2 sm:py-2 ${
-                  isScrolled ? 'backdrop-blur-sm bg-gray-100/50 dark:bg-gray-800/50' : ''
+                className={`px-1.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 hover:text-[var(--color-primary)] [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-block text-xs sm:px-2 sm:py-2 ${
+                  isScrolled
+                    ? "backdrop-blur-[20px] bg-opacity-50 dark:bg-opacity-50"
+                    : ""
                 }`}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -105,16 +127,20 @@ export default function Navigation() {
               </a>
               <button
                 onClick={() => setShowGit(true)}
-                className={`px-1.5 py-1.5 rounded hover:text-[var(--color-primary)] bg-gray-100 dark:bg-gray-800 inline-block text-xs sm:px-2 sm:py-2 ${
-                  isScrolled ? 'backdrop-blur-sm bg-gray-100/50 dark:bg-gray-800/50' : ''
+                className={`px-1.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 hover:text-[var(--color-primary)] [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-block text-xs sm:px-2 sm:py-2 ${
+                  isScrolled
+                    ? "backdrop-blur-[20px] bg-opacity-50 dark:bg-opacity-50"
+                    : ""
                 }`}
               >
                 [C] Commits
               </button>
               <button
                 onClick={() => setShowSnake(true)}
-                className={`px-1.5 py-1.5 rounded hover:text-[var(--color-primary)] bg-gray-100 dark:bg-gray-800 inline-block text-xs sm:px-2 sm:py-2 ${
-                  isScrolled ? 'backdrop-blur-sm bg-gray-100/50 dark:bg-gray-800/50' : ''
+                className={`px-1.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 hover:text-[var(--color-primary)] [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-block text-xs sm:px-2 sm:py-2 ${
+                  isScrolled
+                    ? "backdrop-blur-[20px] bg-opacity-50 dark:bg-opacity-50"
+                    : ""
                 }`}
               >
                 [S] Snake
@@ -123,31 +149,35 @@ export default function Navigation() {
           </div>
           <div className="flex items-center space-x-2">
             <div className="hidden md:flex items-center space-x-2">
-              <ColorThemeSwitcher isScrolled={isScrolled} />
-              <ModeToggle isScrolled={isScrolled} />
+              <ColorThemeSwitcher />
+              <ModeToggle />
             </div>
             <a
-              href="mailto:hi@basecase.vc?subject=hello!"
+              href="https://x.com/alanaagoyal"
               className={`px-4 py-2 bg-[var(--color-primary)] text-white rounded hover:bg-[var(--color-secondary)] inline-block text-xs ${
-                isScrolled ? 'backdrop-blur-sm bg-[var(--color-primary)]/30' : ''
+                isScrolled
+                  ? "backdrop-blur-sm bg-[var(--color-primary)]/30"
+                  : ""
               }`}
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              Email me
+              Message me
             </a>
           </div>
         </div>
       </nav>
 
       {showSnake && (
-        <SnakeGame 
-          onClose={() => setShowSnake(false)} 
+        <SnakeGame
+          onClose={() => setShowSnake(false)}
           isMinimized={minimizedSnake}
           onMinimize={setMinimizedSnake}
         />
       )}
       {showGit && (
-        <GitHistory 
-          onClose={() => setShowGit(false)} 
+        <GitHistory
+          onClose={() => setShowGit(false)}
           isMinimized={minimizedGit}
           onMinimize={setMinimizedGit}
         />
@@ -156,7 +186,7 @@ export default function Navigation() {
       {(minimizedSnake || minimizedGit) && (
         <div className="fixed bottom-4 right-4 flex gap-2 z-50">
           {minimizedSnake && showSnake && (
-            <div 
+            <div
               className="cursor-pointer"
               onClick={() => setMinimizedSnake(false)}
             >
@@ -167,7 +197,7 @@ export default function Navigation() {
             </div>
           )}
           {minimizedGit && showGit && (
-            <div 
+            <div
               className="cursor-pointer"
               onClick={() => setMinimizedGit(false)}
             >

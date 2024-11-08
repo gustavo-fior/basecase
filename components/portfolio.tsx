@@ -3,6 +3,11 @@
 import { useState, useEffect } from "react";
 import { useScramble } from "use-scramble";
 
+const getDomainFromUrl = (url: string) => {
+  const domain = url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+  return domain.charAt(0).toUpperCase() + domain.slice(1);
+};
+
 export const Portfolio = () => {
   const portfolio = [
     {
@@ -11,6 +16,7 @@ export const Portfolio = () => {
       description:
         "Ashby helps scaling companies achieve their ambitious growth targets. With Ashby, teams of all sizes can run a fast and efficient hiring process.",
       url: "https://www.ashbyhq.com/",
+      status: null,
     },
     {
       title: "Astral",
@@ -18,6 +24,7 @@ export const Portfolio = () => {
       description:
         "Astral's mission is to make the Python ecosystem more productive by building high-performance developer tools, starting with Ruff.",
       url: "https://www.astral.sh/",
+      status: null,
     },
     {
       title: "Baseten",
@@ -25,6 +32,7 @@ export const Portfolio = () => {
       description:
         "Baseten provides all the infrastructure you need to deploy and serve ML models performantly, scalably, and cost-efficiently.",
       url: "https://www.baseten.co/",
+      status: null,
     },
     {
       title: "Braintrust",
@@ -32,6 +40,7 @@ export const Portfolio = () => {
       description:
         "Braintrust is the enterprise-grade stack for building AI products. From evaluations, to prompt playground, to data management, Braintrust takes uncertainty and tedium out of incorporating AI into your business.",
       url: "https://www.braintrust.dev/",
+      status: null,
     },
     {
       title: "Browserbase",
@@ -39,6 +48,7 @@ export const Portfolio = () => {
       description:
         "Browserbase is the all-in-one platform developers need to host, manage, and monitor headless browsers in the cloud.",
       url: "https://www.browserbase.com/",
+      status: null,
     },
     {
       title: "Default",
@@ -46,20 +56,15 @@ export const Portfolio = () => {
       description:
         "Default is the all-in-one inbound lead platform that helps modern companies make the most of every lead by consolidating the usually fragmented inbound sales stack into one deeply integrated platform.",
       url: "https://www.default.com/",
+      status: null,
     },
     {
       title: "Diagram",
       icon: "/portfolio/diagram.png",
-      description: (
-        <>
-          <span className="text-plum text-sm block mb-2 lowercase">
-            Acquired by Figma
-          </span>
-          Diagram is a design tools company reimagining UI design in the era of
-          generative AI.
-        </>
-      ),
+      description:
+        "Diagram is a design tools company reimagining UI design in the era of generative AI.",
       url: "https://diagram-figma.webflow.io/",
+      status: "Acquired by Figma",
     },
     {
       title: "Doss",
@@ -67,6 +72,7 @@ export const Portfolio = () => {
       description:
         "Doss is a lightweight ERP and data platform that helps teams manage their operations from purchase order to point of sale.",
       url: "https://doss.com/",
+      status: null,
     },
     {
       title: "Graphite",
@@ -74,6 +80,7 @@ export const Portfolio = () => {
       description:
         "Graphite is a fast, simple code review platform designed for engineers who want to write and review smaller pull requests, stay unblocked, and ship faster.",
       url: "https://graphite.dev/",
+      status: null,
     },
     {
       title: "Mainframe",
@@ -81,6 +88,7 @@ export const Portfolio = () => {
       description:
         "Mainframe's mission is to change the world's relationship with computers.",
       url: "https://mainfra.me/",
+      status: null,
     },
     {
       title: "Orb",
@@ -88,21 +96,15 @@ export const Portfolio = () => {
       description:
         "Orb is developer-first billing infrastructure built to help companies succeed with usage-based pricing.",
       url: "https://www.withorb.com/",
+      status: null,
     },
     {
       title: "Pyroscope",
       icon: "/portfolio/pyroscope.png",
-      description: (
-        <>
-          <span className="text-plum text-sm block mb-2 lowercase">
-            Acquired by Grafana
-          </span>
-          Pyroscope is an open source continuous profiling platform that helps
-          you find performance issues in your code, locate and fix memory leaks,
-          and track changes over time.
-        </>
-      ),
+      description:
+        "Pyroscope is an open source continuous profiling platform that helps you find performance issues in your code, locate and fix memory leaks, and track changes over time.",
       url: "https://pyroscope.io/",
+      status: "Acquired by Grafana",
     },
     {
       title: "Resend",
@@ -110,6 +112,7 @@ export const Portfolio = () => {
       description:
         "Resend is the email API for developers to build, test, and deliver transactional emails at scale.",
       url: "https://resend.com/",
+      status: null,
     },
     {
       title: "SF Compute",
@@ -117,6 +120,7 @@ export const Portfolio = () => {
       description:
         "SF Compute runs affordable pre-training clusters for startups, grad students, and research labs.",
       url: "https://sfcompute.com/",
+      status: null,
     },
     {
       title: "Supabase",
@@ -124,6 +128,7 @@ export const Portfolio = () => {
       description:
         "Supabase is an open source Firebase alternative. Start your project with a Postgres database, authentication, instant APIs, edge functions, realtime subscriptions, and storage.",
       url: "https://supabase.com/",
+      status: null,
     },
     {
       title: "Vercel",
@@ -131,6 +136,7 @@ export const Portfolio = () => {
       description:
         "Vercel's frontend cloud provides the developer experience and infrastructure to build, scale, and secure a faster, more personalized web.",
       url: "https://vercel.com/",
+      status: null,
     },
   ];
 
@@ -142,6 +148,9 @@ export const Portfolio = () => {
   useEffect(() => {
     const handleResize = () => {
       setCols(window.innerWidth < 768 ? 2 : 4);
+      if (window.innerWidth < 768 && isGridView) {
+        setIsGridView(false);
+      }
     };
     
     // Set initial value
@@ -150,7 +159,7 @@ export const Portfolio = () => {
     // Add resize listener
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  }, [isGridView]);
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -219,7 +228,7 @@ export const Portfolio = () => {
 
   return (
     <div className="py-5">
-      <div className={`flex justify-between items-center ${!isGridView ? 'mb-6' : 'mb-8'}`}>
+      <div className={`flex justify-between items-center ${!isGridView ? 'mb-4' : 'mb-8'}`}>
         <h2 className="text-lg font-bold cursor-default">
           Early partner to{" "}
           <span 
@@ -236,7 +245,7 @@ export const Portfolio = () => {
         {/* Only show toggle button on medium screens and up */}
         <button
           onClick={() => setIsGridView(!isGridView)}
-          className="hidden md:block text-sm px-3 py-1 rounded-full border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors"
+          className="hidden md:block text-sm px-1.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors"
         >
           {isGridView ? '[L] List view' : '[G] Grid view'}
         </button>
@@ -250,26 +259,53 @@ export const Portfolio = () => {
           </div>
         )}
         
-        {/* List view - Changed condition to show by default */}
-        {(!isGridView) && (
-          <div className="flex flex-col gap-4">
+        {/* List view */}
+        {!isGridView && (
+          <div className="flex flex-col gap-2">
             {portfolio.map((client, index) => (
-              <a
-                href={client.url}
-                target="_blank"
-                rel="noopener noreferrer"
+              <div
                 key={index}
-                className="flex items-center gap-2 text-sm group"
+                className="flex items-center gap-2 text-sm"
               >
                 <span className="text-gray-800 dark:text-gray-400">+</span>
-                <span className="group-hover:underline">{client.title}</span>
-              </a>
+                <div className="flex items-center gap-1">
+                  <a
+                    href={client.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="relative inline-block"
+                    onMouseEnter={() => setHoveredIndex(index)}
+                    onMouseLeave={() => setHoveredIndex(null)}
+                  >
+                    <span className="text-sm underline md:hidden">
+                      {client.title}
+                    </span>
+                    <span className="hidden md:inline">
+                      {hoveredIndex === index ? (
+                        <ScrambleText 
+                          text={getDomainFromUrl(client.url)} 
+                          className="text-sm underline text-[var(--color-primary)]"
+                        />
+                      ) : (
+                        <span className="text-sm underline">
+                          {client.title}
+                        </span>
+                      )}
+                    </span>
+                  </a>
+                  {client.status && (
+                    <span className="text-sm text-gray-500">
+                      ({client.status})
+                    </span>
+                  )}
+                </div>
+              </div>
             ))}
           </div>
         )}
 
-        {/* Grid view */}
-        {isGridView && (
+        {/* Grid view - only show on medium screens and up */}
+        {isGridView && window.innerWidth >= 768 && (
           <div className="hidden md:grid grid-cols-4">
             {portfolio.map((client, index) => (
               <a
@@ -289,7 +325,7 @@ export const Portfolio = () => {
                   />
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-center hidden md:flex">
                     {hoveredIndex === index ? (
-                      <ScrambleText text={client.title} />
+                      <ScrambleText text={client.title} className="text-2xl font-bold tracking-wide font-geist" />
                     ) : (
                       <span className="text-2xl font-bold tracking-wide font-geist">
                         {client.title}
@@ -306,17 +342,15 @@ export const Portfolio = () => {
   );
 };
 
-const ScrambleText = ({ text }: { text: string }) => {
+const ScrambleText = ({ text, className = "text-2xl font-bold tracking-wide font-geist" }: { text: string, className?: string }) => {
   const { ref } = useScramble({
     text,
-    speed: 0.4,
+    speed: 0.8,
     tick: 1,
     step: 1,
-    scramble: 4,
+    scramble: 3,
     seed: 3,
   });
 
-  return (
-    <span ref={ref} className="text-2xl font-bold tracking-wide font-geist" />
-  );
+  return <span ref={ref} className={className} />;
 };

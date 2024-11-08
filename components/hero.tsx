@@ -5,7 +5,7 @@ export const Hero = () => {
   const headingParts = ["First", "check", "to", "future founders"];
 
   return (
-    <div className="max-w-3xl py-4 sm:py-0">
+    <div className="max-w-3xl py-5">
       <h1 className="text-3xl font-bold mb-4 flex flex-wrap cursor-default">
         {headingParts.map((part, index) => (
           <span key={index} className="whitespace-nowrap">

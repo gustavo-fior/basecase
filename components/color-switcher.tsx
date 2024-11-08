@@ -2,57 +2,69 @@
 
 import * as React from "react"
 import { useCallback } from "react"
-import { Palette } from "lucide-react"
 import { themeColors, type ThemeColor } from "@/config/colors"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 
-export function ColorThemeSwitcher({ isScrolled }: { isScrolled: boolean }) {
-  const setThemeColor = useCallback((color: ThemeColor) => {
-    const root = document.documentElement
-    const colors = themeColors[color]
+export function ColorThemeSwitcher() {
+  const [currentColorKey, setCurrentColorKey] = React.useState<ThemeColor>("blue")
+  const [isAnimating, setIsAnimating] = React.useState(false)
+  const [prevColor, setPrevColor] = React.useState<string>("")
+  const [nextColorPreview, setNextColorPreview] = React.useState<string>("")
+
+  const setThemeColor = useCallback(() => {
+    const colorKeys = Object.keys(themeColors) as ThemeColor[]
+    const currentIndex = colorKeys.indexOf(currentColorKey)
+    const nextIndex = (currentIndex + 1) % colorKeys.length
+    const nextColor = colorKeys[nextIndex]
     
-    root.style.setProperty('--color-primary', colors.primary)
-    root.style.setProperty('--color-secondary', colors.secondary)
-    root.style.setProperty('--color-background-light', colors.light)
-    root.style.setProperty('--color-background-dark', colors.dark)
-  }, [])
+    const currentColor = getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim()
+    setNextColorPreview(themeColors[nextColor].primary)
+    
+    setIsAnimating(true)
+    
+    setTimeout(() => {
+      const colors = themeColors[nextColor]
+      const root = document.documentElement
+      
+      root.style.setProperty('--color-primary', colors.primary)
+      root.style.setProperty('--color-secondary', colors.secondary)
+      root.style.setProperty('--color-background-light', colors.light)
+      root.style.setProperty('--color-background-dark', colors.dark)
+
+      setCurrentColorKey(nextColor)
+      setIsAnimating(false)
+    }, 500)
+    
+    setPrevColor(currentColor)
+  }, [currentColorKey])
+
+  const getNextColor = () => {
+    const colorKeys = Object.keys(themeColors) as ThemeColor[]
+    const currentIndex = colorKeys.indexOf(currentColorKey)
+    const nextIndex = (currentIndex + 1) % colorKeys.length
+    return themeColors[colorKeys[nextIndex]].primary
+  }
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button className={`bg-gray-100 dark:bg-gray-800 px-4 py-2 hover:text-[var(--color-primary)] rounded relative ${
-          isScrolled ? 'backdrop-blur-sm bg-gray-100/50 dark:bg-gray-800/50' : ''
-        }`}>
-          <div className="w-[1rem] h-[1rem] relative">
-            <Palette className="h-[1rem] w-[1rem]" />
-          </div>
-          <span className="sr-only">Change theme color</span>
-        </button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent 
-        align="end" 
-        className="dark:bg-[var(--color-background-dark)] bg-[var(--color-background-light)]"
-      >
-        {Object.entries(themeColors).map(([key, color]) => (
-          <DropdownMenuItem
-            key={key}
-            onClick={() => setThemeColor(key as ThemeColor)}
-          >
-            <div className="flex items-center gap-2">
-              <div 
-                className="w-4 h-4 rounded-full" 
-                style={{ backgroundColor: color.primary }}
-              />
-              <span className="font-mono">{color.name}</span>
-            </div>
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <button
+      onClick={setThemeColor}
+      className={`
+        p-2 rounded-full relative
+        ${isAnimating ? 'animate-bounce scale-110' : ''}
+        hover:scale-110 transition-all duration-500
+        w-10 h-10
+      `}
+    >
+      <div className="w-6 h-6 relative">
+        <div 
+          className="absolute inset-0 rounded-full transition-all duration-500"
+          style={{ 
+            background: `linear-gradient(45deg, ${prevColor || 'var(--color-primary)'}, ${
+              isAnimating ? nextColorPreview : getNextColor()
+            })`
+          }}
+        />
+      </div>
+      <span className="sr-only">Change theme color</span>
+    </button>
   )
 }
