@@ -153,14 +153,16 @@ export default function Navigation() {
               <ModeToggle isScrolled={isScrolled} />
             </div>
             <a
-              href="mailto:hi@basecase.vc?subject=hello!"
+              href="https://x.com/alanaagoyal"
               className={`px-4 py-2 bg-[var(--color-primary)] text-white rounded hover:bg-[var(--color-secondary)] inline-block text-xs ${
                 isScrolled
                   ? "backdrop-blur-sm bg-[var(--color-primary)]/30"
                   : ""
               }`}
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              Email me
+              Message me
             </a>
           </div>
         </div>
