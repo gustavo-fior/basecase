@@ -79,8 +79,8 @@ export default function Navigation() {
               </svg>
             </a>
             <div className="md:hidden flex items-center space-x-2 ml-2">
-              <ColorThemeSwitcher isScrolled={isScrolled} />
-              <ModeToggle isScrolled={isScrolled} />
+              <ColorThemeSwitcher />
+              <ModeToggle />
             </div>
             <div className="hidden md:flex items-center space-x-2 ml-2">
               <a
@@ -123,8 +123,8 @@ export default function Navigation() {
           </div>
           <div className="flex items-center space-x-2">
             <div className="hidden md:flex items-center space-x-2">
-              <ColorThemeSwitcher isScrolled={isScrolled} />
-              <ModeToggle isScrolled={isScrolled} />
+              <ColorThemeSwitcher />
+              <ModeToggle />
             </div>
             <a
               href="mailto:hi@basecase.vc?subject=hello!"

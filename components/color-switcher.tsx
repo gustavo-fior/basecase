@@ -4,7 +4,7 @@ import * as React from "react"
 import { useCallback } from "react"
 import { themeColors, type ThemeColor } from "@/config/colors"
 
-export function ColorThemeSwitcher({ isScrolled }: { isScrolled: boolean }) {
+export function ColorThemeSwitcher() {
   const [currentColorKey, setCurrentColorKey] = React.useState<ThemeColor>("blue")
   const [isAnimating, setIsAnimating] = React.useState(false)
 

@@ -5,7 +5,7 @@ import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 import { useEffect } from "react"
 
-export function ModeToggle({ isScrolled }: { isScrolled: boolean }) {
+export function ModeToggle() {
   const { setTheme, theme } = useTheme()
   const [mounted, setMounted] = React.useState(false)
   const [isAnimating, setIsAnimating] = React.useState(false)
