@@ -34,9 +34,9 @@ export function ModeToggle() {
     >
       <div className="w-6 h-6 relative">
         {theme === "dark" ? (
-          <Sun className="h-6 w-6 text-white" />
+          <Sun className="h-6 w-6 dark:text-white text-black" />
         ) : (
-          <Moon className="h-6 w-6 text-black" />
+          <Moon className="h-6 w-6 dark:text-white text-black" />
         )}
       </div>
       <span className="sr-only">Toggle theme</span>
