@@ -12,16 +12,6 @@ export default function Navigation() {
   const [showGit, setShowGit] = useState(false);
   const [minimizedSnake, setMinimizedSnake] = useState(false);
   const [minimizedGit, setMinimizedGit] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 0);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -66,11 +56,7 @@ export default function Navigation() {
           <div className="flex items-center">
             <a
               href={process.env.NEXT_PUBLIC_URL}
-              className={`px-2 py-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:text-[var(--color-primary)] [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] ${
-                isScrolled
-                  ? "backdrop-blur-[20px] bg-opacity-50 dark:bg-opacity-50"
-                  : ""
-              }`}
+              className="px-2 py-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]"
             >
               <svg
                 width="28"
@@ -78,7 +64,7 @@ export default function Navigation() {
                 viewBox="0 0 596 200"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                className="text-gray-900 dark:text-white hover:text-[var(--color-primary)] dark:hover:text-[var(--color-primary)]"
+                className="text-gray-900 dark:text-white"
               >
                 <g>
                   <path
@@ -103,11 +89,7 @@ export default function Navigation() {
             <div className="hidden md:flex items-center space-x-2 ml-2">
               <a
                 href="https://alanagoyal.com"
-                className={`px-1.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 hover:text-[var(--color-primary)] [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-block text-xs sm:px-2 sm:py-2 ${
-                  isScrolled
-                    ? "backdrop-blur-[20px] bg-opacity-50 dark:bg-opacity-50"
-                    : ""
-                }`}
+                className="px-1.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-block text-xs sm:px-2 sm:py-2"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -115,11 +97,7 @@ export default function Navigation() {
               </a>
               <a
                 href="https://x.com/alanaagoyal"
-                className={`px-1.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 hover:text-[var(--color-primary)] [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-block text-xs sm:px-2 sm:py-2 ${
-                  isScrolled
-                    ? "backdrop-blur-[20px] bg-opacity-50 dark:bg-opacity-50"
-                    : ""
-                }`}
+                className="px-1.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-block text-xs sm:px-2 sm:py-2"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -127,21 +105,13 @@ export default function Navigation() {
               </a>
               <button
                 onClick={() => setShowGit(true)}
-                className={`px-1.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 hover:text-[var(--color-primary)] [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-block text-xs sm:px-2 sm:py-2 ${
-                  isScrolled
-                    ? "backdrop-blur-[20px] bg-opacity-50 dark:bg-opacity-50"
-                    : ""
-                }`}
+                className="px-1.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-block text-xs sm:px-2 sm:py-2"
               >
                 [C] Commits
               </button>
               <button
                 onClick={() => setShowSnake(true)}
-                className={`px-1.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 hover:text-[var(--color-primary)] [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-block text-xs sm:px-2 sm:py-2 ${
-                  isScrolled
-                    ? "backdrop-blur-[20px] bg-opacity-50 dark:bg-opacity-50"
-                    : ""
-                }`}
+                className="px-1.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-block text-xs sm:px-2 sm:py-2"
               >
                 [S] Snake
               </button>
@@ -154,11 +124,7 @@ export default function Navigation() {
             </div>
             <a
               href="https://x.com/alanaagoyal"
-              className={`px-4 py-2 bg-[var(--color-primary)] text-white rounded hover:bg-[var(--color-secondary)] inline-block text-xs ${
-                isScrolled
-                  ? "backdrop-blur-sm bg-[var(--color-primary)]/30"
-                  : ""
-              }`}
+              className="px-4 py-2 bg-[var(--color-primary)] text-white rounded hover:bg-[var(--color-secondary)] inline-block text-xs"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -190,7 +156,7 @@ export default function Navigation() {
               className="cursor-pointer"
               onClick={() => setMinimizedSnake(false)}
             >
-              <div className="flex items-center gap-2 border border-gray-800 shadow dark:border-gray-200 py-2 px-4 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]">
+              <div className="flex items-center gap-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 py-2 px-4 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]">
                 <Gamepad className="w-4 h-4 text-gray-500" />
                 <span className="font-mono text-sm">Snake game</span>
               </div>
@@ -201,7 +167,7 @@ export default function Navigation() {
               className="cursor-pointer"
               onClick={() => setMinimizedGit(false)}
             >
-              <div className="flex items-center gap-2 border border-gray-800 shadow dark:border-gray-200 py-2 px-4 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]">
+              <div className="flex items-center gap-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 py-2 px-4 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]">
                 <GitCommit className="w-4 h-4 text-gray-500" />
                 <span className="font-mono text-sm">Git commit history</span>
               </div>
