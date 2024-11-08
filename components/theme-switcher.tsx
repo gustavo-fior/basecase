@@ -30,6 +30,8 @@ export function ModeToggle() {
         p-2 rounded-full relative
         ${isAnimating ? 'animate-bounce scale-110' : ''}
         hover:scale-110 transition-all duration-500
+        max-sm:bg-gray-100 max-sm:dark:bg-gray-800
+        w-10 h-10
       `}
     >
       <div className="w-6 h-6 relative">
