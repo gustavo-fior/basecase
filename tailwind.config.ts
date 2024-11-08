@@ -61,7 +61,7 @@ const config: Config = {
   		},
   		animation: {
   			marquee: 'marquee 20s linear infinite',
-  			bounce: 'bounce 0.3s cubic-bezier(0.4, 0, 0.6, 1)',
+  			bounce: 'bounce 0.6s cubic-bezier(0.4, 0, 0.6, 1)',
   		},
   		keyframes: {
   			marquee: {
@@ -70,7 +70,7 @@ const config: Config = {
   			},
   			bounce: {
   				'0%, 100%': { transform: 'translateY(0)' },
-  				'50%': { transform: 'translateY(-10%)' },
+  				'50%': { transform: 'translateY(-15%)' },
   			},
   		},
   	}

@@ -8,6 +8,7 @@ export function ColorThemeSwitcher() {
   const [currentColorKey, setCurrentColorKey] = React.useState<ThemeColor>("blue")
   const [isAnimating, setIsAnimating] = React.useState(false)
   const [prevColor, setPrevColor] = React.useState<string>("")
+  const [nextColorPreview, setNextColorPreview] = React.useState<string>("")
 
   const setThemeColor = useCallback(() => {
     const colorKeys = Object.keys(themeColors) as ThemeColor[]
@@ -16,6 +17,7 @@ export function ColorThemeSwitcher() {
     const nextColor = colorKeys[nextIndex]
     
     setPrevColor(getComputedStyle(document.documentElement).getPropertyValue('--color-primary').trim())
+    setNextColorPreview(themeColors[nextColor].primary)
     
     const colors = themeColors[nextColor]
     const root = document.documentElement
@@ -27,25 +29,32 @@ export function ColorThemeSwitcher() {
 
     setCurrentColorKey(nextColor)
     setIsAnimating(true)
-    setTimeout(() => setIsAnimating(false), 300)
+    setTimeout(() => setIsAnimating(false), 600)
   }, [currentColorKey])
+
+  const getNextColor = () => {
+    const colorKeys = Object.keys(themeColors) as ThemeColor[]
+    const currentIndex = colorKeys.indexOf(currentColorKey)
+    const nextIndex = (currentIndex + 1) % colorKeys.length
+    return themeColors[colorKeys[nextIndex]].primary
+  }
 
   return (
     <button
       onClick={setThemeColor}
       className={`
         p-2 rounded-full relative
-        ${isAnimating ? 'animate-bounce' : ''}
-        hover:scale-110 transition-all
+        ${isAnimating ? 'animate-bounce scale-110' : ''}
+        hover:scale-110 transition-all duration-500
       `}
     >
       <div className="w-6 h-6 relative">
         <div 
-          className="absolute inset-0 rounded-full transition-all duration-300"
+          className="absolute inset-0 rounded-full transition-all duration-500"
           style={{ 
             background: isAnimating 
-              ? `linear-gradient(45deg, ${prevColor}, var(--color-primary))`
-              : 'var(--color-primary)'
+              ? `linear-gradient(45deg, ${prevColor}, ${nextColorPreview})`
+              : `linear-gradient(45deg, var(--color-primary), ${getNextColor()})`
           }}
         />
       </div>
