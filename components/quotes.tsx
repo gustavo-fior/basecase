@@ -88,7 +88,7 @@ export const Quotes = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % quotes.length);
-    }, 3000);
+    }, 5000);
 
     // Cleanup interval on unmount
     return () => clearInterval(interval);
@@ -105,10 +105,10 @@ export const Quotes = () => {
   }, [isFocused]);
 
   return (
-    <div className="py-5 sm:min-h-[100px] min-h-[225px]">
+    <div className="py-5">
       <div
         {...handlers}
-        className="flex gap-6 sm:h-[100px] h-[225px]"
+        className="flex gap-6"
         tabIndex={0}
         role="region"
         aria-label="Testimonial quotes"
@@ -119,7 +119,7 @@ export const Quotes = () => {
           <img
             src={quotes[currentIndex].image}
             alt={quotes[currentIndex].author}
-            className="w-12 h-12 rounded-full object-cover grayscale"
+            className="w-20 h-20 rounded-full object-cover grayscale"
           />
         </div>
         <div className="border-l-4 border-[var(--color-primary)] pl-6 flex flex-col justify-between">
