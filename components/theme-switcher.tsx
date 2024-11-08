@@ -8,6 +8,7 @@ import { useEffect } from "react"
 export function ModeToggle({ isScrolled }: { isScrolled: boolean }) {
   const { setTheme, theme } = useTheme()
   const [mounted, setMounted] = React.useState(false)
+  const [isAnimating, setIsAnimating] = React.useState(false)
 
   // Only render component after first client-side render
   useEffect(() => {
@@ -20,16 +21,22 @@ export function ModeToggle({ isScrolled }: { isScrolled: boolean }) {
 
   return (
     <button
-      onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-      className={`bg-gray-100 dark:bg-gray-800 px-4 py-2 hover:text-[var(--color-primary)] rounded relative ${
-        isScrolled ? 'backdrop-blur-sm bg-gray-100/50 dark:bg-gray-800/50' : ''
-      }`}
+      onClick={() => {
+        setTheme(theme === "light" ? "dark" : "light")
+        setIsAnimating(true)
+        setTimeout(() => setIsAnimating(false), 300)
+      }}
+      className={`
+        p-2 rounded-full relative
+        ${isAnimating ? 'animate-bounce' : ''}
+        hover:scale-110 transition-all
+      `}
     >
-      <div className="w-[1rem] h-[1rem] relative">
+      <div className="w-6 h-6 relative">
         {theme === "dark" ? (
-          <Sun className="h-[1rem] w-[1rem]" />
+          <Sun className="h-6 w-6 text-white" />
         ) : (
-          <Moon className="h-[1rem] w-[1rem]" />
+          <Moon className="h-6 w-6 text-black" />
         )}
       </div>
       <span className="sr-only">Toggle theme</span>
