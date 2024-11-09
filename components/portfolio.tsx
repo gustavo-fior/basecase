@@ -209,6 +209,9 @@ export const Portfolio = () => {
     return intersections;
   };
 
+  const rows = Math.ceil(portfolio.length / 4);
+  const gridHeight = rows * 112; // 112px is the height of each row
+
   return (
     <div className="py-5">
       <div className={`flex justify-between items-center ${!isGridView ? 'mb-4' : 'mb-8'}`}>
@@ -243,11 +246,15 @@ export const Portfolio = () => {
         )}
         
         {/* List view - show on mobile OR when list view is selected */}
-        <div className={`flex flex-col gap-2 ${isGridView ? 'md:hidden' : ''}`}>
+        <div 
+          className={`flex flex-col ${isGridView ? 'md:hidden' : ''}`}
+          style={{ height: `${gridHeight}px` }}
+        >
           {portfolio.map((client, index) => (
             <div
               key={index}
               className="flex items-center gap-2 text-sm"
+              style={{ height: `${gridHeight / portfolio.length}px` }}
             >
               <span className="text-gray-800 dark:text-gray-400">+</span>
               <div className="flex items-center gap-1">
@@ -287,7 +294,10 @@ export const Portfolio = () => {
 
         {/* Grid view - only show on md and up when grid view is selected */}
         {isGridView && (
-          <div className="hidden md:grid md:grid-cols-4">
+          <div 
+            className="hidden md:grid md:grid-cols-4"
+            style={{ height: `${gridHeight}px` }}
+          >
             {portfolio.map((client, index) => (
               <a
                 href={client.url}
@@ -295,10 +305,9 @@ export const Portfolio = () => {
                 rel="noopener noreferrer"
                 key={index}
                 className="cursor-pointer group"
-                onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex(null)}
+                style={{ height: '112px' }}
               >
-                <div className="h-28 relative flex items-center justify-center">
+                <div className="h-full relative flex items-center justify-center">
                   <img
                     src={client.icon}
                     alt={client.title}
