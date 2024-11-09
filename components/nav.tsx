@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { SnakeGame } from "./snake";
-import { ColorThemeSwitcher } from "./color-switcher";
-import { ModeToggle } from "./theme-switcher";
+import { ColorSwitcher } from "./color-switcher";
+import { ThemeSwitcher } from "./theme-switcher";
 import { GitHistory } from "./git";
 import { Gamepad, GitCommit } from "lucide-react";
 
@@ -114,8 +114,8 @@ export default function Navigation() {
             </div>
           </div>
           <div className="flex items-center space-x-2">
-            <ColorThemeSwitcher />
-            <ModeToggle />
+            <ColorSwitcher />
+            <ThemeSwitcher />
           </div>
         </div>
       </nav>

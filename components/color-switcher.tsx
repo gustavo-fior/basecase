@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-export function ColorThemeSwitcher() {
+export function ColorSwitcher() {
   const setThemeColor = useCallback((color: ThemeColor) => {
     const root = document.documentElement;
     const colors = themeColors[color];
