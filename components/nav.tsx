@@ -56,7 +56,7 @@ export default function Navigation() {
           <div className="flex items-center">
             <a
               href={process.env.NEXT_PUBLIC_URL}
-              className="p-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-flex items-center"
+              className="p-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-primary)] inline-flex items-center"
             >
               <svg
                 width="26"
@@ -64,7 +64,7 @@ export default function Navigation() {
                 viewBox="0 0 596 200"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                className="text-gray-900 dark:text-white"
+                className="text-white"
               >
                 <g>
                   <path
