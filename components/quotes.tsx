@@ -105,7 +105,7 @@ export const Quotes = () => {
   }, [isFocused]);
 
   return (
-    <div className="py-5">
+    <div className="py-10">
       <div
         {...handlers}
         className="flex gap-6"

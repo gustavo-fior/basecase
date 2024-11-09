@@ -75,7 +75,7 @@ const DisintegratingText = ({
 
 export const About = () => {
   return (
-    <div className="py-5">
+    <div className="py-10">
       <div className="md:hidden">
         <h1 className="text-lg font-bold mb-4">No decks, no pitch meetings</h1>
       </div>
