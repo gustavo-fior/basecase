@@ -140,6 +140,11 @@ export const Portfolio = () => {
     },
   ];
 
+  const ITEM_HEIGHT = 112; // Height of each grid item in pixels
+  const GRID_COLS = 4;
+  const gridRows = Math.ceil(portfolio.length / GRID_COLS);
+  const totalHeight = ITEM_HEIGHT * gridRows;
+
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isIconicHovered, setIsIconicHovered] = useState(false);
   const [isGridView, setIsGridView] = useState(false);
@@ -209,12 +214,9 @@ export const Portfolio = () => {
     return intersections;
   };
 
-  const rows = Math.ceil(portfolio.length / 4);
-  const gridHeight = rows * 112; // 112px is the height of each row
-
   return (
-    <div className="py-5">
-      <div className={`flex justify-between items-center ${!isGridView ? 'mb-4' : 'mb-8'}`}>
+    <div className="py-10">
+      <div className={`flex justify-between items-center mb-8`}>
         <h2 className="text-lg font-bold cursor-default">
           Early partner to{" "}
           <span 
@@ -237,7 +239,7 @@ export const Portfolio = () => {
         </button>
       </div>
 
-      <div className="relative">
+      <div className="relative" style={{ height: totalHeight }}>
         {/* Grid intersections - only show on md and up when in grid view */}
         {isGridView && (
           <div className="hidden md:block">
@@ -248,13 +250,13 @@ export const Portfolio = () => {
         {/* List view - show on mobile OR when list view is selected */}
         <div 
           className={`flex flex-col ${isGridView ? 'md:hidden' : ''}`}
-          style={{ height: `${gridHeight}px` }}
+          style={{ height: totalHeight }}
         >
           {portfolio.map((client, index) => (
             <div
               key={index}
               className="flex items-center gap-2 text-sm"
-              style={{ height: `${gridHeight / portfolio.length}px` }}
+              style={{ height: `${totalHeight / portfolio.length}px` }}
             >
               <span className="text-gray-800 dark:text-gray-400">+</span>
               <div className="flex items-center gap-1">
@@ -296,7 +298,7 @@ export const Portfolio = () => {
         {isGridView && (
           <div 
             className="hidden md:grid md:grid-cols-4"
-            style={{ height: `${gridHeight}px` }}
+            style={{ height: totalHeight }}
           >
             {portfolio.map((client, index) => (
               <a
