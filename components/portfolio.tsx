@@ -308,6 +308,8 @@ export const Portfolio = () => {
                 key={index}
                 className="cursor-pointer group"
                 style={{ height: '112px' }}
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(null)}
               >
                 <div className="h-full relative flex items-center justify-center">
                   <img
