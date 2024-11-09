@@ -280,15 +280,13 @@ export const Portfolio = () => {
                     ) : (
                       <span className="text-sm underline">
                         {client.title}
+                        {client.status && (
+                          <span className="text-gray-500"> ({client.status})</span>
+                        )}
                       </span>
                     )}
                   </span>
                 </a>
-                {client.status && (
-                  <span className="text-sm text-gray-500">
-                    ({client.status})
-                  </span>
-                )}
               </div>
             </div>
           ))}
