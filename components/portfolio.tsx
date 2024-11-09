@@ -274,7 +274,7 @@ export const Portfolio = () => {
                   <span className="hidden md:inline">
                     {hoveredIndex === index ? (
                       <ScrambleText 
-                        text={getDomainFromUrl(client.url)} 
+                        text={client.title === "Diagram" ? "Diagram.com" : getDomainFromUrl(client.url)} 
                         className="text-sm underline text-[var(--color-primary)]"
                       />
                     ) : (
