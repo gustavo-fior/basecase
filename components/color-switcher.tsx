@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useCallback } from "react";
-import { Palette, ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { themeColors, type ThemeColor } from "@/config/colors";
 import {
   DropdownMenu,
