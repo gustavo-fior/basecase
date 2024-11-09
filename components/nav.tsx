@@ -52,7 +52,7 @@ export default function Navigation() {
         content="Use W/T/G/S keyboard shortcuts to navigate"
       />
       <nav className="w-full sticky top-0 z-50 mb-10">
-        <div className="flex justify-between items-center px-4 max-w-5xl mx-auto py-4 sm:py-6">
+        <div className="flex max-w-4xl justify-between items-center px-4 mx-auto py-4 sm:py-6">
           <div className="flex items-center">
             <a
               href={process.env.NEXT_PUBLIC_URL}

@@ -8,7 +8,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen font-mono">
       <Navigation />
-      <div className="px-4 max-w-5xl mx-auto mb-8">
+      <div className="px-4 max-w-4xl mx-auto mb-8">
         <Content />
         <CTA />
       </div>
