@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { themeColors, type ThemeColor } from "@/config/colors";
 
 export function ColorThemeSwitcher() {
@@ -18,8 +18,7 @@ export function ColorThemeSwitcher() {
   const nextColorKey = getNextColorKey(currentColorKey);
 
   // Move DOM manipulation to useEffect
-  React.useEffect(() => {
-    // Set initial theme color
+  useEffect(() => {
     const colors = themeColors[currentColorKey];
     const root = document.documentElement;
     
@@ -27,20 +26,12 @@ export function ColorThemeSwitcher() {
     root.style.setProperty("--color-secondary", colors.secondary);
     root.style.setProperty("--color-background-light", colors.light);
     root.style.setProperty("--color-background-dark", colors.dark);
-  }, []); // Run once on mount
+  }, [currentColorKey]); // Add currentColorKey as dependency
 
   const setThemeColor = useCallback(() => {
     setIsAnimating(true);
 
     setTimeout(() => {
-      const colors = themeColors[nextColorKey];
-      const root = document.documentElement;
-
-      root.style.setProperty("--color-primary", colors.primary);
-      root.style.setProperty("--color-secondary", colors.secondary);
-      root.style.setProperty("--color-background-light", colors.light);
-      root.style.setProperty("--color-background-dark", colors.dark);
-
       setCurrentColorKey(nextColorKey);
       setIsAnimating(false);
     }, 500);
