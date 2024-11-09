@@ -278,10 +278,12 @@ export const Portfolio = () => {
                         className="text-sm underline text-[var(--color-primary)]"
                       />
                     ) : (
-                      <span className="text-sm underline">
-                        {client.title}
+                      <span>
+                        <span className="text-sm underline">
+                          {client.title}
+                        </span>
                         {client.status && (
-                          <span className="text-gray-500"> ({client.status})</span>
+                          <span className="text-sm text-gray-500"> ({client.status})</span>
                         )}
                       </span>
                     )}
