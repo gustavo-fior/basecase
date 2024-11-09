@@ -7,7 +7,6 @@ import { useEffect } from "react"
 
 export function ModeToggle() {
   const { setTheme, theme } = useTheme()
-  const [isAnimating, setIsAnimating] = React.useState(false)
   const [mounted, setMounted] = React.useState(false)
 
   useEffect(() => {
@@ -17,27 +16,30 @@ export function ModeToggle() {
   if (!mounted) return null
 
   return (
-    <button
-      onClick={() => {
-        setTheme(theme === "light" ? "dark" : "light")
-        setIsAnimating(true)
-        setTimeout(() => setIsAnimating(false), 500)
-      }}
-      className={`
-        p-2 rounded-full relative
-        ${isAnimating ? 'animate-bounce scale-110' : ''}
-        hover:scale-110 transition-all duration-500
-        w-10 h-10
-      `}
-    >
-      <div className="w-6 h-6 relative">
-        {theme === "dark" ? (
-          <Sun className="h-6 w-6 dark:text-white text-black" />
-        ) : (
-          <Moon className="h-6 w-6 dark:text-white text-black" />
-        )}
-      </div>
-      <span className="sr-only">Toggle theme</span>
-    </button>
+    <div className="p-1 flex items-center rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]">
+      <button
+        onClick={() => setTheme("light")}
+        className={`rounded-md p-1 transition-colors ${
+          theme === "light" 
+            ? "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white" 
+            : "text-gray-500 dark:text-gray-400"
+        }`}
+      >
+        <Sun className="h-4 w-4" />
+        <span className="sr-only">Light mode</span>
+      </button>
+
+      <button
+        onClick={() => setTheme("dark")}
+        className={`rounded-md p-1 transition-colors ${
+          theme === "dark" 
+            ? "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white" 
+            : "text-gray-500 dark:text-gray-400"
+        }`}
+      >
+        <Moon className="h-4 w-4" />
+        <span className="sr-only">Dark mode</span>
+      </button>
+    </div>
   )
 }

@@ -1,61 +1,59 @@
 "use client";
 
 import * as React from "react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
+import { Palette, ChevronDown } from "lucide-react";
 import { themeColors, type ThemeColor } from "@/config/colors";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export function ColorThemeSwitcher() {
-  const [currentColorKey, setCurrentColorKey] = useState<ThemeColor>("red");
-  const [isAnimating, setIsAnimating] = useState(false);
-
-  // Get the next color key
-  const getNextColorKey = (current: ThemeColor): ThemeColor => {
-    const colorKeys = Object.keys(themeColors) as ThemeColor[];
-    const currentIndex = colorKeys.indexOf(current);
-    return colorKeys[(currentIndex + 1) % colorKeys.length];
-  };
-
-  const nextColorKey = getNextColorKey(currentColorKey);
-
-  // Move DOM manipulation to useEffect
-  useEffect(() => {
-    const colors = themeColors[currentColorKey];
+  const setThemeColor = useCallback((color: ThemeColor) => {
     const root = document.documentElement;
-    
+    const colors = themeColors[color];
+
     root.style.setProperty("--color-primary", colors.primary);
     root.style.setProperty("--color-secondary", colors.secondary);
     root.style.setProperty("--color-background-light", colors.light);
     root.style.setProperty("--color-background-dark", colors.dark);
-  }, [currentColorKey]); // Add currentColorKey as dependency
-
-  const setThemeColor = useCallback(() => {
-    setIsAnimating(true);
-
-    setTimeout(() => {
-      setCurrentColorKey(nextColorKey);
-      setIsAnimating(false);
-    }, 500);
-  }, [nextColorKey]);
+  }, []);
 
   return (
-    <button
-      onClick={setThemeColor}
-      className={`
-        p-2 rounded-full relative
-        ${isAnimating ? "animate-bounce scale-110" : ""}
-        hover:scale-110 transition-all duration-500
-        w-10 h-10
-      `}
-    >
-      <div className="w-6 h-6 relative">
-        <div
-          className="absolute inset-0 rounded-full transition-all duration-500"
-          style={{
-            background: `linear-gradient(45deg, ${themeColors[currentColorKey].primary}, ${themeColors[nextColorKey].primary})`,
-          }}
-        />
-      </div>
-      <span className="sr-only">Change theme color</span>
-    </button>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          className="p-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-flex items-center gap-2"
+        >
+          <div
+            className="w-4 h-4 rounded-full [background-color:var(--color-primary)]"
+          />
+          <ChevronDown className="h-4 w-4" />
+          <span className="sr-only">Change theme color</span>
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="end"
+        className="dark:bg-[var(--color-background-dark)] bg-[var(--color-background-light)]"
+      >
+        {Object.entries(themeColors).map(([key, color]) => (
+          <DropdownMenuItem
+            key={key}
+            onClick={() => setThemeColor(key as ThemeColor)}
+          >
+            <div className="flex items-center gap-2">
+              <div
+                className="w-4 h-4 rounded-full"
+                style={{ backgroundColor: color.primary }}
+              />
+              <span className="font-mono">{color.name}</span>
+            </div>
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

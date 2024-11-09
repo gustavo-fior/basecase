@@ -56,10 +56,10 @@ export default function Navigation() {
           <div className="flex items-center">
             <a
               href={process.env.NEXT_PUBLIC_URL}
-              className="px-2 py-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]"
+              className="p-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-flex items-center"
             >
               <svg
-                width="28"
+                width="26"
                 height="16"
                 viewBox="0 0 596 200"
                 fill="none"
@@ -82,14 +82,10 @@ export default function Navigation() {
                 </g>
               </svg>
             </a>
-            <div className="md:hidden flex items-center space-x-2 ml-2">
-              <ColorThemeSwitcher />
-              <ModeToggle />
-            </div>
             <div className="hidden md:flex items-center space-x-2 ml-2">
               <a
                 href="https://alanagoyal.com"
-                className="px-1.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-block text-xs sm:px-2 sm:py-2"
+                className="p-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-flex items-center text-xs"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -97,7 +93,7 @@ export default function Navigation() {
               </a>
               <a
                 href="https://x.com/alanaagoyal"
-                className="px-1.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-block text-xs sm:px-2 sm:py-2"
+                className="p-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-flex items-center text-xs"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -105,31 +101,21 @@ export default function Navigation() {
               </a>
               <button
                 onClick={() => setShowGit(true)}
-                className="px-1.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-block text-xs sm:px-2 sm:py-2"
+                className="p-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-flex items-center text-xs"
               >
                 [C] Commits
               </button>
               <button
                 onClick={() => setShowSnake(true)}
-                className="px-1.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-block text-xs sm:px-2 sm:py-2"
+                className="p-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-flex items-center text-xs"
               >
                 [S] Snake
               </button>
             </div>
           </div>
           <div className="flex items-center space-x-2">
-            <div className="hidden md:flex items-center space-x-2">
-              <ColorThemeSwitcher />
-              <ModeToggle />
-            </div>
-            <a
-              href="https://x.com/alanaagoyal"
-              className="px-4 py-2 bg-[var(--color-primary)] text-white rounded hover:bg-[var(--color-secondary)] inline-block text-xs"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Message me
-            </a>
+            <ColorThemeSwitcher />
+            <ModeToggle />
           </div>
         </div>
       </nav>
