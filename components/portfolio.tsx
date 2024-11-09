@@ -142,24 +142,7 @@ export const Portfolio = () => {
 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isIconicHovered, setIsIconicHovered] = useState(false);
-  const [cols, setCols] = useState(4);
   const [isGridView, setIsGridView] = useState(false);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setCols(window.innerWidth < 768 ? 2 : 4);
-      if (window.innerWidth < 768 && isGridView) {
-        setIsGridView(false);
-      }
-    };
-    
-    // Set initial value
-    handleResize();
-    
-    // Add resize listener
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [isGridView]);
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
@@ -188,19 +171,19 @@ export const Portfolio = () => {
   }, []);
 
   const renderGridIntersections = () => {
-    const rows = Math.ceil(portfolio.length / cols);
+    const rows = Math.ceil(portfolio.length / 4);
     const intersections = [];
-    const horizontalPoints = cols + 1;
+    const horizontalPoints = 4 + 1;
     const verticalPoints = rows + 1;
 
     for (let row = 0; row < verticalPoints; row++) {
       for (let col = 0; col < horizontalPoints; col++) {
         const isHighlighted = hoveredIndex !== null && (
           // Check if this intersection point is one of the four corners of the hovered item
-          (row === Math.floor(hoveredIndex / cols) && col === hoveredIndex % cols) || // top-left
-          (row === Math.floor(hoveredIndex / cols) && col === (hoveredIndex % cols) + 1) || // top-right
-          (row === Math.floor(hoveredIndex / cols) + 1 && col === hoveredIndex % cols) || // bottom-left
-          (row === Math.floor(hoveredIndex / cols) + 1 && col === (hoveredIndex % cols) + 1) // bottom-right
+          (row === Math.floor(hoveredIndex / 4) && col === hoveredIndex % 4) || // top-left
+          (row === Math.floor(hoveredIndex / 4) && col === (hoveredIndex % 4) + 1) || // top-right
+          (row === Math.floor(hoveredIndex / 4) + 1 && col === hoveredIndex % 4) || // bottom-left
+          (row === Math.floor(hoveredIndex / 4) + 1 && col === (hoveredIndex % 4) + 1) // bottom-right
         );
 
         intersections.push(
@@ -213,7 +196,7 @@ export const Portfolio = () => {
               top: `${(row * 100) / rows}%`,
               left: col === 0 ? '0%' : 
                     col === horizontalPoints - 1 ? '100%' : 
-                    `${(col * 100) / (cols)}%`,
+                    `${(col * 100) / 4}%`,
               transform: 'translate(-50%, -50%)'
             }}
           >
@@ -252,61 +235,59 @@ export const Portfolio = () => {
       </div>
 
       <div className="relative">
-        {/* Grid intersections (only show in grid view and on medium screens and up) */}
+        {/* Grid intersections - only show on md and up when in grid view */}
         {isGridView && (
           <div className="hidden md:block">
             {renderGridIntersections()}
           </div>
         )}
         
-        {/* List view */}
-        {!isGridView && (
-          <div className="flex flex-col gap-2">
-            {portfolio.map((client, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-2 text-sm"
-              >
-                <span className="text-gray-800 dark:text-gray-400">+</span>
-                <div className="flex items-center gap-1">
-                  <a
-                    href={client.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="relative inline-block"
-                    onMouseEnter={() => setHoveredIndex(index)}
-                    onMouseLeave={() => setHoveredIndex(null)}
-                  >
-                    <span className="text-sm underline md:hidden">
-                      {client.title}
-                    </span>
-                    <span className="hidden md:inline">
-                      {hoveredIndex === index ? (
-                        <ScrambleText 
-                          text={getDomainFromUrl(client.url)} 
-                          className="text-sm underline text-[var(--color-primary)]"
-                        />
-                      ) : (
-                        <span className="text-sm underline">
-                          {client.title}
-                        </span>
-                      )}
-                    </span>
-                  </a>
-                  {client.status && (
-                    <span className="text-sm text-gray-500">
-                      ({client.status})
-                    </span>
-                  )}
-                </div>
+        {/* List view - show on mobile OR when list view is selected */}
+        <div className={`flex flex-col gap-2 ${isGridView ? 'md:hidden' : ''}`}>
+          {portfolio.map((client, index) => (
+            <div
+              key={index}
+              className="flex items-center gap-2 text-sm"
+            >
+              <span className="text-gray-800 dark:text-gray-400">+</span>
+              <div className="flex items-center gap-1">
+                <a
+                  href={client.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative inline-block"
+                  onMouseEnter={() => setHoveredIndex(index)}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                >
+                  <span className="text-sm underline md:hidden">
+                    {client.title}
+                  </span>
+                  <span className="hidden md:inline">
+                    {hoveredIndex === index ? (
+                      <ScrambleText 
+                        text={getDomainFromUrl(client.url)} 
+                        className="text-sm underline text-[var(--color-primary)]"
+                      />
+                    ) : (
+                      <span className="text-sm underline">
+                        {client.title}
+                      </span>
+                    )}
+                  </span>
+                </a>
+                {client.status && (
+                  <span className="text-sm text-gray-500">
+                    ({client.status})
+                  </span>
+                )}
               </div>
-            ))}
-          </div>
-        )}
+            </div>
+          ))}
+        </div>
 
-        {/* Grid view - only show on medium screens and up */}
-        {isGridView && window.innerWidth >= 768 && (
-          <div className="hidden md:grid grid-cols-4">
+        {/* Grid view - only show on md and up when grid view is selected */}
+        {isGridView && (
+          <div className="hidden md:grid md:grid-cols-4">
             {portfolio.map((client, index) => (
               <a
                 href={client.url}
