@@ -10,7 +10,6 @@ const quotes = [
     title: "founder & ceo",
     company: "vercel",
     url: "https://vercel.com",
-    image: "/images/guillermo.jpg",
   },
   {
     text: "alana is building something special. what sets her apart is her ability to get down into the details. she's constantly exploring new features, helping us identify edge cases, and connecting us with developers. she's our number one supporter.",
@@ -18,7 +17,6 @@ const quotes = [
     title: "co-founder & ceo",
     company: "supabase",
     url: "https://supabase.com",
-    image: "/images/paul.jpg",
   },
   {
     text: "it's rare to have an investor who uses your product regularly. alana's deep understanding of developer tools has helped shape resend's roadmap and her bug reports are as detailed as they come. she's played an important role in our journey.",
@@ -26,7 +24,6 @@ const quotes = [
     title: "founder & ceo",
     company: "resend",
     url: "https://resend.com",
-    image: "/images/zeno.jpg",
   },
   {
     text: "alana was the first check into browserbase and has been an indispensable partner to us as we've scaled. she is always tinkering with the product, reporting bugs, and jamming with the entire team to help us build a better product.",
@@ -34,7 +31,6 @@ const quotes = [
     title: "founder & ceo",
     company: "browserbase",
     url: "https://browserbase.com",
-    image: "/images/paul-klein.jpg",
   },
   {
     text: "alana is everything you want in an investor. she is proactively helpful, responds instantly, and builds a community of founders that feels like a family. if you're considering starting a company, she should be your first call.",
@@ -42,7 +38,6 @@ const quotes = [
     title: "founder & ceo",
     company: "mainframe",
     url: "https://mainfra.me",
-    image: "/images/jordan.jpg",
   },
   {
     text: "alana's network is unlike any investor out there. she's helped introduce us to key talent and dozens of potential customers. her hands-on approach to recruiting and customer development has been instrumental in ashby's growth.",
@@ -50,24 +45,62 @@ const quotes = [
     title: "founder & ceo",
     company: "ashby",
     url: "https://ashbyhq.com",
-    image: "/images/benji.jpg",
-  }
-
+  },
 ];
 
 export const Quotes = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isFocused, setIsFocused] = useState(false);
 
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (!isFocused) return;
-    
-    if (event.key === "ArrowLeft") {
-      setCurrentIndex((prevIndex) => (prevIndex - 1 + quotes.length) % quotes.length);
-    } else if (event.key === "ArrowRight") {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % quotes.length);
-    }
-  };
+  // Add auto-advance timer with resize handling
+  useEffect(() => {
+    let timer: NodeJS.Timeout | null = null;
+
+    const handleResize = () => {
+      // Clear existing timer
+      if (timer) clearInterval(timer);
+      
+      // Only set new timer if mobile
+      const isMobile = window.innerWidth < 768;
+      if (isMobile) {
+        timer = setInterval(() => {
+          setCurrentIndex((prevIndex) => (prevIndex + 1) % quotes.length);
+        }, 5000);
+      }
+    };
+
+    // Initial setup
+    handleResize();
+
+    // Add resize listener
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      if (timer) clearInterval(timer);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  // Add keyboard shortcut handler
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement ||
+        event.metaKey ||
+        event.ctrlKey ||
+        window.getSelection()?.toString()
+      ) {
+        return;
+      }
+      
+      if (event.key === "n") {
+        setCurrentIndex((prevIndex) => (prevIndex + 1) % quotes.length);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, []);
 
   // Add swipe handlers
   const handlers = useSwipeable({
@@ -75,75 +108,57 @@ export const Quotes = () => {
       setCurrentIndex((prevIndex) => (prevIndex + 1) % quotes.length);
     },
     onSwipedRight: () => {
-      setCurrentIndex((prevIndex) => (prevIndex - 1 + quotes.length) % quotes.length);
+      setCurrentIndex(
+        (prevIndex) => (prevIndex - 1 + quotes.length) % quotes.length
+      );
     },
     trackMouse: false,
     preventScrollOnSwipe: true,
     trackTouch: true,
     delta: 10,
-    swipeDuration: 500
+    swipeDuration: 500,
   });
 
-  // Auto-cycle quotes every 3 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % quotes.length);
-    }, 5000);
-
-    // Cleanup interval on unmount
-    return () => clearInterval(interval);
-  }, []);
-
-  // Modified event listeners
-  useEffect(() => {
-    if (isFocused) {
-      window.addEventListener("keydown", handleKeyDown);
-      return () => {
-        window.removeEventListener("keydown", handleKeyDown);
-      };
-    }
-  }, [isFocused]);
-
   return (
-    <div className="py-10">
-      <div
-        {...handlers}
-        className="flex gap-6"
-        tabIndex={0}
-        role="region"
-        aria-label="Testimonial quotes"
-        onMouseEnter={() => setIsFocused(true)}
-        onMouseLeave={() => setIsFocused(false)}
-      >
-        <div className="flex-shrink-0 hidden sm:block">
-          <img
-            src={quotes[currentIndex].image}
-            alt={quotes[currentIndex].author}
-            className="w-20 h-20 rounded-full object-cover grayscale"
-          />
+    <div className="pt-5 pb-10">
+      <div className="flex items-center gap-6">
+        <div
+          {...handlers}
+          className="flex gap-6"
+          tabIndex={0}
+          role="region"
+          aria-label="Testimonial quotes"
+        >
+          <div className="border-l-4 border-[var(--color-primary)] pl-6 flex flex-col justify-between">
+            <p className="text-sm">&ldquo;{quotes[currentIndex].text}&rdquo;</p>
+            <p className="mt-4">
+              —{" "}
+              <a
+                href={quotes[currentIndex].url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[var(--color-primary)] hover:text-[var(--color-secondary)]"
+              >
+                <span className="font-bold">{quotes[currentIndex].author}</span>
+                {quotes[currentIndex].title && (
+                  <span>, {quotes[currentIndex].title}</span>
+                )}
+                {quotes[currentIndex].company && (
+                  <span>, {quotes[currentIndex].company}</span>
+                )}
+              </a>
+            </p>
+          </div>
         </div>
-        <div className="border-l-4 border-[var(--color-primary)] pl-6 flex flex-col justify-between">
-          <p className="text-sm italic">
-            &ldquo;{quotes[currentIndex].text}&rdquo;
-          </p>
-          <p className="mt-4">
-            —{" "}
-            <a
-              href={quotes[currentIndex].url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[var(--color-primary)] hover:text-[var(--color-secondary)]"
-            >
-              <span className="font-bold">{quotes[currentIndex].author}</span>
-              {quotes[currentIndex].title && (
-                <span>, {quotes[currentIndex].title}</span>
-              )}
-              {quotes[currentIndex].company && (
-                <span>, {quotes[currentIndex].company}</span>
-              )}
-            </a>
-          </p>
-        </div>
+
+        <button
+          onClick={() =>
+            setCurrentIndex((prevIndex) => (prevIndex + 1) % quotes.length)
+          }
+          className="hidden md:block text-sm p-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors whitespace-nowrap"
+        >
+          [n] next
+        </button>
       </div>
     </div>
   );
