@@ -268,8 +268,11 @@ export const Portfolio = () => {
                   onMouseEnter={() => setHoveredIndex(index)}
                   onMouseLeave={() => setHoveredIndex(null)}
                 >
-                  <span className="text-sm underline md:hidden">
-                    {client.title}
+                  <span className="text-sm md:hidden">
+                    <span className="underline">{client.title}</span>
+                    {client.status && (
+                      <span className="text-sm text-gray-500"> ({client.status})</span>
+                    )}
                   </span>
                   <span className="hidden md:inline">
                     {hoveredIndex === index ? (
