@@ -51,16 +51,33 @@ const quotes = [
 export const Quotes = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Add auto-advance timer
+  // Add auto-advance timer with resize handling
   useEffect(() => {
-    const isMobile = window.innerWidth < 768;
-    if (isMobile) {
-      const timer = setInterval(() => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % quotes.length);
-      }, 5000);
+    let timer: NodeJS.Timeout | null = null;
 
-      return () => clearInterval(timer);
-    }
+    const handleResize = () => {
+      // Clear existing timer
+      if (timer) clearInterval(timer);
+      
+      // Only set new timer if mobile
+      const isMobile = window.innerWidth < 768;
+      if (isMobile) {
+        timer = setInterval(() => {
+          setCurrentIndex((prevIndex) => (prevIndex + 1) % quotes.length);
+        }, 5000);
+      }
+    };
+
+    // Initial setup
+    handleResize();
+
+    // Add resize listener
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      if (timer) clearInterval(timer);
+      window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   // Add keyboard shortcut handler
