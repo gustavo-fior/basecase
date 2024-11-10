@@ -26,12 +26,12 @@ export function ColorSwitcher() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
-          className="p-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-flex items-center gap-2"
+          className="p-2 sm:h-auto h-12 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-flex items-center gap-2"
         >
           <div
-            className="w-4 h-4 rounded-full [background-color:var(--color-primary)]"
+            className="sm:w-4 sm:h-4 w-5 h-5 rounded-full [background-color:var(--color-primary)]"
           />
-          <ChevronDown className="h-4 w-4" />
+          <ChevronDown className="sm:w-4 sm:h-4 w-5 h-5" />
           <span className="sr-only">Change theme color</span>
         </button>
       </DropdownMenuTrigger>
