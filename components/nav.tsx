@@ -89,7 +89,7 @@ export default function Navigation() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                [W] Website
+                [w] website
               </a>
               <a
                 href="https://x.com/alanaagoyal"
@@ -97,19 +97,19 @@ export default function Navigation() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                [T] Twitter
+                [t] twitter
               </a>
               <button
                 onClick={() => setShowGit(true)}
                 className="p-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-flex items-center text-xs"
               >
-                [C] Commits
+                [c] commits
               </button>
               <button
                 onClick={() => setShowSnake(true)}
                 className="p-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-flex items-center text-xs"
               >
-                [S] Snake
+                [s] snake
               </button>
             </div>
           </div>
@@ -144,7 +144,7 @@ export default function Navigation() {
             >
               <div className="flex items-center gap-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 py-2 px-4 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]">
                 <Gamepad className="w-4 h-4 text-gray-500" />
-                <span className="font-mono text-sm">Snake game</span>
+                <span className="font-mono text-sm">snake game</span>
               </div>
             </div>
           )}
@@ -155,7 +155,7 @@ export default function Navigation() {
             >
               <div className="flex items-center gap-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 py-2 px-4 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]">
                 <GitCommit className="w-4 h-4 text-gray-500" />
-                <span className="font-mono text-sm">Git commit history</span>
+                <span className="font-mono text-sm">git commit history</span>
               </div>
             </div>
           )}

@@ -7,7 +7,7 @@ export default function CTA() {
     <div className="mx-auto px-4 py-5 text-center">
       <h2 className="text-xl md:text-2xl">
         <Balancer>
-          Too early to talk to an investor?
+          too early to talk to an investor?
           <br />
           <a
             href="https://x.com/alanaagoyal"
@@ -15,7 +15,7 @@ export default function CTA() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Talk to a developer.
+            talk to a developer.
           </a>
         </Balancer>
       </h2>

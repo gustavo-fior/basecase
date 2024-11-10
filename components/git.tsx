@@ -216,10 +216,10 @@ export const GitHistory: React.FC<GitHistoryProps> = ({
                 rel="noopener noreferrer"
                 className="hover:text-[var(--color-secondary)]"
               >
-                Git commit history
+                git commit history
               </a>
               <span className="text-xs text-gray-500">
-                (Last updated: {lastUpdated.toLocaleTimeString()})
+                (last updated: {lastUpdated.toLocaleTimeString()})
               </span>
             </div>
             <div className="flex gap-2 font-mono">
@@ -267,7 +267,7 @@ export const GitHistory: React.FC<GitHistoryProps> = ({
         <div className="w-[800px] [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] border border-gray-800 dark:border-gray-200 flex flex-col">
           <div className="flex items-center justify-between border-b border-gray-800 dark:border-gray-200 p-2">
             <div className="flex items-center gap-2 font-mono text-sm">
-              <span>Error</span>
+              <span>error</span>
             </div>
           </div>
           <div className="p-4 font-mono text-sm text-red-600 dark:text-red-400">
@@ -318,10 +318,10 @@ export const GitHistory: React.FC<GitHistoryProps> = ({
                 rel="noopener noreferrer"
                 className="hover:text-[var(--color-secondary)]"
               >
-                Git commit history
+                git commit history
               </a>
               <span className="text-xs text-gray-500">
-                (Last updated: {lastUpdated.toLocaleTimeString()})
+                (last updated: {lastUpdated.toLocaleTimeString()})
               </span>
             </div>
             <div className="flex gap-2 font-mono">
