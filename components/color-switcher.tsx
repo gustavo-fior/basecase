@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import { themeColors, type ThemeColor } from "@/config/colors";
 import {
@@ -20,7 +20,16 @@ export function ColorSwitcher() {
     root.style.setProperty("--color-secondary", colors.secondary);
     root.style.setProperty("--color-background-light", colors.light);
     root.style.setProperty("--color-background-dark", colors.dark);
+    
+    localStorage.setItem("theme-color", color);
   }, []);
+
+  useEffect(() => {
+    const savedColor = localStorage.getItem("theme-color") as ThemeColor | null;
+    if (savedColor && themeColors[savedColor]) {
+      setThemeColor(savedColor);
+    }
+  }, [setThemeColor]);
 
   return (
     <DropdownMenu>

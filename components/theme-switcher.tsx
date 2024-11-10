@@ -3,22 +3,31 @@
 import * as React from "react"
 import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
-import { useEffect } from "react"
+import { useEffect, useCallback } from "react"
 
 export function ThemeSwitcher() {
   const { setTheme, theme } = useTheme()
   const [mounted, setMounted] = React.useState(false)
 
+  const handleThemeChange = useCallback((newTheme: string) => {
+    setTheme(newTheme)
+    localStorage.setItem("theme-mode", newTheme)
+  }, [setTheme])
+
   useEffect(() => {
     setMounted(true)
-  }, [])
+    const savedTheme = localStorage.getItem("theme-mode")
+    if (savedTheme && (savedTheme === "light" || savedTheme === "dark")) {
+      setTheme(savedTheme)
+    }
+  }, [setTheme])
 
   if (!mounted) return null
 
   return (
     <div className="p-1 sm:h-auto h-12 flex items-center rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]">
       <button
-        onClick={() => setTheme("light")}
+        onClick={() => handleThemeChange("light")}
         className={`rounded-md p-2 sm:p-1 transition-colors ${
           theme === "light" 
             ? "bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white" 
@@ -30,7 +39,7 @@ export function ThemeSwitcher() {
       </button>
 
       <button
-        onClick={() => setTheme("dark")}
+        onClick={() => handleThemeChange("dark")}
         className={`rounded-md p-2 sm:p-1 transition-colors ${
           theme === "dark" 
             ? "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white" 
