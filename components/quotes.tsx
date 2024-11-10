@@ -93,8 +93,8 @@ export const Quotes = () => {
   });
 
   return (
-    <div className="pb-10">
-      <div className="flex items-center gap-4">
+    <div className="pt-5 pb-10">
+      <div className="flex items-center gap-6">
         <div
           {...handlers}
           className="flex gap-6"
@@ -128,7 +128,7 @@ export const Quotes = () => {
           onClick={() =>
             setCurrentIndex((prevIndex) => (prevIndex + 1) % quotes.length)
           }
-          className="hidden md:block text-sm px-1.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors whitespace-nowrap"
+          className="hidden md:block text-sm p-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors whitespace-nowrap"
         >
           [n] next
         </button>
