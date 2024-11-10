@@ -83,6 +83,16 @@ export const Quotes = () => {
   // Add keyboard shortcut handler
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
+      if (
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement ||
+        event.metaKey ||
+        event.ctrlKey ||
+        window.getSelection()?.toString()
+      ) {
+        return;
+      }
+      
       if (event.key === "n") {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % quotes.length);
       }
