@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export function ColorSwitcher() {
+  const DEFAULT_THEME: ThemeColor = "red";
+
   const setThemeColor = useCallback((color: ThemeColor) => {
     const root = document.documentElement;
     const colors = themeColors[color];
@@ -28,6 +30,8 @@ export function ColorSwitcher() {
     const savedColor = localStorage.getItem("theme-color") as ThemeColor | null;
     if (savedColor && themeColors[savedColor]) {
       setThemeColor(savedColor);
+    } else {
+      setThemeColor(DEFAULT_THEME);
     }
   }, [setThemeColor]);
 
