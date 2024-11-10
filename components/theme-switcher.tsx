@@ -6,7 +6,7 @@ import { useTheme } from "next-themes"
 import { useEffect, useCallback } from "react"
 
 export function ThemeSwitcher() {
-  const { setTheme, theme } = useTheme()
+  const { setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = React.useState(false)
 
   const handleThemeChange = useCallback((newTheme: string) => {
@@ -24,7 +24,7 @@ export function ThemeSwitcher() {
       <button
         onClick={() => handleThemeChange("light")}
         className={`rounded-md p-2 sm:p-1 transition-colors ${
-          theme === "light" 
+          resolvedTheme === "light" 
             ? "bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white" 
             : "text-gray-500 dark:text-gray-400"
         }`}
@@ -36,7 +36,7 @@ export function ThemeSwitcher() {
       <button
         onClick={() => handleThemeChange("dark")}
         className={`rounded-md p-2 sm:p-1 transition-colors ${
-          theme === "dark" 
+          resolvedTheme === "dark" 
             ? "bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white" 
             : "text-gray-500 dark:text-gray-400"
         }`}
