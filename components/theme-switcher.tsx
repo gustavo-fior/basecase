@@ -11,16 +11,11 @@ export function ThemeSwitcher() {
 
   const handleThemeChange = useCallback((newTheme: string) => {
     setTheme(newTheme)
-    localStorage.setItem("theme-mode", newTheme)
   }, [setTheme])
 
   useEffect(() => {
     setMounted(true)
-    const savedTheme = localStorage.getItem("theme-mode")
-    if (savedTheme && (savedTheme === "light" || savedTheme === "dark")) {
-      setTheme(savedTheme)
-    }
-  }, [setTheme])
+  }, [])
 
   if (!mounted) return null
 
