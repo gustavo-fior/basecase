@@ -1,8 +1,8 @@
 "use client";
 
 export const Hero = () => {
-  // Split heading into logical parts that should stay together
-  const headingParts = ["First", "check", "to", "future founders"];
+  // Changed to lowercase
+  const headingParts = ["first", "check", "to", "future founders"];
 
   return (
     <div className="max-w-xl py-5">
@@ -27,7 +27,7 @@ export const Hero = () => {
         ))}
       </h1>
       <p className="text-sm">
-        Basecase writes the first check to builders who are still dreaming,
+        basecase writes the first check to builders who are still dreaming,
         tinkering, and exploring what they want to create.
       </p>
     </div>

@@ -41,7 +41,7 @@ export function ColorSwitcher() {
             className="sm:w-4 sm:h-4 w-5 h-5 rounded-full [background-color:var(--color-primary)]"
           />
           <ChevronDown className="sm:w-4 sm:h-4 w-5 h-5" />
-          <span className="sr-only">Change theme color</span>
+          <span className="sr-only">change theme color</span>
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent

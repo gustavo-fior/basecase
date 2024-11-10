@@ -263,7 +263,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
           <div className="flex items-center justify-between border-b border-gray-800 dark:border-gray-200 p-2 drag-handle cursor-grab active:cursor-grabbing">
             <div className="flex items-center gap-2 font-mono text-sm">
               <Gamepad className="w-4 h-4 text-gray-500" />
-              <span>Snake game</span>
+              <span>snake game</span>
             </div>
             <div className="flex gap-2 font-mono">
               <button
@@ -302,20 +302,20 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
                     {!gameStarted && !gameOver && (
                       <>
                         <div className="text-gray-800 dark:text-gray-200">
-                          Press P to play or pause
+                          press p to play or pause
                         </div>
                         <div className="text-gray-600 dark:text-gray-400 mt-2">
-                          Use arrow keys to move
+                          use arrow keys to move
                         </div>
                       </>
                     )}
                     {gameOver && (
                       <>
                         <div className="text-gray-800 dark:text-gray-200">
-                          GAME OVER
+                          game over
                         </div>
                         <div className="text-gray-600 dark:text-gray-400 mt-2">
-                          Press R to restart
+                          press r to restart
                         </div>
                       </>
                     )}
@@ -354,7 +354,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
 
               {/* Score */}
               <div className="mt-2 font-mono text-sm text-gray-800 dark:text-gray-200">
-                Score: {score}
+                score: {score}
               </div>
             </div>
           </div>
