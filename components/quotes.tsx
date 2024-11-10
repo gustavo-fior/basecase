@@ -19,9 +19,16 @@ const quotes = [
     url: "https://supabase.com",
   },
   {
+    text: "alana's network is unlike any investor out there. she's helped introduce us to key talent and dozens of potential customers. her hands-on approach to recruiting and customer development has been instrumental in ashby's growth.",
+    author: "benji encz",
+    title: "co-founder & ceo",
+    company: "ashby",
+    url: "https://ashbyhq.com",
+  },
+  {
     text: "it's rare to have an investor who uses your product regularly. alana's deep understanding of developer tools has helped shape resend's roadmap and her bug reports are as detailed as they come. she's played an important role in our journey.",
     author: "zeno rocha",
-    title: "founder & ceo",
+    title: "co-founder & ceo",
     company: "resend",
     url: "https://resend.com",
   },
@@ -38,13 +45,6 @@ const quotes = [
     title: "founder & ceo",
     company: "mainframe",
     url: "https://mainfra.me",
-  },
-  {
-    text: "alana's network is unlike any investor out there. she's helped introduce us to key talent and dozens of potential customers. her hands-on approach to recruiting and customer development has been instrumental in ashby's growth.",
-    author: "benji encz",
-    title: "founder & ceo",
-    company: "ashby",
-    url: "https://ashbyhq.com",
   },
 ];
 
