@@ -1,17 +1,10 @@
 export const themeColors = {
-  pink: {
-    name: "pink",
-    primary: "#C13366",
-    secondary: "#D13970",
-    light: "#F8F6F7",
-    dark: "#1A1718",
-  },
   red: {
     name: "red",
     primary: "#D10002",
     secondary: "#E50003",
     light: "#F8F6F6",
-    dark: "#1A1717",
+    dark: "#131111",
   },
   orange: {
     name: "orange",
@@ -39,7 +32,14 @@ export const themeColors = {
     primary: "#673589",
     secondary: "#6E3794",
     light: "#F7F6F7",
-    dark: "#181718",
+    dark: "#151415",
+  },
+  pink: {
+    name: "pink",
+    primary: "#C13366",
+    secondary: "#D13970",
+    light: "#F8F6F7",
+    dark: "#151415",
   },
 } as const;
 
