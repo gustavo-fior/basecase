@@ -5,7 +5,7 @@ import { useScramble } from "use-scramble";
 export const Hero = () => {
   return (
     <div className="max-w-xl py-5">
-      <h1 className="text-3xl font-bold mb-4 cursor-default h-[80px] md:h-auto">
+      <h1 className="text-3xl font-bold mb-4 cursor-default h-[80px] sm:h-auto">
         <span className="inline-block">
           <ScrambleText 
             text="first check to future founders" 
