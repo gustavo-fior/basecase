@@ -17,14 +17,9 @@ export function ThemeSwitcher() {
   useKeyboardShortcut({
     handlers: [
       {
-        key: 'l',
-        handler: () => handleThemeChange("light"),
-        description: 'Toggle light mode',
-      },
-      {
         key: 'd',
-        handler: () => handleThemeChange("dark"),
-        description: 'Toggle dark mode',
+        handler: () => handleThemeChange(resolvedTheme === "dark" ? "light" : "dark"),
+        description: 'Toggle dark/light mode',
       },
     ],
   });
