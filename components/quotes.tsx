@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useSwipeable } from "react-swipeable";
+import { useKeyboardShortcut } from '../hooks/keyboard-shortcuts';
 
 const quotes = [
   {
@@ -80,29 +81,20 @@ export const Quotes = () => {
     };
   }, []);
 
-  // Add keyboard shortcut handler
-  useEffect(() => {
-    const handleKeyPress = (event: KeyboardEvent) => {
-      if (
-        event.target instanceof HTMLInputElement ||
-        event.target instanceof HTMLTextAreaElement ||
-        event.metaKey ||
-        event.ctrlKey ||
-        window.getSelection()?.toString()
-      ) {
-        return;
+  useKeyboardShortcut({
+    handlers: [
+      {
+        key: 'n',
+        handler: () => setCurrentIndex((prevIndex) => (prevIndex + 1) % quotes.length),
+        description: 'Next quote'
+      },
+      {
+        key: 'p',
+        handler: () => setCurrentIndex((prevIndex) => (prevIndex - 1 + quotes.length) % quotes.length),
+        description: 'Previous quote'
       }
-      
-      if (event.key === "n") {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % quotes.length);
-      } else if (event.key === "p") {
-        setCurrentIndex((prevIndex) => (prevIndex - 1 + quotes.length) % quotes.length);
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
-  }, []);
+    ]
+  });
 
   // Add swipe handlers
   const handlers = useSwipeable({

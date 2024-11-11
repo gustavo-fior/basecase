@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { GitCommit } from "lucide-react";
 import Draggable from "react-draggable";
+import { useKeyboardShortcut } from '../hooks/keyboard-shortcuts';
 
 interface Commit {
   id: string;
@@ -168,53 +169,38 @@ export const GitHistory: React.FC<GitHistoryProps> = ({
   };
 
   // Add escape key handler
-  useEffect(() => {
-    const handleEscapeKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        if (onClose) {
-          onClose();
-        }
+  useKeyboardShortcut({
+    handlers: [
+      {
+        key: 'Escape',
+        handler: () => {
+          if (onClose) {
+            onClose();
+          }
+        },
+        description: 'Close git history'
+      },
+      {
+        key: 'j',
+        handler: () => {
+          contentRef.current?.scrollBy({ top: 100, behavior: 'smooth' });
+        },
+        description: 'Scroll down'
+      },
+      {
+        key: 'k',
+        handler: () => {
+          contentRef.current?.scrollBy({ top: -100, behavior: 'smooth' });
+        },
+        description: 'Scroll up'
       }
-    };
-
-    document.addEventListener("keydown", handleEscapeKey);
-
-    return () => {
-      document.removeEventListener("keydown", handleEscapeKey);
-    };
-  }, [onClose]);
+    ]
+  });
 
   const toggleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
     setPosition({ x: 0, y: 0 }); // Reset position when toggling fullscreen
   };
-
-  useEffect(() => {
-    const handleKeyPress = (event: KeyboardEvent) => {
-      // Skip if typing in input/textarea or using modifier keys
-      if (
-        event.target instanceof HTMLInputElement ||
-        event.target instanceof HTMLTextAreaElement ||
-        event.metaKey ||
-        event.ctrlKey
-      ) {
-        return;
-      }
-
-      const scrollAmount = 100; // Scroll speed
-
-      if (event.key === 'j') {
-        contentRef.current?.scrollBy({ top: scrollAmount, behavior: 'smooth' });
-      } else if (event.key === 'k') {
-        contentRef.current?.scrollBy({ top: -scrollAmount, behavior: 'smooth' });
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyPress);
-    return () => {
-      document.removeEventListener('keydown', handleKeyPress);
-    };
-  }, []);
 
   if (isMinimized) {
     return null;

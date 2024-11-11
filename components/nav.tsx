@@ -6,6 +6,7 @@ import { ColorSwitcher } from "./color-switcher";
 import { ThemeSwitcher } from "./theme-switcher";
 import { GitHistory } from "./git";
 import { Gamepad, GitCommit } from "lucide-react";
+import { useKeyboardShortcut } from '../hooks/keyboard-shortcuts';
 
 export default function Navigation() {
   const [showSnake, setShowSnake] = useState(false);
@@ -13,37 +14,30 @@ export default function Navigation() {
   const [minimizedSnake, setMinimizedSnake] = useState(false);
   const [minimizedGit, setMinimizedGit] = useState(false);
 
-  useEffect(() => {
-    const handleKeyPress = (event: KeyboardEvent) => {
-      if (
-        event.target instanceof HTMLInputElement ||
-        event.target instanceof HTMLTextAreaElement ||
-        event.metaKey ||
-        event.ctrlKey ||
-        window.getSelection()?.toString()
-      ) {
-        return;
+  useKeyboardShortcut({
+    handlers: [
+      {
+        key: 'w',
+        handler: () => window.open("https://alanagoyal.com", "_blank"),
+        description: 'Open website'
+      },
+      {
+        key: 't',
+        handler: () => window.open("https://x.com/alanaagoyal", "_blank"),
+        description: 'Open Twitter'
+      },
+      {
+        key: 'c',
+        handler: () => setShowGit(true),
+        description: 'Show commits'
+      },
+      {
+        key: 's',
+        handler: () => setShowSnake(true),
+        description: 'Show snake game'
       }
-
-      switch (event.key.toLowerCase()) {
-        case "w":
-          window.open("https://alanagoyal.com", "_blank");
-          break;
-        case "t":
-          window.open("https://x.com/alanaagoyal", "_blank");
-          break;
-        case "c":
-          setShowGit(true);
-          break;
-        case "s":
-          setShowSnake(true);
-          break;
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
-  }, []);
+    ]
+  });
 
   return (
     <>

@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useScramble } from "use-scramble";
+import { useKeyboardShortcut } from '../hooks/keyboard-shortcuts';
 
 const getDomainFromUrl = (url: string) => {
   return url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
@@ -148,31 +149,20 @@ export const Portfolio = () => {
   const [isIconicHovered, setIsIconicHovered] = useState(false);
   const [isGridView, setIsGridView] = useState(false);
 
-  useEffect(() => {
-    const handleKeyPress = (event: KeyboardEvent) => {
-      if (
-        event.target instanceof HTMLInputElement ||
-        event.target instanceof HTMLTextAreaElement ||
-        event.metaKey ||
-        event.ctrlKey ||
-        window.getSelection()?.toString()
-      ) {
-        return;
+  useKeyboardShortcut({
+    handlers: [
+      {
+        key: 'l',
+        handler: () => setIsGridView(false),
+        description: 'Switch to list view'
+      },
+      {
+        key: 'g',
+        handler: () => setIsGridView(true),
+        description: 'Switch to grid view'
       }
-
-      switch (event.key.toLowerCase()) {
-        case "l":
-          setIsGridView(false);
-          break;
-        case "g":
-          setIsGridView(true);
-          break;
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyPress);
-    return () => window.removeEventListener("keydown", handleKeyPress);
-  }, []);
+    ]
+  });
 
   const renderGridIntersections = () => {
     const rows = Math.ceil(portfolio.length / 4);
