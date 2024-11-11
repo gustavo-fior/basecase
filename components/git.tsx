@@ -43,6 +43,7 @@ export const GitHistory: React.FC<GitHistoryProps> = ({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const nodeRef = useRef(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
+  const contentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchCommits = async () => {
@@ -187,6 +188,33 @@ export const GitHistory: React.FC<GitHistoryProps> = ({
     setIsFullscreen(!isFullscreen);
     setPosition({ x: 0, y: 0 }); // Reset position when toggling fullscreen
   };
+
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      // Skip if typing in input/textarea or using modifier keys
+      if (
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement ||
+        event.metaKey ||
+        event.ctrlKey
+      ) {
+        return;
+      }
+
+      const scrollAmount = 100; // Scroll speed
+
+      if (event.key === 'j') {
+        contentRef.current?.scrollBy({ top: scrollAmount, behavior: 'smooth' });
+      } else if (event.key === 'k') {
+        contentRef.current?.scrollBy({ top: -scrollAmount, behavior: 'smooth' });
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyPress);
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+  }, []);
 
   if (isMinimized) {
     return null;
@@ -347,7 +375,7 @@ export const GitHistory: React.FC<GitHistoryProps> = ({
           </div>
 
           {/* Content Area */}
-          <div className="flex-1 overflow-auto p-4">
+          <div ref={contentRef} className="flex-1 overflow-auto p-4">
             {commits.map((commit) => (
               <div key={commit.id} className="mb-4 font-mono text-xs">
                 <div className="flex items-baseline gap-2">
