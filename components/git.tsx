@@ -51,9 +51,10 @@ export const GitHistory: React.FC<GitHistoryProps> = ({
       setIsRefreshing(true);
       try {
         const response = await fetch(
-          `https://api.github.com/users/${process.env.NEXT_PUBLIC_GITHUB_USERNAME}/repos?per_page=100&type=public`,
+          "https://api.github.com/user/repos?per_page=100",
           {
             headers: {
+              Authorization: `token ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`,
               Accept: "application/vnd.github.v3+json",
             },
           }
@@ -78,6 +79,7 @@ export const GitHistory: React.FC<GitHistoryProps> = ({
                 `https://api.github.com/repos/${repo.full_name}/commits?per_page=25`,
                 {
                   headers: {
+                    Authorization: `token ${process.env.NEXT_PUBLIC_GITHUB_TOKEN}`,
                     Accept: "application/vnd.github.v3+json",
                   },
                 }
