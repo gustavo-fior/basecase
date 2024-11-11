@@ -19,7 +19,6 @@ You'll need to create a `.env.local` file and add the following:
 ```bash
 NEXT_PUBLIC_URL=<your-website-url>
 NEXT_PUBLIC_OG_IMAGE=<your-og-image-url>
-NEXT_PUBLIC_GITHUB_TOKEN=<your-github-token>
 NEXT_PUBLIC_GITHUB_USERNAME=<your-github-username>
 ```
 
