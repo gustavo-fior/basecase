@@ -77,6 +77,7 @@ export default function Navigation() {
                 viewBox="0 0 596 200"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
+                aria-label="basecase"
               >
                 <g>
                   <path

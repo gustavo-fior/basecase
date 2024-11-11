@@ -305,7 +305,7 @@ export const Portfolio = () => {
                 <div className="h-full relative flex items-center justify-center">
                   <img
                     src={client.icon}
-                    alt={client.title}
+                    alt=""
                     className="h-8 w-auto object-contain group-hover:opacity-0 transition-opacity dark:invert hidden md:block"
                   />
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-center hidden md:flex">
