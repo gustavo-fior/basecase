@@ -96,8 +96,8 @@ export const GitHistory: React.FC<GitHistoryProps> = ({
               const commits = await commitsResponse.json();
               return commits.map((commit: GitHubCommit) => ({
                 id: commit.sha,
-                message: commit.commit.message,
-                repo: repo.full_name,
+                message: commit.commit.message.toLowerCase(),
+                repo: repo.full_name.toLowerCase(),
                 timestamp: new Date(commit.commit.author.date),
               }));
             } catch (error) {
@@ -119,7 +119,7 @@ export const GitHistory: React.FC<GitHistoryProps> = ({
         setLoading(false);
       } catch (err) {
         console.error("Error fetching commits:", err);
-        setError("Failed to load commit history");
+        setError("failed to load commit history");
         setLoading(false);
       }
       setTimeout(() => setIsRefreshing(false), 1000);
