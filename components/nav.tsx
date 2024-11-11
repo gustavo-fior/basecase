@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SnakeGame } from "./snake";
 import { ColorSwitcher } from "./color-switcher";
 import { ThemeSwitcher } from "./theme-switcher";
