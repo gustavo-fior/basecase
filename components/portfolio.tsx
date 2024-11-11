@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useScramble } from "use-scramble";
 import { useKeyboardShortcut } from '../hooks/keyboard-shortcuts';
 
@@ -164,6 +164,15 @@ export const Portfolio = () => {
     ]
   });
 
+  useEffect(() => {
+    if (isIconicHovered) {
+      const timer = setTimeout(() => {
+        setIsIconicHovered(false);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isIconicHovered]);
+
   const renderGridIntersections = () => {
     const rows = Math.ceil(portfolio.length / 4);
     const intersections = [];
@@ -209,7 +218,7 @@ export const Portfolio = () => {
         <h2 className="text-lg font-bold cursor-default">
           early partner to{" "}
           <span 
-            className={`inline-block transition-all duration-300 ${
+            className={`inline-block transition-all duration-500 ${
               isIconicHovered ? 'scale-110' : 'scale-100'
             }`}
             onMouseEnter={() => setIsIconicHovered(true)}
