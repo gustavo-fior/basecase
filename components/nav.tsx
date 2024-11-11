@@ -35,6 +35,16 @@ export default function Navigation() {
         key: 's',
         handler: () => setShowSnake(true),
         description: 'Show snake game'
+      },
+      {
+        key: 'j',
+        handler: () => !showGit && window.scrollBy({ top: 100, behavior: 'smooth' }),
+        description: 'Scroll down'
+      },
+      {
+        key: 'k',
+        handler: () => !showGit && window.scrollBy({ top: -100, behavior: 'smooth' }),
+        description: 'Scroll up'
       }
     ]
   });
