@@ -33,7 +33,7 @@ const DisintegratingText = ({
         className="inline-block cursor-default"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        aria-label={chars}
+        aria-label={text}
       >
         {chars.map((item, i) =>
           item.isSpace ? (
