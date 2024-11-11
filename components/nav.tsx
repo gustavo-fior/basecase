@@ -5,14 +5,17 @@ import { SnakeGame } from "./snake";
 import { ColorSwitcher } from "./color-switcher";
 import { ThemeSwitcher } from "./theme-switcher";
 import { GitHistory } from "./git";
-import { Gamepad, GitCommit } from "lucide-react";
+import { Gamepad, GitCommit, Keyboard } from "lucide-react";
 import { useKeyboardShortcut } from '../hooks/keyboard-shortcuts';
+import Shortcuts from "./shortcuts";
 
 export default function Navigation() {
   const [showSnake, setShowSnake] = useState(false);
   const [showGit, setShowGit] = useState(false);
   const [minimizedSnake, setMinimizedSnake] = useState(false);
   const [minimizedGit, setMinimizedGit] = useState(false);
+  const [showShortcuts, setShowShortcuts] = useState(false);
+  const [minimizedShortcuts, setMinimizedShortcuts] = useState(false);
 
   useKeyboardShortcut({
     handlers: [
@@ -38,13 +41,18 @@ export default function Navigation() {
       },
       {
         key: 'j',
-        handler: () => !showGit && window.scrollBy({ top: 100, behavior: 'smooth' }),
+        handler: () => !showGit && !showShortcuts && window.scrollBy({ top: 100, behavior: 'smooth' }),
         description: 'Scroll down'
       },
       {
         key: 'k',
-        handler: () => !showGit && window.scrollBy({ top: -100, behavior: 'smooth' }),
+        handler: () => !showGit && !showShortcuts && window.scrollBy({ top: -100, behavior: 'smooth' }),
         description: 'Scroll up'
+      },
+      {
+        key: 'x',
+        handler: () => setShowShortcuts(true),
+        description: 'Show keyboard shortcuts'
       }
     ]
   });
@@ -138,8 +146,15 @@ export default function Navigation() {
           onMinimize={setMinimizedGit}
         />
       )}
+      {showShortcuts && (
+        <Shortcuts
+          onClose={() => setShowShortcuts(false)}
+          isMinimized={minimizedShortcuts}
+          onMinimize={setMinimizedShortcuts}
+        />
+      )}
 
-      {(minimizedSnake || minimizedGit) && (
+      {(minimizedSnake || minimizedGit || minimizedShortcuts) && (
         <div className="fixed bottom-4 right-4 flex gap-2 z-50">
           {minimizedSnake && showSnake && (
             <div
@@ -160,6 +175,17 @@ export default function Navigation() {
               <div className="flex items-center gap-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 py-2 px-4 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]">
                 <GitCommit className="w-4 h-4 text-gray-500" />
                 <span className="font-mono text-sm">git commit history</span>
+              </div>
+            </div>
+          )}
+          {minimizedShortcuts && showShortcuts && (
+            <div
+              className="cursor-pointer"
+              onClick={() => setMinimizedShortcuts(false)}
+            >
+              <div className="flex items-center gap-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 py-2 px-4 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]">
+                <Keyboard className="w-4 h-4 text-gray-500" />
+                <span className="font-mono text-sm">keyboard shortcuts</span>
               </div>
             </div>
           )}
