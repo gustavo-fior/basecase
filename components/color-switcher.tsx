@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useKeyboardShortcut } from "@/hooks/keyboard-shortcuts";
 
 export function ColorSwitcher() {
   const DEFAULT_THEME: ThemeColor = "red";
@@ -34,6 +35,14 @@ export function ColorSwitcher() {
       setThemeColor(DEFAULT_THEME);
     }
   }, [setThemeColor]);
+
+  useKeyboardShortcut({
+    handlers: Object.entries(themeColors).map(([key, color], index) => ({
+      key: `${index + 1}`,
+      handler: () => setThemeColor(key as ThemeColor),
+      description: `Switch to ${color.name} theme`,
+    })).slice(0, 7),
+  });
 
   return (
     <DropdownMenu>

@@ -5,6 +5,7 @@ export const themeColors = {
     secondary: "#E50003",
     light: "#FDF5F5",
     dark: "#131111",
+    shortcut: "1"
   },
   pink: {
     name: "pink",
@@ -12,6 +13,7 @@ export const themeColors = {
     secondary: "#D13970",
     light: "#FDF6F8",
     dark: "#151415",
+    shortcut: "2"
   },
   orange: {
     name: "orange",
@@ -19,6 +21,7 @@ export const themeColors = {
     secondary: "#FBB428",
     light: "#FDF9F5",
     dark: "#1A1817",
+    shortcut: "3"
   },
   yellow: {
     name: "yellow",
@@ -26,6 +29,7 @@ export const themeColors = {
     secondary: "#FFE04B",
     light: "#FDFBF5",
     dark: "#1A1817",
+    shortcut: "4"
   },
   green: {
     name: "green",
@@ -33,6 +37,7 @@ export const themeColors = {
     secondary: "#67D8B7",
     light: "#F5FCFA",
     dark: "#171817",
+    shortcut: "5"
   },
   blue: {
     name: "blue",
@@ -40,6 +45,7 @@ export const themeColors = {
     secondary: "#7CCEE5",
     light: "#F5FAFC",
     dark: "#171718",
+    shortcut: "6"
   },
   purple: {
     name: "purple",
@@ -47,6 +53,7 @@ export const themeColors = {
     secondary: "#A29BF4",
     light: "#F8F5FC",
     dark: "#151415",
+    shortcut: "7"
   },
 
 } as const;
