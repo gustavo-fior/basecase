@@ -4,6 +4,7 @@ import * as React from "react"
 import { Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 import { useEffect, useCallback } from "react"
+import { useKeyboardShortcut } from "../hooks/keyboard-shortcuts"
 
 export function ThemeSwitcher() {
   const { setTheme, resolvedTheme } = useTheme()
@@ -12,6 +13,21 @@ export function ThemeSwitcher() {
   const handleThemeChange = useCallback((newTheme: string) => {
     setTheme(newTheme)
   }, [setTheme])
+
+  useKeyboardShortcut({
+    handlers: [
+      {
+        key: 'l',
+        handler: () => handleThemeChange("light"),
+        description: 'Toggle light mode',
+      },
+      {
+        key: 'd',
+        handler: () => handleThemeChange("dark"),
+        description: 'Toggle dark mode',
+      },
+    ],
+  });
 
   useEffect(() => {
     setMounted(true)
