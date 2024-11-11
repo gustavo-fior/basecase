@@ -181,6 +181,16 @@ export const GitHistory: React.FC<GitHistoryProps> = ({
         description: 'Close git history'
       },
       {
+        key: 'm',
+        handler: () => onMinimize(!isMinimized),
+        description: 'Toggle minimize window'
+      },
+      {
+        key: 'f',
+        handler: () => setIsFullscreen(prev => !prev),
+        description: 'Toggle fullscreen'
+      },
+      {
         key: 'j',
         handler: () => {
           contentRef.current?.scrollBy({ top: 100, behavior: 'smooth' });

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Gamepad } from "lucide-react";
 import Draggable from "react-draggable";
+import { useKeyboardShortcut } from '../hooks/keyboard-shortcuts';
 
 // Base size constants
 const BASE_CELL_SIZE = 15;
@@ -60,6 +61,81 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
   const [gameLoop, setGameLoop] = useState<NodeJS.Timeout | null>(null);
   const [gameStarted, setGameStarted] = useState(false);
   const [nextDirection, setNextDirection] = useState<Position>({ x: 1, y: 0 });
+
+  // Move the keyboard shortcuts hook here, before any returns
+  useKeyboardShortcut({
+    handlers: [
+      {
+        key: 'Escape',
+        handler: () => onClose(),
+        description: 'Close game'
+      },
+      {
+        key: 'm',
+        handler: () => onMinimize(!isMinimized),
+        description: 'Minimize window'
+      },
+      {
+        key: 'f',
+        handler: () => setIsFullscreen(prev => !prev),
+        description: 'Toggle fullscreen'
+      },
+      {
+        key: 'p',
+        handler: () => setGameStarted(prev => !prev),
+        description: 'Play/Pause game'
+      },
+      {
+        key: 'r',
+        handler: () => {
+          if (gameOver) {
+            resetGame();
+          }
+        },
+        description: 'Restart game when game over'
+      },
+      {
+        key: 'ArrowUp',
+        handler: () => {
+          const newDirection = { x: 0, y: -1 };
+          if (newDirection.x !== -direction.x || newDirection.y !== -direction.y) {
+            setNextDirection(newDirection);
+          }
+        },
+        description: 'Move up'
+      },
+      {
+        key: 'ArrowDown',
+        handler: () => {
+          const newDirection = { x: 0, y: 1 };
+          if (newDirection.x !== -direction.x || newDirection.y !== -direction.y) {
+            setNextDirection(newDirection);
+          }
+        },
+        description: 'Move down'
+      },
+      {
+        key: 'ArrowLeft',
+        handler: () => {
+          const newDirection = { x: -1, y: 0 };
+          if (newDirection.x !== -direction.x || newDirection.y !== -direction.y) {
+            setNextDirection(newDirection);
+          }
+        },
+        description: 'Move left'
+      },
+      {
+        key: 'ArrowRight',
+        handler: () => {
+          const newDirection = { x: 1, y: 0 };
+          if (newDirection.x !== -direction.x || newDirection.y !== -direction.y) {
+            setNextDirection(newDirection);
+          }
+        },
+        description: 'Move right'
+      }
+    ]
+  });
 
   // Fix: Update generateFood to use current gridSize
   const generateFood = useCallback(() => {
@@ -128,53 +204,6 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
     });
   }, [nextDirection, food, generateFood, gridSize]);
 
-  const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
-      const key = e.key.toLowerCase();
-
-      if (key === "escape") {
-        e.preventDefault();
-        onClose();
-        return;
-      }
-
-      if (key === "p") {
-        e.preventDefault();
-        setGameStarted((prev) => !prev); // Toggle pause
-        return;
-      }
-
-      if (gameOver && key === "r") {
-        e.preventDefault();
-        resetGame();
-        return;
-      }
-
-      const newDirection = {
-        arrowup: { x: 0, y: -1 },
-        arrowdown: { x: 0, y: 1 },
-        arrowleft: { x: -1, y: 0 },
-        arrowright: { x: 1, y: 0 },
-      }[key];
-
-      if (newDirection) {
-        e.preventDefault();
-        const isOpposite =
-          newDirection.x === -direction.x && newDirection.y === -direction.y;
-
-        if (!isOpposite) {
-          setNextDirection(newDirection);
-        }
-      }
-    },
-    [direction, gameOver, gameStarted, onClose, resetGame]
-  );
-
-  useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [handleKeyDown]);
-
   useEffect(() => {
     if (!gameOver && gameStarted && !isMinimized) {
       const interval = setInterval(moveSnake, GAME_SPEED);
@@ -224,7 +253,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
     [onClose]
   );
 
-  // Now we can safely have the conditional return
+  // Now the conditional return is safe
   if (isMinimized) {
     return null;
   }
