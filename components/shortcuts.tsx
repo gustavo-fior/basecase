@@ -25,6 +25,8 @@ const shortcutGroups: ShortcutGroup[] = [
       { key: "k", description: "scroll up" },
       { key: "g", description: "switch to grid view" },
       { key: "l", description: "switch to list view" },
+      { key: "n", description: "next quote" },
+      { key: "p", description: "previous quote" },
     ]
   },
   {
@@ -32,7 +34,7 @@ const shortcutGroups: ShortcutGroup[] = [
     shortcuts: [
       { key: "esc", description: "close window" },
       { key: "m", description: "toggle minimize window" },
-      { key: "f", description: "toggle fullscreen" },
+      { key: "f", description: "toggle fullscreen window" },
       { key: "x", description: "show keyboard shortcuts" },
     ]
   },
@@ -169,7 +171,7 @@ export const Shortcuts: React.FC<ShortcutsProps> = ({
 
           <div ref={contentRef} className="flex-1 overflow-auto p-4">
             {shortcutGroups.map((group, index) => (
-              <div key={index} className="mb-8 last:mb-0">
+              <div key={index} className="mb-4 last:mb-0">
                 <h3 className="text-sm font-mono font-semibold mb-4 text-[var(--color-primary)]">
                   {group.name}
                 </h3>
