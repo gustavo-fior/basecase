@@ -1,8 +1,8 @@
 export const themeColors = {
   red: {
     name: "red",
-    primary: "#D10002",
-    secondary: "#E50003",
+    primary: "#CB1316",
+    secondary: "#DB1619",
     light: "#FDF5F5",
     dark: "#131111",
     shortcut: "1"
