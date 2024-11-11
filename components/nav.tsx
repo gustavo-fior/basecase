@@ -6,7 +6,7 @@ import { ColorSwitcher } from "./color-switcher";
 import { ThemeSwitcher } from "./theme-switcher";
 import { GitHistory } from "./git";
 import { Gamepad, GitCommit, Keyboard } from "lucide-react";
-import { useKeyboardShortcut } from '../hooks/keyboard-shortcuts';
+import { useKeyboardShortcut } from "../hooks/keyboard-shortcuts";
 import Shortcuts from "./shortcuts";
 
 export default function Navigation() {
@@ -20,41 +20,47 @@ export default function Navigation() {
   useKeyboardShortcut({
     handlers: [
       {
-        key: 'w',
+        key: "w",
         handler: () => window.open("https://alanagoyal.com", "_blank"),
-        description: 'Open website'
+        description: "Open website",
       },
       {
-        key: 't',
+        key: "t",
         handler: () => window.open("https://x.com/alanaagoyal", "_blank"),
-        description: 'Open Twitter'
+        description: "Open Twitter",
       },
       {
-        key: 'c',
+        key: "c",
         handler: () => setShowGit(true),
-        description: 'Show commits'
+        description: "Show commits",
       },
       {
-        key: 's',
+        key: "s",
         handler: () => setShowSnake(true),
-        description: 'Show snake game'
+        description: "Show snake game",
       },
       {
-        key: 'j',
-        handler: () => !showGit && !showShortcuts && window.scrollBy({ top: 100, behavior: 'smooth' }),
-        description: 'Scroll down'
+        key: "j",
+        handler: () =>
+          !showGit &&
+          !showShortcuts &&
+          window.scrollBy({ top: 100, behavior: "smooth" }),
+        description: "Scroll down",
       },
       {
-        key: 'k',
-        handler: () => !showGit && !showShortcuts && window.scrollBy({ top: -100, behavior: 'smooth' }),
-        description: 'Scroll up'
+        key: "k",
+        handler: () =>
+          !showGit &&
+          !showShortcuts &&
+          window.scrollBy({ top: -100, behavior: "smooth" }),
+        description: "Scroll up",
       },
       {
-        key: 'x',
+        key: "x",
         handler: () => setShowShortcuts(true),
-        description: 'Show keyboard shortcuts'
-      }
-    ]
+        description: "Show keyboard shortcuts",
+      },
+    ],
   });
 
   return (
@@ -129,6 +135,12 @@ export default function Navigation() {
           <div className="flex items-center space-x-2">
             <ColorSwitcher />
             <ThemeSwitcher />
+            <button
+              onClick={() => setShowShortcuts(true)}
+              className="hidden md:flex rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 py-2 px-4 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]"
+            >
+              <Keyboard className="w-4 h-4 text-gray-500" />
+            </button>
           </div>
         </div>
       </nav>
