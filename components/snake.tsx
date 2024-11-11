@@ -277,19 +277,15 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
         <div
           ref={nodeRef}
           className={`
-            ${
-              isFullscreen
-                ? "fixed inset-4"
-                : `w-[${gridSize * cellSize + 4}px]`
-            }
+            ${isFullscreen ? "fixed inset-4" : `w-[${gridSize * cellSize + 4}px]`}
             flex flex-col
-            border border-gray-800 dark:border-gray-200
+            border border-gray-300 dark:border-gray-700
             [background-color:var(--color-background-light)]
             dark:[background-color:var(--color-background-dark)]
           `}
         >
           {/* Title Bar */}
-          <div className="flex items-center justify-between border-b border-gray-800 dark:border-gray-200 p-2 drag-handle cursor-grab active:cursor-grabbing">
+          <div className="flex items-center justify-between border-b border-gray-300 dark:border-gray-700 p-2 drag-handle cursor-grab active:cursor-grabbing">
             <div className="flex items-center gap-2 font-mono text-sm">
               <Gamepad className="w-4 h-4 text-gray-500" />
               <span>snake game</span>
@@ -320,7 +316,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
           <div className="flex-1 flex flex-col items-center justify-center p-4">
             <div className="flex flex-col">
               <div
-                className="relative border border-gray-800 dark:border-gray-200"
+                className="relative border border-gray-300 dark:border-gray-700"
                 style={{
                   width: gridSize * cellSize,
                   height: gridSize * cellSize,

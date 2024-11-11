@@ -137,10 +137,10 @@ export const Shortcuts: React.FC<ShortcutsProps> = ({
             [background-color:var(--color-background-light)]
             dark:[background-color:var(--color-background-dark)]
             flex flex-col
-            border border-gray-800 dark:border-gray-200
+            border border-gray-300 dark:border-gray-700
           `}
         >
-          <div className="flex items-center justify-between border-b border-gray-800 dark:border-gray-200 p-2 drag-handle cursor-grab active:cursor-grabbing">
+          <div className="flex items-center justify-between border-b border-gray-300 dark:border-gray-700 p-2 drag-handle cursor-grab active:cursor-grabbing">
             <div className="flex items-center gap-2 font-mono text-sm">
               <Keyboard className="w-4 h-4 text-gray-500" />
               <span>keyboard shortcuts</span>

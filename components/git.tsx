@@ -325,11 +325,11 @@ export const GitHistory: React.FC<GitHistoryProps> = ({
             [background-color:var(--color-background-light)]
             dark:[background-color:var(--color-background-dark)]
             flex flex-col
-            border border-gray-800 dark:border-gray-200
+            border border-gray-300 dark:border-gray-700
           `}
         >
           {/* Title Bar */}
-          <div className="flex items-center justify-between border-b border-gray-800 dark:border-gray-200 p-2 drag-handle cursor-grab active:cursor-grabbing">
+          <div className="flex items-center justify-between border-b border-gray-300 dark:border-gray-700 p-2 drag-handle cursor-grab active:cursor-grabbing">
             <div className="flex items-center gap-2 font-mono text-sm">
               <GitCommit
                 className={`w-4 h-4 ${
@@ -382,7 +382,7 @@ export const GitHistory: React.FC<GitHistoryProps> = ({
                     {commit.timestamp.toLocaleString()}
                   </span>
                 </div>
-                <div className="mt-1 pl-4 border-l border-gray-300 dark:border-gray-700">
+                <div className="mt-1 pl-4 border-l border-gray-200 dark:border-gray-800">
                   {commit.message}
                 </div>
               </div>
