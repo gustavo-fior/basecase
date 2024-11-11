@@ -95,6 +95,8 @@ export const Quotes = () => {
       
       if (event.key === "n") {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % quotes.length);
+      } else if (event.key === "p") {
+        setCurrentIndex((prevIndex) => (prevIndex - 1 + quotes.length) % quotes.length);
       }
     };
 
