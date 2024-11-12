@@ -319,7 +319,14 @@ export const Portfolio = () => {
                   />
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-center hidden md:flex">
                     {hoveredIndex === index ? (
-                      <ScrambleText text={client.title} className="text-2xl font-bold tracking-wide font-geist" />
+                      <>
+                        <ScrambleText text={client.title} className="text-2xl font-bold tracking-wide font-geist" />
+                        {client.status && (
+                          <span className="text-xs text-[var(--color-primary)] mt-1">
+                            {client.status}
+                          </span>
+                        )}
+                      </>
                     ) : (
                       <span className="text-2xl font-bold tracking-wide font-geist">
                         {client.title}
