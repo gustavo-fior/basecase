@@ -3,34 +3,44 @@ import { Gamepad } from "lucide-react";
 import Draggable from "react-draggable";
 import { useKeyboardShortcut } from '../hooks/keyboard-shortcuts';
 
-// Base size constants
+// Constants
 const BASE_CELL_SIZE = 15;
 const MIN_GRID_SIZE = 30;
-const GAME_SPEED = 100; // milliseconds between each move (lower = faster)
+const GAME_SPEED = 100;
+const KONAMI_CODE = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
 
-// Update the props interface
+// Types
+interface Position {
+  x: number;
+  y: number;
+}
+
 interface SnakeGameProps {
   onClose: () => void;
   isMinimized: boolean;
   onMinimize: (minimized: boolean) => void;
 }
 
-// Add this near the top with other constants
-interface Position {
-  x: number;
-  y: number;
-}
+// Game
+export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMinimize }) => {
+  // Refs
+  const nodeRef = useRef(null);
+  const konamiSequenceRef = useRef<string[]>([]);
+  const isProcessingKonamiRef = useRef(false);
 
-export const SnakeGame: React.FC<SnakeGameProps> = ({
-  onClose,
-  isMinimized,
-  onMinimize,
-}) => {
-  // Move ALL hooks to the top, before any returns
+  // State
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
-  const nodeRef = useRef(null);
+  const [lastKonamiCheck, setLastKonamiCheck] = useState<number>(0);
+  const [snake, setSnake] = useState<Position[]>([{ x: 15, y: 15 }]);
+  const [direction, setDirection] = useState<Position>({ x: 1, y: 0 });
+  const [nextDirection, setNextDirection] = useState<Position>({ x: 1, y: 0 });
+  const [food, setFood] = useState<Position>({ x: 15, y: 10 });
+  const [score, setScore] = useState(0);
+  const [gameOver, setGameOver] = useState(false);
+  const [gameStarted, setGameStarted] = useState(false);
 
+  // Game Logic
   const calculateGameDimensions = useCallback(() => {
     if (isFullscreen) {
       const maxWidth = window.innerWidth - 200;
@@ -48,96 +58,10 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
       };
     }
     return { gridSize: MIN_GRID_SIZE, cellSize: BASE_CELL_SIZE };
-  }, [isFullscreen]); // Fix: Add dependency
+  }, [isFullscreen]);
 
   const { gridSize, cellSize } = calculateGameDimensions();
 
-  // Now we can use gridSize in our hooks
-  const [snake, setSnake] = useState<Position[]>([{ x: 15, y: 15 }]);
-  const [direction, setDirection] = useState<Position>({ x: 1, y: 0 });
-  const [food, setFood] = useState<Position>({ x: 15, y: 10 });
-  const [score, setScore] = useState(0);
-  const [gameOver, setGameOver] = useState(false);
-  const [gameLoop, setGameLoop] = useState<NodeJS.Timeout | null>(null);
-  const [gameStarted, setGameStarted] = useState(false);
-  const [nextDirection, setNextDirection] = useState<Position>({ x: 1, y: 0 });
-
-  // Move the keyboard shortcuts hook here, before any returns
-  useKeyboardShortcut({
-    handlers: [
-      {
-        key: 'Escape',
-        handler: () => onClose(),
-        description: 'Close game'
-      },
-      {
-        key: 'm',
-        handler: () => onMinimize(!isMinimized),
-        description: 'Minimize window'
-      },
-      {
-        key: 'f',
-        handler: () => setIsFullscreen(prev => !prev),
-        description: 'Toggle fullscreen'
-      },
-      {
-        key: 'p',
-        handler: () => setGameStarted(prev => !prev),
-        description: 'Play/Pause game'
-      },
-      {
-        key: 'r',
-        handler: () => {
-          if (gameOver) {
-            resetGame();
-          }
-        },
-        description: 'Restart game when game over'
-      },
-      {
-        key: 'ArrowUp',
-        handler: () => {
-          const newDirection = { x: 0, y: -1 };
-          if (newDirection.x !== -direction.x || newDirection.y !== -direction.y) {
-            setNextDirection(newDirection);
-          }
-        },
-        description: 'Move up'
-      },
-      {
-        key: 'ArrowDown',
-        handler: () => {
-          const newDirection = { x: 0, y: 1 };
-          if (newDirection.x !== -direction.x || newDirection.y !== -direction.y) {
-            setNextDirection(newDirection);
-          }
-        },
-        description: 'Move down'
-      },
-      {
-        key: 'ArrowLeft',
-        handler: () => {
-          const newDirection = { x: -1, y: 0 };
-          if (newDirection.x !== -direction.x || newDirection.y !== -direction.y) {
-            setNextDirection(newDirection);
-          }
-        },
-        description: 'Move left'
-      },
-      {
-        key: 'ArrowRight',
-        handler: () => {
-          const newDirection = { x: 1, y: 0 };
-          if (newDirection.x !== -direction.x || newDirection.y !== -direction.y) {
-            setNextDirection(newDirection);
-          }
-        },
-        description: 'Move right'
-      }
-    ]
-  });
-
-  // Fix: Update generateFood to use current gridSize
   const generateFood = useCallback(() => {
     const { gridSize } = calculateGameDimensions();
     let newFood: Position;
@@ -146,15 +70,10 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
         x: Math.floor(Math.random() * (gridSize - 1)),
         y: Math.floor(Math.random() * (gridSize - 1)),
       };
-    } while (
-      snake.some(
-        (segment) => segment.x === newFood.x && segment.y === newFood.y
-      )
-    );
+    } while (snake.some(segment => segment.x === newFood.x && segment.y === newFood.y));
     setFood(newFood);
   }, [snake, calculateGameDimensions]);
 
-  // Fix: Update initial snake position based on gridSize
   const resetGame = useCallback(() => {
     const startPos = Math.floor(gridSize / 3);
     setSnake([{ x: startPos, y: startPos }]);
@@ -196,52 +115,172 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
       if (!willEatFood) {
         newSnake.pop();
       } else {
-        setScore((prev) => prev + 1);
         generateFood();
       }
 
       return newSnake;
     });
-  }, [nextDirection, food, generateFood, gridSize]);
 
+    if (snake[0].x + nextDirection.x === food.x && snake[0].y + nextDirection.y === food.y) {
+      setScore((prev) => prev + 1);
+    }
+  }, [nextDirection, food, generateFood, gridSize, snake]);
+
+  // Konami Code Handler
+  const checkKonamiCode = useCallback((key: string) => {
+    const now = Date.now();
+    if (now - lastKonamiCheck < 100 || isProcessingKonamiRef.current) return;
+    
+    setLastKonamiCheck(now);
+    
+    konamiSequenceRef.current = [...konamiSequenceRef.current, key];
+    if (konamiSequenceRef.current.length > KONAMI_CODE.length) {
+      konamiSequenceRef.current.shift();
+    }
+    
+    if (konamiSequenceRef.current.length === KONAMI_CODE.length && 
+        konamiSequenceRef.current.every((k, i) => k.toLowerCase() === KONAMI_CODE[i].toLowerCase())) {
+      isProcessingKonamiRef.current = true;
+      setScore(prev => prev * 2);
+      konamiSequenceRef.current = [];
+      
+      setTimeout(() => {
+        isProcessingKonamiRef.current = false;
+      }, 1000);
+    }
+  }, [lastKonamiCheck]);
+
+  // Effects
+  // Game loop
   useEffect(() => {
     if (!gameOver && gameStarted && !isMinimized) {
       const interval = setInterval(moveSnake, GAME_SPEED);
-      setGameLoop(interval);
       return () => clearInterval(interval);
-    } else if (gameLoop) {
-      clearInterval(gameLoop);
     }
   }, [gameOver, gameStarted, moveSnake, isMinimized]);
 
-  // Recalculate on window resize
+  // Window resize handler
   useEffect(() => {
     const handleResize = () => {
       const { gridSize } = calculateGameDimensions();
-      // Update snake and food positions
-      setSnake((prev) =>
-        prev.map((segment) => ({
-          x: Math.min(segment.x, gridSize - 1),
-          y: Math.min(segment.y, gridSize - 1),
-        }))
-      );
-      setFood((prev) => ({
-        x: Math.min(prev.x, gridSize - 1),
-        y: Math.min(prev.y, gridSize - 1),
-      }));
+      
+      const scalePositions = (positions: Position[], oldGridSize: number, newGridSize: number) => {
+        return positions.map(pos => ({
+          x: Math.min(Math.floor((pos.x / oldGridSize) * newGridSize), newGridSize - 1),
+          y: Math.min(Math.floor((pos.y / oldGridSize) * newGridSize), newGridSize - 1),
+        }));
+      };
+
+      // Scale snake and food positions
+      setSnake(prev => {
+        const oldGridSize = Math.max(MIN_GRID_SIZE, prev.length > 0 ? Math.max(...prev.map(p => Math.max(p.x, p.y))) + 1 : MIN_GRID_SIZE);
+        return scalePositions(prev, oldGridSize, gridSize);
+      });
+
+      setFood(prev => {
+        const oldGridSize = Math.max(MIN_GRID_SIZE, Math.max(prev.x, prev.y) + 1);
+        return scalePositions([prev], oldGridSize, gridSize)[0];
+      });
     };
 
     window.addEventListener("resize", handleResize);
+    handleResize();
+    
     return () => window.removeEventListener("resize", handleResize);
-  }, [isFullscreen]);
+  }, [calculateGameDimensions, isFullscreen]);
 
-  useEffect(() => {
-    return () => {
-      if (gameLoop) {
-        clearInterval(gameLoop);
+  // Keyboard Shortcuts
+  useKeyboardShortcut({
+    handlers: [
+      {
+        key: 'Escape',
+        handler: () => onClose(),
+        description: 'Close game'
+      },
+      {
+        key: 'm',
+        handler: () => onMinimize(!isMinimized),
+        description: 'Minimize window'
+      },
+      {
+        key: 'f',
+        handler: () => setIsFullscreen(prev => !prev),
+        description: 'Toggle fullscreen'
+      },
+      {
+        key: 'p',
+        handler: () => setGameStarted(prev => !prev),
+        description: 'Play/Pause game'
+      },
+      {
+        key: 'r',
+        handler: () => {
+          if (gameOver) {
+            resetGame();
+          }
+        },
+        description: 'Restart game when game over'
+      },
+      {
+        key: 'ArrowUp',
+        handler: () => {
+          checkKonamiCode('ArrowUp');
+          const newDirection = { x: 0, y: -1 };
+          if (newDirection.x !== -direction.x || newDirection.y !== -direction.y) {
+            setNextDirection(newDirection);
+          }
+        },
+        description: 'Move up'
+      },
+      {
+        key: 'ArrowDown',
+        handler: () => {
+          checkKonamiCode('ArrowDown');
+          const newDirection = { x: 0, y: 1 };
+          if (newDirection.x !== -direction.x || newDirection.y !== -direction.y) {
+            setNextDirection(newDirection);
+          }
+        },
+        description: 'Move down'
+      },
+      {
+        key: 'ArrowLeft',
+        handler: () => {
+          checkKonamiCode('ArrowLeft');
+          const newDirection = { x: -1, y: 0 };
+          if (newDirection.x !== -direction.x || newDirection.y !== -direction.y) {
+            setNextDirection(newDirection);
+          }
+        },
+        description: 'Move left'
+      },
+      {
+        key: 'ArrowRight',
+        handler: () => {
+          checkKonamiCode('ArrowRight');
+          const newDirection = { x: 1, y: 0 };
+          if (newDirection.x !== -direction.x || newDirection.y !== -direction.y) {
+            setNextDirection(newDirection);
+          }
+        },
+        description: 'Move right'
+      },
+      {
+        key: 'a',
+        handler: () => {
+          checkKonamiCode('a');
+        },
+        description: 'Konami code A'
+      },
+      {
+        key: 'b',
+        handler: () => {
+          checkKonamiCode('b');
+        },
+        description: 'Konami code B'
       }
-    };
-  }, []);
+    ]
+  });
 
   // Add new handler for click outside
   const handleClickOutside = useCallback(
