@@ -30,7 +30,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
   const nodeRef = useRef(null);
   const konamiSequenceRef = useRef<string[]>([]);
   const isProcessingKonamiRef = useRef(false);
-  
+
   // Move ALL hooks to the top, before any returns
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -280,26 +280,36 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
     }
   }, [gameOver, gameStarted, moveSnake, isMinimized]);
 
-  // Recalculate on window resize
+  // Recalculate on window resize or fullscreen change
   useEffect(() => {
     const handleResize = () => {
-      const { gridSize } = calculateGameDimensions();
-      // Update snake and food positions
-      setSnake((prev) =>
-        prev.map((segment) => ({
-          x: Math.min(segment.x, gridSize - 1),
-          y: Math.min(segment.y, gridSize - 1),
-        }))
-      );
-      setFood((prev) => ({
-        x: Math.min(prev.x, gridSize - 1),
-        y: Math.min(prev.y, gridSize - 1),
-      }));
+      const { gridSize, cellSize } = calculateGameDimensions();
+      
+      // Scale the positions based on the new grid size ratio
+      const scalePositions = (positions: Position[], oldGridSize: number, newGridSize: number) => {
+        return positions.map(pos => ({
+          x: Math.min(Math.floor((pos.x / oldGridSize) * newGridSize), newGridSize - 1),
+          y: Math.min(Math.floor((pos.y / oldGridSize) * newGridSize), newGridSize - 1),
+        }));
+      };
+
+      setSnake(prev => {
+        const oldGridSize = Math.max(MIN_GRID_SIZE, prev.length > 0 ? Math.max(...prev.map(p => Math.max(p.x, p.y))) + 1 : MIN_GRID_SIZE);
+        return scalePositions(prev, oldGridSize, gridSize);
+      });
+
+      setFood(prev => {
+        const oldGridSize = Math.max(MIN_GRID_SIZE, Math.max(prev.x, prev.y) + 1);
+        return scalePositions([prev], oldGridSize, gridSize)[0];
+      });
     };
 
     window.addEventListener("resize", handleResize);
+    // Also trigger resize when fullscreen changes
+    handleResize();
+    
     return () => window.removeEventListener("resize", handleResize);
-  }, [isFullscreen]);
+  }, [calculateGameDimensions, isFullscreen]); // Add isFullscreen as dependency
 
   useEffect(() => {
     return () => {
