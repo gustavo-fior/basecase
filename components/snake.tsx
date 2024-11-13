@@ -30,6 +30,10 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const nodeRef = useRef(null);
+  const [konamiSequence, setKonamiSequence] = useState<string[]>([]);
+  const konamiTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isProcessingKonami = useRef(false);
+  const [lastKonamiCheck, setLastKonamiCheck] = useState<number>(0);
 
   const calculateGameDimensions = useCallback(() => {
     if (isFullscreen) {
@@ -97,6 +101,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
       {
         key: 'ArrowUp',
         handler: () => {
+          checkKonamiCode('ArrowUp');
           const newDirection = { x: 0, y: -1 };
           if (newDirection.x !== -direction.x || newDirection.y !== -direction.y) {
             setNextDirection(newDirection);
@@ -107,6 +112,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
       {
         key: 'ArrowDown',
         handler: () => {
+          checkKonamiCode('ArrowDown');
           const newDirection = { x: 0, y: 1 };
           if (newDirection.x !== -direction.x || newDirection.y !== -direction.y) {
             setNextDirection(newDirection);
@@ -117,6 +123,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
       {
         key: 'ArrowLeft',
         handler: () => {
+          checkKonamiCode('ArrowLeft');
           const newDirection = { x: -1, y: 0 };
           if (newDirection.x !== -direction.x || newDirection.y !== -direction.y) {
             setNextDirection(newDirection);
@@ -127,15 +134,81 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
       {
         key: 'ArrowRight',
         handler: () => {
+          checkKonamiCode('ArrowRight');
           const newDirection = { x: 1, y: 0 };
           if (newDirection.x !== -direction.x || newDirection.y !== -direction.y) {
             setNextDirection(newDirection);
           }
         },
         description: 'Move right'
+      },
+      {
+        key: 'a',
+        handler: () => {
+          checkKonamiCode('a');
+        },
+        description: 'Konami code A'
+      },
+      {
+        key: 'b',
+        handler: () => {
+          checkKonamiCode('b');
+        },
+        description: 'Konami code B'
       }
     ]
   });
+
+  // Add Konami code check function
+  const checkKonamiCode = useCallback((key: string) => {
+    const now = Date.now();
+    if (now - lastKonamiCheck < 100) {
+      return; // Prevent double execution
+    }
+    setLastKonamiCheck(now);
+    
+    const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    
+    if (isProcessingKonami.current) {
+      return;
+    }
+
+    setKonamiSequence(prev => {
+      const newSequence = [...prev, key];
+      if (newSequence.length > konamiCode.length) {
+        newSequence.shift();
+      }
+      
+      // Check if the sequence matches the Konami code
+      if (newSequence.length === konamiCode.length && 
+          newSequence.every((k, i) => k.toLowerCase() === konamiCode[i].toLowerCase())) {
+        if (!isProcessingKonami.current) {
+          isProcessingKonami.current = true;
+          setScore(prev => prev * 2); // Double the score
+          
+          // Reset the processing flag after a delay
+          if (konamiTimeoutRef.current) {
+            clearTimeout(konamiTimeoutRef.current);
+          }
+          konamiTimeoutRef.current = setTimeout(() => {
+            isProcessingKonami.current = false;
+          }, 1000);
+        }
+        return []; // Reset sequence
+      }
+      
+      return newSequence;
+    });
+  }, []);
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (konamiTimeoutRef.current) {
+        clearTimeout(konamiTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // Fix: Update generateFood to use current gridSize
   const generateFood = useCallback(() => {
