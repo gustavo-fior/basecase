@@ -196,13 +196,16 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
       if (!willEatFood) {
         newSnake.pop();
       } else {
-        setScore((prev) => prev + 1);
         generateFood();
       }
 
       return newSnake;
     });
-  }, [nextDirection, food, generateFood, gridSize]);
+
+    if (snake[0].x + nextDirection.x === food.x && snake[0].y + nextDirection.y === food.y) {
+      setScore((prev) => prev + 1);
+    }
+  }, [nextDirection, food, generateFood, gridSize, snake]);
 
   useEffect(() => {
     if (!gameOver && gameStarted && !isMinimized) {
