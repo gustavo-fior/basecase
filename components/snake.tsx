@@ -26,13 +26,14 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
   isMinimized,
   onMinimize,
 }) => {
+
+  const nodeRef = useRef(null);
+  const konamiSequenceRef = useRef<string[]>([]);
+  const isProcessingKonamiRef = useRef(false);
+  
   // Move ALL hooks to the top, before any returns
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
-  const nodeRef = useRef(null);
-  const [konamiSequence, setKonamiSequence] = useState<string[]>([]);
-  const konamiTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const isProcessingKonami = useRef(false);
   const [lastKonamiCheck, setLastKonamiCheck] = useState<number>(0);
 
   const calculateGameDimensions = useCallback(() => {
@@ -167,46 +168,35 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
     }
     setLastKonamiCheck(now);
     
-    const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-    
-    if (isProcessingKonami.current) {
+    if (isProcessingKonamiRef.current) {
       return;
     }
 
-    setKonamiSequence(prev => {
-      const newSequence = [...prev, key];
-      if (newSequence.length > konamiCode.length) {
-        newSequence.shift();
-      }
+    const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    
+    konamiSequenceRef.current = [...konamiSequenceRef.current, key];
+    if (konamiSequenceRef.current.length > konamiCode.length) {
+      konamiSequenceRef.current.shift();
+    }
+    
+    // Check if the sequence matches the Konami code
+    if (konamiSequenceRef.current.length === konamiCode.length && 
+        konamiSequenceRef.current.every((k, i) => k.toLowerCase() === konamiCode[i].toLowerCase())) {
+      isProcessingKonamiRef.current = true;
+      setScore(prev => prev * 2); // Double the score
+      konamiSequenceRef.current = []; // Reset sequence
       
-      // Check if the sequence matches the Konami code
-      if (newSequence.length === konamiCode.length && 
-          newSequence.every((k, i) => k.toLowerCase() === konamiCode[i].toLowerCase())) {
-        if (!isProcessingKonami.current) {
-          isProcessingKonami.current = true;
-          setScore(prev => prev * 2); // Double the score
-          
-          // Reset the processing flag after a delay
-          if (konamiTimeoutRef.current) {
-            clearTimeout(konamiTimeoutRef.current);
-          }
-          konamiTimeoutRef.current = setTimeout(() => {
-            isProcessingKonami.current = false;
-          }, 1000);
-        }
-        return []; // Reset sequence
-      }
-      
-      return newSequence;
-    });
+      // Reset the processing flag after a delay
+      setTimeout(() => {
+        isProcessingKonamiRef.current = false;
+      }, 1000);
+    }
   }, []);
 
   // Cleanup timeout on unmount
   useEffect(() => {
     return () => {
-      if (konamiTimeoutRef.current) {
-        clearTimeout(konamiTimeoutRef.current);
-      }
+      // No cleanup needed
     };
   }, []);
 
