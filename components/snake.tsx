@@ -39,6 +39,15 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
+  const [highestScore, setHighestScore] = useState<number | null>(null);
+
+  // Add useEffect to load highest score from localStorage on mount
+  useEffect(() => {
+    const stored = localStorage.getItem('snakeHighestScore');
+    if (stored) {
+      setHighestScore(parseInt(stored));
+    }
+  }, []);
 
   // Game Logic
   const calculateGameDimensions = useCallback(() => {
@@ -122,7 +131,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
     });
 
     if (snake[0].x + nextDirection.x === food.x && snake[0].y + nextDirection.y === food.y) {
-      setScore((prev) => prev + 1);
+      setScore(prev => prev + 1);
     }
   }, [nextDirection, food, generateFood, gridSize, snake]);
 
@@ -292,6 +301,19 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
     [onClose]
   );
 
+  // Add effect to handle game over score
+  useEffect(() => {
+    if (gameOver && score > 0) {
+      const stored = localStorage.getItem('snakeHighestScore');
+      const currentHighest = stored ? parseInt(stored) : 0;
+      
+      if (score > currentHighest) {
+        localStorage.setItem('snakeHighestScore', score.toString());
+        setHighestScore(score);
+      }
+    }
+  }, [gameOver, score]);
+
   // Now the conditional return is safe
   if (isMinimized) {
     return null;
@@ -416,9 +438,19 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
                 )}
               </div>
 
-              {/* Score */}
-              <div className="mt-2 font-mono text-sm text-gray-800 dark:text-gray-200">
-                score: {score}
+              {/* Score Display - Updated Design */}
+              <div className="mt-2 font-mono text-sm flex items-center justify-between px-2 text-gray-800 dark:text-gray-200">
+                <div className="flex items-center gap-4">
+                  <span>score: {score}</span>
+                  {highestScore !== null && score > highestScore && (
+                    <span className="text-emerald-500 animate-pulse">new high!</span>
+                  )}
+                </div>
+                {highestScore !== null && (
+                  <div className="text-gray-500 dark:text-gray-400">
+                    best: {highestScore}
+                  </div>
+                )}
               </div>
             </div>
           </div>
