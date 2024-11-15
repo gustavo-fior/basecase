@@ -552,7 +552,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
 
               {/* Leaderboard */}
               <div className="flex-1">
-                <div className="text-sm text-gray-500 dark:text-gray-400 mb-3 lowercase">leaderboard</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400 mb-3 lowercase">global leaderboard</div>
                 <div className="space-y-2">
                   {leaderboard.slice(0, 5).map((entry, i) => (
                     <div 
