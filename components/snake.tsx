@@ -454,15 +454,15 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
                   }}
                 >
                   {/* Add snake segments */}
-                  {snake.map((segment, index) => (
+                  {snake.map((segment, i) => (
                     <div
-                      key={index}
-                      className={`absolute bg-gray-800 dark:bg-gray-200 transition-opacity duration-200 ${
-                        gameOver ? 'opacity-30' : 'opacity-100'
+                      key={i}
+                      className={`absolute bg-gray-800 dark:bg-gray-200 ${
+                        gameOver ? "opacity-20" : ""
                       }`}
                       style={{
-                        width: cellSize,
-                        height: cellSize,
+                        width: cellSize - 1,
+                        height: cellSize - 1,
                         left: segment.x * cellSize,
                         top: segment.y * cellSize,
                       }}
@@ -471,14 +471,13 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
 
                   {/* Add food */}
                   <div
-                    className={`absolute bg-emerald-500 transition-opacity duration-200 ${
-                      gameOver ? 'opacity-30' : 'opacity-100'
-                    }`}
+                    className={`absolute ${gameOver ? "opacity-20" : ""}`}
                     style={{
-                      width: cellSize,
-                      height: cellSize,
+                      width: cellSize - 1,
+                      height: cellSize - 1,
                       left: food.x * cellSize,
                       top: food.y * cellSize,
+                      backgroundColor: "var(--color-primary)",
                     }}
                   />
 
@@ -506,12 +505,21 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
                                   maxLength={15}
                                   autoFocus
                                 />
-                                <button
-                                  type="submit"
-                                  className="px-3 py-1 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800 rounded lowercase"
-                                >
-                                  submit score
-                                </button>
+                                <div className="flex gap-2">
+                                  <button
+                                    type="submit"
+                                    className="px-3 py-1 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800 rounded lowercase"
+                                  >
+                                    submit score
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => setShowNameInput(false)}
+                                    className="px-3 py-1 border border-gray-800 dark:border-gray-200 text-gray-800 dark:text-gray-200 rounded lowercase"
+                                  >
+                                    skip
+                                  </button>
+                                </div>
                               </form>
                             ) : (
                               <div className="text-gray-600 dark:text-gray-400 mt-2">
@@ -557,7 +565,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
                       key={i}
                       className={`
                         flex items-center justify-between text-sm lowercase
-                        ${entry.score === score ? 'text-emerald-500' : 'text-gray-800 dark:text-gray-200'}
+                        ${entry.score === score ? '[color:var(--color-primary)]' : 'text-gray-800 dark:text-gray-200'}
                       `}
                     >
                       <div className="flex items-center gap-2">
