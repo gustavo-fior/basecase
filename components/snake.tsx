@@ -452,7 +452,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
                     <div
                       key={i}
                       className={`absolute bg-gray-800 dark:bg-gray-200 ${
-                        gameOver ? "opacity-20" : ""
+                        !gameStarted || gameOver ? "opacity-20" : ""
                       }`}
                       style={{
                         width: cellSize - 1,
@@ -465,7 +465,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
 
                   {/* Add food */}
                   <div
-                    className={`absolute ${gameOver ? "opacity-20" : ""}`}
+                    className={`absolute ${!gameStarted || gameOver ? "opacity-20" : ""}`}
                     style={{
                       width: cellSize - 1,
                       height: cellSize - 1,
