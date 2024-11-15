@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { Gamepad } from "lucide-react";
 import Draggable from "react-draggable";
 import { useKeyboardShortcut } from '../hooks/keyboard-shortcuts';
+import { createClient } from '@supabase/supabase-js';
 
 // Constants
 const BASE_CELL_SIZE = 15;
@@ -20,6 +21,19 @@ interface SnakeGameProps {
   isMinimized: boolean;
   onMinimize: (minimized: boolean) => void;
 }
+
+interface LeaderboardEntry {
+  id?: number;
+  username: string;
+  score: number;
+  created_at?: string;
+}
+
+// Add Supabase client configuration
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 // Game
 export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMinimize }) => {
@@ -40,6 +54,9 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
   const [gameOver, setGameOver] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
   const [highestScore, setHighestScore] = useState<number | null>(null);
+  const [showNameInput, setShowNameInput] = useState(false);
+  const [username, setUsername] = useState('');
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
 
   // Add useEffect to load highest score from localStorage on mount
   useEffect(() => {
@@ -49,11 +66,31 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
     }
   }, []);
 
+  // Add after existing useEffect that loads highest score
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      const { data, error } = await supabase
+        .from('leaderboard')
+        .select('*')
+        .order('score', { ascending: false })
+        .limit(10);
+
+      if (error) {
+        console.error('Error fetching leaderboard:', error);
+        return;
+      }
+
+      setLeaderboard(data || []);
+    };
+
+    fetchLeaderboard();
+  }, []);
+
   // Game Logic
   const calculateGameDimensions = useCallback(() => {
     if (isFullscreen) {
       const maxWidth = window.innerWidth - 200;
-      const maxHeight = window.innerHeight - 200;
+      const maxHeight = window.innerHeight - 100;
 
       const horizontalCells = Math.floor(maxWidth / BASE_CELL_SIZE);
       const verticalCells = Math.floor(maxHeight / BASE_CELL_SIZE);
@@ -311,8 +348,39 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
         localStorage.setItem('snakeHighestScore', score.toString());
         setHighestScore(score);
       }
+      
+      setShowNameInput(true); // Show name input when game ends
     }
   }, [gameOver, score]);
+
+  // Add new function to handle score submission
+  const handleScoreSubmit = useCallback(async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const newEntry: LeaderboardEntry = {
+      username: username || 'Anonymous',
+      score,
+    };
+    
+    const { error } = await supabase
+      .from('leaderboard')
+      .insert(newEntry);
+
+    if (error) {
+      console.error('Error submitting score:', error);
+      return;
+    }
+
+    // Fetch updated leaderboard
+    const { data: updatedLeaderboard } = await supabase
+      .from('leaderboard')
+      .select('*')
+      .order('score', { ascending: false })
+      .limit(10);
+
+    setLeaderboard(updatedLeaderboard || []);
+    setShowNameInput(false);
+  }, [username, score]);
 
   // Now the conditional return is safe
   if (isMinimized) {
@@ -338,7 +406,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
         <div
           ref={nodeRef}
           className={`
-            ${isFullscreen ? "fixed inset-4" : `w-[${gridSize * cellSize + 4}px]`}
+            ${isFullscreen ? "fixed inset-4" : "w-[750px]"}
             flex flex-col
             border border-gray-300 dark:border-gray-700
             [background-color:var(--color-background-light)]
@@ -373,84 +441,142 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
             </div>
           </div>
 
-          {/* Game Board and Score Container */}
-          <div className="flex-1 flex flex-col items-center justify-center p-4">
-            <div className="flex flex-col">
-              <div
-                className="relative border border-gray-300 dark:border-gray-700"
-                style={{
-                  width: gridSize * cellSize,
-                  height: gridSize * cellSize,
-                }}
-              >
-                {(!gameStarted || gameOver) && (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center font-mono z-10">
-                    {!gameStarted && !gameOver && (
-                      <>
-                        <div className="text-gray-800 dark:text-gray-200">
-                          press p to play or pause
-                        </div>
-                        <div className="text-gray-600 dark:text-gray-400 mt-2">
-                          use arrow keys to move
-                        </div>
-                      </>
-                    )}
-                    {gameOver && (
-                      <>
-                        <div className="text-gray-800 dark:text-gray-200">
-                          game over
-                        </div>
-                        <div className="text-gray-600 dark:text-gray-400 mt-2">
-                          press r to restart
-                        </div>
-                      </>
-                    )}
-                  </div>
-                )}
-
-                {gameStarted && (
-                  <>
-                    {snake.map((segment, i) => (
-                      <div
-                        key={i}
-                        className={`absolute bg-gray-800 dark:bg-gray-200 ${
-                          gameOver ? "opacity-20" : ""
-                        }`}
-                        style={{
-                          width: cellSize - 1,
-                          height: cellSize - 1,
-                          left: segment.x * cellSize,
-                          top: segment.y * cellSize,
-                        }}
-                      />
-                    ))}
+          {/* New Layout: Game Board + Stats Side Panel */}
+          <div className="flex-1 flex">
+            {/* Game Board Side */}
+            <div className="flex items-center justify-center p-4 border-r border-gray-300 dark:border-gray-700">
+              <div className="relative">
+                <div
+                  className="relative border border-gray-300 dark:border-gray-700"
+                  style={{
+                    width: gridSize * cellSize,
+                    height: gridSize * cellSize,
+                  }}
+                >
+                  {/* Add snake segments */}
+                  {snake.map((segment, index) => (
                     <div
-                      className={`absolute ${gameOver ? "opacity-20" : ""}`}
+                      key={index}
+                      className={`absolute bg-gray-800 dark:bg-gray-200 transition-opacity duration-200 ${
+                        gameOver ? 'opacity-30' : 'opacity-100'
+                      }`}
                       style={{
-                        width: cellSize - 1,
-                        height: cellSize - 1,
-                        left: food.x * cellSize,
-                        top: food.y * cellSize,
-                        backgroundColor: "var(--color-primary)",
+                        width: cellSize,
+                        height: cellSize,
+                        left: segment.x * cellSize,
+                        top: segment.y * cellSize,
                       }}
                     />
-                  </>
-                )}
-              </div>
+                  ))}
 
-              {/* Score Display - Updated Design */}
-              <div className="mt-2 font-mono text-sm flex items-center justify-between px-2 text-gray-800 dark:text-gray-200">
-                <div className="flex items-center gap-4">
-                  <span>score: {score}</span>
-                  {highestScore !== null && score > highestScore && (
-                    <span className="text-emerald-500 animate-pulse">new high!</span>
+                  {/* Add food */}
+                  <div
+                    className={`absolute bg-emerald-500 transition-opacity duration-200 ${
+                      gameOver ? 'opacity-30' : 'opacity-100'
+                    }`}
+                    style={{
+                      width: cellSize,
+                      height: cellSize,
+                      left: food.x * cellSize,
+                      top: food.y * cellSize,
+                    }}
+                  />
+
+                  {/* Game over/start overlay remains the same */}
+                  {(!gameStarted || gameOver) && (
+                    <div className="absolute inset-0 flex items-center justify-center font-mono">
+                      <div className="text-center">
+                        {!gameStarted && !gameOver && (
+                          <>
+                            <div className="text-gray-800 dark:text-gray-200">press p to play or pause</div>
+                            <div className="text-gray-600 dark:text-gray-400 mt-2">use arrow keys to move</div>
+                          </>
+                        )}
+                        {gameOver && (
+                          <>
+                            <div className="text-gray-800 dark:text-gray-200">game over</div>
+                            {showNameInput ? (
+                              <form onSubmit={handleScoreSubmit} className="mt-4 flex flex-col items-center gap-4">
+                                <input
+                                  type="text"
+                                  value={username}
+                                  onChange={(e) => setUsername(e.target.value)}
+                                  placeholder="enter your name"
+                                  className="px-2 py-1 border rounded bg-transparent lowercase"
+                                  maxLength={15}
+                                  autoFocus
+                                />
+                                <button
+                                  type="submit"
+                                  className="px-3 py-1 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800 rounded lowercase"
+                                >
+                                  submit score
+                                </button>
+                              </form>
+                            ) : (
+                              <div className="text-gray-600 dark:text-gray-400 mt-2">
+                                press r to restart
+                              </div>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    </div>
                   )}
                 </div>
-                {highestScore !== null && (
-                  <div className="text-gray-500 dark:text-gray-400">
-                    best: {highestScore}
-                  </div>
-                )}
+              </div>
+            </div>
+
+            {/* Stats Side */}
+            <div className="w-[250px] flex flex-col p-6 font-mono">
+              {/* Current Score */}
+              <div className="mb-8">
+                <div className="text-sm text-gray-500 dark:text-gray-400 mb-1 lowercase">current score</div>
+                <div className="text-4xl font-bold text-gray-800 dark:text-gray-200">
+                  {score}
+                  {highestScore !== null && score > highestScore && (
+                    <span className="text-sm text-emerald-500 ml-2 animate-pulse">new high!</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Best Score */}
+              <div className="mb-8">
+                <div className="text-sm text-gray-500 dark:text-gray-400 mb-1 lowercase">best score</div>
+                <div className="text-2xl text-gray-800 dark:text-gray-200">
+                  {highestScore || 0}
+                </div>
+              </div>
+
+              {/* Leaderboard */}
+              <div className="flex-1">
+                <div className="text-sm text-gray-500 dark:text-gray-400 mb-3 lowercase">leaderboard</div>
+                <div className="space-y-2">
+                  {leaderboard.slice(0, 5).map((entry, i) => (
+                    <div 
+                      key={i}
+                      className={`
+                        flex items-center justify-between text-sm lowercase
+                        ${entry.score === score ? 'text-emerald-500' : 'text-gray-800 dark:text-gray-200'}
+                      `}
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="text-gray-400 w-4">{i + 1}</span>
+                        <span>{entry.username.toLowerCase()}</span>
+                      </div>
+                      <span className="font-bold">{entry.score}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Controls Help */}
+              <div className="mt-auto pt-4 border-t border-gray-300 dark:border-gray-700">
+                <div className="text-xs text-gray-500 dark:text-gray-400 lowercase space-y-1">
+                  <div>p - play/pause</div>
+                  <div>r - restart</div>
+                  <div>arrows - move</div>
+                </div>
               </div>
             </div>
           </div>
