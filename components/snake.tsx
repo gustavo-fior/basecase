@@ -134,7 +134,6 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
     setDirection(nextDirection);
 
     setSnake((prevSnake) => {
-      // Calculate new head position
       const newX = prevSnake[0].x + nextDirection.x;
       const newY = prevSnake[0].y + nextDirection.y;
 
@@ -147,30 +146,25 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
       const head = { x: newX, y: newY };
 
       // Check for self collision
-      if (
-        prevSnake.some(
-          (segment) => segment.x === head.x && segment.y === head.y
-        )
-      ) {
+      if (prevSnake.some((segment) => segment.x === head.x && segment.y === head.y)) {
         setGameOver(true);
         return prevSnake;
       }
 
       const willEatFood = head.x === food.x && head.y === food.y;
+      if (willEatFood) {
+        setScore(prev => prev + 1);
+        generateFood();
+      }
+
       const newSnake = [head, ...prevSnake];
       if (!willEatFood) {
         newSnake.pop();
-      } else {
-        generateFood();
       }
 
       return newSnake;
     });
-
-    if (snake[0].x + nextDirection.x === food.x && snake[0].y + nextDirection.y === food.y) {
-      setScore(prev => prev + 1);
-    }
-  }, [nextDirection, food, generateFood, gridSize, snake]);
+  }, [nextDirection, food, generateFood, gridSize]);
 
   // Konami Code Handler
   const checkKonamiCode = useCallback((key: string) => {
