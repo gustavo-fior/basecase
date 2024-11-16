@@ -78,7 +78,6 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
   const [showNameInput, setShowNameInput] = useState(false);
   const [username, setUsername] = useState("");
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
-  const [activeUsers, setActiveUsers] = useState<string[]>([]);
 
   // Add direction queue state
   const [directionQueue, setDirectionQueue] = useState<Direction[]>([]);
@@ -94,9 +93,14 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
 
   // Add useEffect to load highest score from localStorage on mount
   useEffect(() => {
-    const stored = localStorage.getItem("snakeHighestScore");
-    if (stored) {
-      setHighestScore(parseInt(stored));
+    const storedScore = localStorage.getItem("snakeHighestScore");
+    const storedUsername = localStorage.getItem("snakeLastUsername");
+    
+    if (storedScore) {
+      setHighestScore(parseInt(storedScore));
+    }
+    if (storedUsername) {
+      setUsername(storedUsername); // Just set the username directly
     }
   }, []);
 
@@ -427,8 +431,8 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
   // Add effect to handle game over score
   useEffect(() => {
     if (gameOver && score > 0) {
-      const stored = localStorage.getItem("snakeHighestScore");
-      const currentHighest = stored ? parseInt(stored) : 0;
+      const storedScore = localStorage.getItem("snakeHighestScore");
+      const currentHighest = storedScore ? parseInt(storedScore) : 0;
 
       if (score > currentHighest) {
         localStorage.setItem("snakeHighestScore", score.toString());
@@ -461,9 +465,12 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
           return;
         }
 
+        // Store the username in localStorage
+        localStorage.setItem("snakeLastUsername", username);
+
         // Create new entry
         const newEntry = {
-          username: username || "anonymous",
+          username: username,
           score: score
         };
 
@@ -485,7 +492,6 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
           .limit(10);
 
         setLeaderboard(updatedLeaderboard || []);
-        setUsername(""); 
         setShowNameInput(false);
       } catch (error) {
         console.error("Error:", error);
