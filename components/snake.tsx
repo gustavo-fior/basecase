@@ -468,18 +468,23 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
         // Store the username in localStorage
         localStorage.setItem("snakeLastUsername", username);
 
-        // Create new entry
-        const newEntry = {
-          username: username,
-          score: score
-        };
-
-        const { error: leaderboardError } = await supabase
+        // Upsert the score
+        const { error: upsertError } = await supabase
           .from("leaderboard")
-          .insert(newEntry);
+          .upsert(
+            {
+              username: username,
+              score: score,
+              submitted_at: new Date().toISOString()
+            },
+            {
+              onConflict: 'username',
+              ignoreDuplicates: false // Only update if the new score is higher
+            }
+          );
 
-        if (leaderboardError) {
-          console.error("Error submitting score:", leaderboardError);
+        if (upsertError) {
+          console.error("Error submitting score:", upsertError);
           setErrorMessage("error submitting score. please try again.");
           return;
         }
