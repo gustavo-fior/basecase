@@ -35,6 +35,12 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
+// Add new type for direction queue
+interface Direction {
+  x: number;
+  y: number;
+}
+
 // Game
 export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMinimize }) => {
   // Refs
@@ -57,6 +63,9 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
   const [showNameInput, setShowNameInput] = useState(false);
   const [username, setUsername] = useState('');
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+
+  // Add direction queue state
+  const [directionQueue, setDirectionQueue] = useState<Direction[]>([]);
 
   // Add useEffect to load highest score from localStorage on mount
   useEffect(() => {
@@ -131,7 +140,16 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
   }, [generateFood, gridSize]);
 
   const moveSnake = useCallback(() => {
-    setDirection(nextDirection);
+    // Process next direction from queue if available
+    setDirectionQueue(prevQueue => {
+      if (prevQueue.length > 0) {
+        const nextDir = prevQueue[0];
+        setDirection(nextDir);
+        setNextDirection(nextDir);
+        return prevQueue.slice(1);
+      }
+      return prevQueue;
+    });
 
     setSnake((prevSnake) => {
       // Calculate new head position
@@ -195,6 +213,32 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
       }, 1000);
     }
   }, [lastKonamiCheck]);
+
+  // Modify direction change handlers in keyboard shortcuts
+  const addDirectionToQueue = useCallback((newDirection: Direction) => {
+    // Only add direction if it's different from the last queued direction
+    // and not opposite to the current direction
+    setDirectionQueue(prevQueue => {
+      const lastDirection = prevQueue.length > 0 
+        ? prevQueue[prevQueue.length - 1] 
+        : direction;
+      
+      const isOpposite = (
+        newDirection.x === -lastDirection.x && newDirection.y === -lastDirection.y
+      );
+      
+      const isSameAsLast = (
+        newDirection.x === lastDirection.x && newDirection.y === lastDirection.y
+      );
+
+      if (!isOpposite && !isSameAsLast) {
+        // Limit queue size to prevent memory issues
+        const newQueue = [...prevQueue, newDirection].slice(-3);
+        return newQueue;
+      }
+      return prevQueue;
+    });
+  }, [direction]);
 
   // Effects
   // Game loop
@@ -271,10 +315,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
         key: 'ArrowUp',
         handler: () => {
           checkKonamiCode('ArrowUp');
-          const newDirection = { x: 0, y: -1 };
-          if (newDirection.x !== -direction.x || newDirection.y !== -direction.y) {
-            setNextDirection(newDirection);
-          }
+          addDirectionToQueue({ x: 0, y: -1 });
         },
         description: 'Move up'
       },
@@ -282,10 +323,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
         key: 'ArrowDown',
         handler: () => {
           checkKonamiCode('ArrowDown');
-          const newDirection = { x: 0, y: 1 };
-          if (newDirection.x !== -direction.x || newDirection.y !== -direction.y) {
-            setNextDirection(newDirection);
-          }
+          addDirectionToQueue({ x: 0, y: 1 });
         },
         description: 'Move down'
       },
@@ -293,10 +331,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
         key: 'ArrowLeft',
         handler: () => {
           checkKonamiCode('ArrowLeft');
-          const newDirection = { x: -1, y: 0 };
-          if (newDirection.x !== -direction.x || newDirection.y !== -direction.y) {
-            setNextDirection(newDirection);
-          }
+          addDirectionToQueue({ x: -1, y: 0 });
         },
         description: 'Move left'
       },
@@ -304,10 +339,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
         key: 'ArrowRight',
         handler: () => {
           checkKonamiCode('ArrowRight');
-          const newDirection = { x: 1, y: 0 };
-          if (newDirection.x !== -direction.x || newDirection.y !== -direction.y) {
-            setNextDirection(newDirection);
-          }
+          addDirectionToQueue({ x: 1, y: 0 });
         },
         description: 'Move right'
       },
