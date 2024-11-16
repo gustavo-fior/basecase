@@ -141,15 +141,12 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
 
   const moveSnake = useCallback(() => {
     // Process next direction from queue if available
-    setDirectionQueue(prevQueue => {
-      if (prevQueue.length > 0) {
-        const nextDir = prevQueue[0];
-        setDirection(nextDir);
-        setNextDirection(nextDir);
-        return prevQueue.slice(1);
-      }
-      return prevQueue;
-    });
+    if (directionQueue.length > 0) {
+      const nextDir = directionQueue[0];
+      setDirection(nextDir);
+      setNextDirection(nextDir);
+      setDirectionQueue(prevQueue => prevQueue.slice(1));
+    }
 
     setSnake((prevSnake) => {
       // Calculate new head position
@@ -188,7 +185,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
     if (snake[0].x + nextDirection.x === food.x && snake[0].y + nextDirection.y === food.y) {
       setScore(prev => prev + 1);
     }
-  }, [nextDirection, food, generateFood, gridSize, snake]);
+  }, [nextDirection, food, generateFood, gridSize, snake, directionQueue]);
 
   // Konami Code Handler
   const checkKonamiCode = useCallback((key: string) => {
