@@ -1,14 +1,25 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Gamepad } from "lucide-react";
 import Draggable from "react-draggable";
-import { useKeyboardShortcut } from '../hooks/keyboard-shortcuts';
-import { createClient } from '@supabase/supabase-js';
+import { useKeyboardShortcut } from "../hooks/keyboard-shortcuts";
+import { createClient } from "@supabase/supabase-js";
 
 // Constants
 const BASE_CELL_SIZE = 15;
 const MIN_GRID_SIZE = 30;
 const GAME_SPEED = 100;
-const KONAMI_CODE = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+const KONAMI_CODE = [
+  "ArrowUp",
+  "ArrowUp",
+  "ArrowDown",
+  "ArrowDown",
+  "ArrowLeft",
+  "ArrowRight",
+  "ArrowLeft",
+  "ArrowRight",
+  "b",
+  "a",
+];
 
 // Types
 interface Position {
@@ -42,7 +53,11 @@ interface Direction {
 }
 
 // Game
-export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMinimize }) => {
+export const SnakeGame: React.FC<SnakeGameProps> = ({
+  onClose,
+  isMinimized,
+  onMinimize,
+}) => {
   // Refs
   const nodeRef = useRef(null);
   const konamiSequenceRef = useRef<string[]>([]);
@@ -61,15 +76,21 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
   const [gameStarted, setGameStarted] = useState(false);
   const [highestScore, setHighestScore] = useState<number | null>(null);
   const [showNameInput, setShowNameInput] = useState(false);
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState("");
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
 
   // Add direction queue state
   const [directionQueue, setDirectionQueue] = useState<Direction[]>([]);
 
+  // Add state for error message
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
+  // Add loading state
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // Add useEffect to load highest score from localStorage on mount
   useEffect(() => {
-    const stored = localStorage.getItem('snakeHighestScore');
+    const stored = localStorage.getItem("snakeHighestScore");
     if (stored) {
       setHighestScore(parseInt(stored));
     }
@@ -79,13 +100,13 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
   useEffect(() => {
     const fetchLeaderboard = async () => {
       const { data, error } = await supabase
-        .from('leaderboard')
-        .select('*')
-        .order('score', { ascending: false })
+        .from("leaderboard")
+        .select("*")
+        .order("score", { ascending: false })
         .limit(10);
 
       if (error) {
-        console.error('Error fetching leaderboard:', error);
+        console.error("Error fetching leaderboard:", error);
         return;
       }
 
@@ -125,7 +146,11 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
         x: Math.floor(Math.random() * (gridSize - 1)),
         y: Math.floor(Math.random() * (gridSize - 1)),
       };
-    } while (snake.some(segment => segment.x === newFood.x && segment.y === newFood.y));
+    } while (
+      snake.some(
+        (segment) => segment.x === newFood.x && segment.y === newFood.y
+      )
+    );
     setFood(newFood);
   }, [snake, calculateGameDimensions]);
 
@@ -136,6 +161,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
     setNextDirection({ x: 1, y: 0 });
     setScore(0);
     setGameOver(false);
+    setErrorMessage("");
     generateFood();
   }, [generateFood, gridSize]);
 
@@ -145,7 +171,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
       const nextDir = directionQueue[0];
       setDirection(nextDir);
       setNextDirection(nextDir);
-      setDirectionQueue(prevQueue => prevQueue.slice(1));
+      setDirectionQueue((prevQueue) => prevQueue.slice(1));
     }
 
     setSnake((prevSnake) => {
@@ -182,60 +208,72 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
       return newSnake;
     });
 
-    if (snake[0].x + nextDirection.x === food.x && snake[0].y + nextDirection.y === food.y) {
-      setScore(prev => prev + 1);
+    if (
+      snake[0].x + nextDirection.x === food.x &&
+      snake[0].y + nextDirection.y === food.y
+    ) {
+      setScore((prev) => prev + 1);
     }
   }, [nextDirection, food, generateFood, gridSize, snake, directionQueue]);
 
   // Konami Code Handler
-  const checkKonamiCode = useCallback((key: string) => {
-    const now = Date.now();
-    if (now - lastKonamiCheck < 100 || isProcessingKonamiRef.current) return;
-    
-    setLastKonamiCheck(now);
-    
-    konamiSequenceRef.current = [...konamiSequenceRef.current, key];
-    if (konamiSequenceRef.current.length > KONAMI_CODE.length) {
-      konamiSequenceRef.current.shift();
-    }
-    
-    if (konamiSequenceRef.current.length === KONAMI_CODE.length && 
-        konamiSequenceRef.current.every((k, i) => k.toLowerCase() === KONAMI_CODE[i].toLowerCase())) {
-      isProcessingKonamiRef.current = true;
-      setScore(prev => prev * 2);
-      konamiSequenceRef.current = [];
-      
-      setTimeout(() => {
-        isProcessingKonamiRef.current = false;
-      }, 1000);
-    }
-  }, [lastKonamiCheck]);
+  const checkKonamiCode = useCallback(
+    (key: string) => {
+      const now = Date.now();
+      if (now - lastKonamiCheck < 100 || isProcessingKonamiRef.current) return;
+
+      setLastKonamiCheck(now);
+
+      konamiSequenceRef.current = [...konamiSequenceRef.current, key];
+      if (konamiSequenceRef.current.length > KONAMI_CODE.length) {
+        konamiSequenceRef.current.shift();
+      }
+
+      if (
+        konamiSequenceRef.current.length === KONAMI_CODE.length &&
+        konamiSequenceRef.current.every(
+          (k, i) => k.toLowerCase() === KONAMI_CODE[i].toLowerCase()
+        )
+      ) {
+        isProcessingKonamiRef.current = true;
+        setScore((prev) => prev * 2);
+        konamiSequenceRef.current = [];
+
+        setTimeout(() => {
+          isProcessingKonamiRef.current = false;
+        }, 1000);
+      }
+    },
+    [lastKonamiCheck]
+  );
 
   // Modify direction change handlers in keyboard shortcuts
-  const addDirectionToQueue = useCallback((newDirection: Direction) => {
-    // Only add direction if it's different from the last queued direction
-    // and not opposite to the current direction
-    setDirectionQueue(prevQueue => {
-      const lastDirection = prevQueue.length > 0 
-        ? prevQueue[prevQueue.length - 1] 
-        : direction;
-      
-      const isOpposite = (
-        newDirection.x === -lastDirection.x && newDirection.y === -lastDirection.y
-      );
-      
-      const isSameAsLast = (
-        newDirection.x === lastDirection.x && newDirection.y === lastDirection.y
-      );
+  const addDirectionToQueue = useCallback(
+    (newDirection: Direction) => {
+      // Only add direction if it's different from the last queued direction
+      // and not opposite to the current direction
+      setDirectionQueue((prevQueue) => {
+        const lastDirection =
+          prevQueue.length > 0 ? prevQueue[prevQueue.length - 1] : direction;
 
-      if (!isOpposite && !isSameAsLast) {
-        // Limit queue size to prevent memory issues
-        const newQueue = [...prevQueue, newDirection].slice(-3);
-        return newQueue;
-      }
-      return prevQueue;
-    });
-  }, [direction]);
+        const isOpposite =
+          newDirection.x === -lastDirection.x &&
+          newDirection.y === -lastDirection.y;
+
+        const isSameAsLast =
+          newDirection.x === lastDirection.x &&
+          newDirection.y === lastDirection.y;
+
+        if (!isOpposite && !isSameAsLast) {
+          // Limit queue size to prevent memory issues
+          const newQueue = [...prevQueue, newDirection].slice(-3);
+          return newQueue;
+        }
+        return prevQueue;
+      });
+    },
+    [direction]
+  );
 
   // Effects
   // Game loop
@@ -250,29 +288,47 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
   useEffect(() => {
     const handleResize = () => {
       const { gridSize } = calculateGameDimensions();
-      
-      const scalePositions = (positions: Position[], oldGridSize: number, newGridSize: number) => {
-        return positions.map(pos => ({
-          x: Math.min(Math.floor((pos.x / oldGridSize) * newGridSize), newGridSize - 1),
-          y: Math.min(Math.floor((pos.y / oldGridSize) * newGridSize), newGridSize - 1),
+
+      const scalePositions = (
+        positions: Position[],
+        oldGridSize: number,
+        newGridSize: number
+      ) => {
+        return positions.map((pos) => ({
+          x: Math.min(
+            Math.floor((pos.x / oldGridSize) * newGridSize),
+            newGridSize - 1
+          ),
+          y: Math.min(
+            Math.floor((pos.y / oldGridSize) * newGridSize),
+            newGridSize - 1
+          ),
         }));
       };
 
       // Scale snake and food positions
-      setSnake(prev => {
-        const oldGridSize = Math.max(MIN_GRID_SIZE, prev.length > 0 ? Math.max(...prev.map(p => Math.max(p.x, p.y))) + 1 : MIN_GRID_SIZE);
+      setSnake((prev) => {
+        const oldGridSize = Math.max(
+          MIN_GRID_SIZE,
+          prev.length > 0
+            ? Math.max(...prev.map((p) => Math.max(p.x, p.y))) + 1
+            : MIN_GRID_SIZE
+        );
         return scalePositions(prev, oldGridSize, gridSize);
       });
 
-      setFood(prev => {
-        const oldGridSize = Math.max(MIN_GRID_SIZE, Math.max(prev.x, prev.y) + 1);
+      setFood((prev) => {
+        const oldGridSize = Math.max(
+          MIN_GRID_SIZE,
+          Math.max(prev.x, prev.y) + 1
+        );
         return scalePositions([prev], oldGridSize, gridSize)[0];
       });
     };
 
     window.addEventListener("resize", handleResize);
     handleResize();
-    
+
     return () => window.removeEventListener("resize", handleResize);
   }, [calculateGameDimensions, isFullscreen]);
 
@@ -280,81 +336,81 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
   useKeyboardShortcut({
     handlers: [
       {
-        key: 'Escape',
+        key: "Escape",
         handler: () => onClose(),
-        description: 'Close game'
+        description: "Close game",
       },
       {
-        key: 'm',
+        key: "m",
         handler: () => onMinimize(!isMinimized),
-        description: 'Minimize window'
+        description: "Minimize window",
       },
       {
-        key: 'f',
-        handler: () => setIsFullscreen(prev => !prev),
-        description: 'Toggle fullscreen'
+        key: "f",
+        handler: () => setIsFullscreen((prev) => !prev),
+        description: "Toggle fullscreen",
       },
       {
-        key: 'p',
-        handler: () => setGameStarted(prev => !prev),
-        description: 'Play/Pause game'
+        key: "p",
+        handler: () => setGameStarted((prev) => !prev),
+        description: "Play/Pause game",
       },
       {
-        key: 'r',
+        key: "r",
         handler: () => {
           if (gameOver) {
             resetGame();
           }
         },
-        description: 'Restart game when game over'
+        description: "Restart game when game over",
       },
       {
-        key: 'ArrowUp',
+        key: "ArrowUp",
         handler: () => {
-          checkKonamiCode('ArrowUp');
+          checkKonamiCode("ArrowUp");
           addDirectionToQueue({ x: 0, y: -1 });
         },
-        description: 'Move up'
+        description: "Move up",
       },
       {
-        key: 'ArrowDown',
+        key: "ArrowDown",
         handler: () => {
-          checkKonamiCode('ArrowDown');
+          checkKonamiCode("ArrowDown");
           addDirectionToQueue({ x: 0, y: 1 });
         },
-        description: 'Move down'
+        description: "Move down",
       },
       {
-        key: 'ArrowLeft',
+        key: "ArrowLeft",
         handler: () => {
-          checkKonamiCode('ArrowLeft');
+          checkKonamiCode("ArrowLeft");
           addDirectionToQueue({ x: -1, y: 0 });
         },
-        description: 'Move left'
+        description: "Move left",
       },
       {
-        key: 'ArrowRight',
+        key: "ArrowRight",
         handler: () => {
-          checkKonamiCode('ArrowRight');
+          checkKonamiCode("ArrowRight");
           addDirectionToQueue({ x: 1, y: 0 });
         },
-        description: 'Move right'
+        description: "Move right",
       },
       {
-        key: 'a',
+        key: "a",
         handler: () => {
-          checkKonamiCode('a');
+          checkKonamiCode("a");
         },
-        description: 'Konami code A'
+        description: "Konami code A",
       },
       {
-        key: 'b',
+        key: "b",
         handler: () => {
-          checkKonamiCode('b');
+          checkKonamiCode("b");
         },
-        description: 'Konami code B'
-      }
-    ]
+        description: "Konami code B",
+      },
+    ],
   });
 
   // Add new handler for click outside
@@ -370,46 +426,74 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
   // Add effect to handle game over score
   useEffect(() => {
     if (gameOver && score > 0) {
-      const stored = localStorage.getItem('snakeHighestScore');
+      const stored = localStorage.getItem("snakeHighestScore");
       const currentHighest = stored ? parseInt(stored) : 0;
-      
+
       if (score > currentHighest) {
-        localStorage.setItem('snakeHighestScore', score.toString());
+        localStorage.setItem("snakeHighestScore", score.toString());
         setHighestScore(score);
       }
-      
-      setShowNameInput(true); // Show name input when game ends
+
+      setShowNameInput(true);
+      setErrorMessage("");
     }
   }, [gameOver, score]);
 
-  // Add new function to handle score submission
-  const handleScoreSubmit = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    const newEntry: LeaderboardEntry = {
-      username: username || 'Anonymous',
-      score,
-    };
-    
-    const { error } = await supabase
-      .from('leaderboard')
-      .insert(newEntry);
+  // Update handleScoreSubmit to validate username first
+  const handleScoreSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      setErrorMessage("");
+      setIsSubmitting(true);
 
-    if (error) {
-      console.error('Error submitting score:', error);
-      return;
-    }
+      try {
+        const validateResponse = await fetch("/api/validate-username", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username: username || "Anonymous" }),
+        });
 
-    // Fetch updated leaderboard
-    const { data: updatedLeaderboard } = await supabase
-      .from('leaderboard')
-      .select('*')
-      .order('score', { ascending: false })
-      .limit(10);
+        const validation = await validateResponse.json();
 
-    setLeaderboard(updatedLeaderboard || []);
-    setShowNameInput(false);
-  }, [username, score]);
+        if (!validation.appropriate) {
+          setErrorMessage("please choose an appropriate username");
+          return;
+        }
+
+        // If username is appropriate, proceed with score submission
+        const newEntry: LeaderboardEntry = {
+          username: username || "Anonymous",
+          score,
+        };
+
+        const { error } = await supabase.from("leaderboard").insert(newEntry);
+
+        if (error) {
+          console.error("Error submitting score:", error);
+          return;
+        }
+
+        // Fetch updated leaderboard
+        const { data: updatedLeaderboard } = await supabase
+          .from("leaderboard")
+          .select("*")
+          .order("score", { ascending: false })
+          .limit(10);
+
+        setLeaderboard(updatedLeaderboard || []);
+        setUsername(""); // Reset username input
+        setShowNameInput(false); // Hide the form
+      } catch (error) {
+        console.error("Error:", error);
+        setErrorMessage("error submitting score. please try again.");
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [username, score]
+  );
 
   // Now the conditional return is safe
   if (isMinimized) {
@@ -500,7 +584,9 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
 
                   {/* Add food */}
                   <div
-                    className={`absolute ${!gameStarted || gameOver ? "opacity-20" : ""}`}
+                    className={`absolute ${
+                      !gameStarted || gameOver ? "opacity-20" : ""
+                    }`}
                     style={{
                       width: cellSize - 1,
                       height: cellSize - 1,
@@ -516,35 +602,66 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
                       <div className="text-center">
                         {!gameStarted && !gameOver && (
                           <>
-                            <div className="text-gray-800 dark:text-gray-200">press p to play or pause</div>
-                            <div className="text-gray-600 dark:text-gray-400 mt-2">use arrow keys to move</div>
+                            <div className="text-gray-800 dark:text-gray-200">
+                              press p to play or pause
+                            </div>
+                            <div className="text-gray-600 dark:text-gray-400 mt-2">
+                              use arrow keys to move
+                            </div>
                           </>
                         )}
                         {gameOver && (
                           <>
-                            <div className="text-gray-800 dark:text-gray-200">game over</div>
+                            <div className="text-gray-800 dark:text-gray-200">
+                              game over
+                            </div>
                             {showNameInput ? (
-                              <form onSubmit={handleScoreSubmit} className="mt-4 flex flex-col items-center gap-4">
-                                <input
-                                  type="text"
-                                  value={username}
-                                  onChange={(e) => setUsername(e.target.value)}
-                                  placeholder="enter your name"
-                                  className="px-2 py-1 border rounded bg-transparent lowercase"
-                                  maxLength={15}
-                                  autoFocus
-                                />
+                              <form
+                                onSubmit={handleScoreSubmit}
+                                className="mt-4 flex flex-col items-center gap-2"
+                              >
+                                <div className="flex flex-col items-center">
+                                  <input
+                                    type="text"
+                                    value={username}
+                                    onChange={(e) =>
+                                      setUsername(e.target.value)
+                                    }
+                                    placeholder="username"
+                                    className="px-2 py-1 border rounded bg-transparent lowercase w-[250px]"
+                                    maxLength={15}
+                                    autoFocus
+                                  />
+                                </div>
+                                <div>
+                                  {errorMessage && (
+                                    <p className="text-red-500 text-xs transition-opacity duration-200">
+                                      {errorMessage}
+                                    </p>
+                                  )}
+                                </div>
                                 <div className="flex gap-2">
                                   <button
                                     type="submit"
-                                    className="px-3 py-1 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800 rounded lowercase"
+                                    disabled={isSubmitting}
+                                    className={`px-3 py-1 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800 rounded lowercase w-[160px] ${
+                                      isSubmitting
+                                        ? "opacity-50 cursor-not-allowed"
+                                        : ""
+                                    }`}
                                   >
-                                    submit score
+                                    {isSubmitting
+                                      ? "submitting..."
+                                      : "submit score"}
                                   </button>
                                   <button
                                     type="button"
-                                    onClick={() => setShowNameInput(false)}
-                                    className="px-3 py-1 border border-gray-800 dark:border-gray-200 text-gray-800 dark:text-gray-200 rounded lowercase"
+                                    onClick={() => {
+                                      setUsername("");
+                                      setShowNameInput(false);
+                                      setErrorMessage("");
+                                    }}
+                                    className="px-3 py-1 border border-gray-800 dark:border-gray-200 text-gray-800 dark:text-gray-200 rounded lowercase w-[82px]"
                                   >
                                     skip
                                   </button>
@@ -568,18 +685,24 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
             <div className="w-[250px] flex flex-col p-6 font-mono">
               {/* Current Score */}
               <div className="mb-8">
-                <div className="text-sm text-gray-500 dark:text-gray-400 mb-1 lowercase">current score</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400 mb-1 lowercase">
+                  current score
+                </div>
                 <div className="text-4xl font-bold text-gray-800 dark:text-gray-200">
                   {score}
                   {highestScore !== null && score > highestScore && (
-                    <span className="text-sm text-emerald-500 ml-2 animate-pulse">new high!</span>
+                    <span className="text-sm text-emerald-500 ml-2 animate-pulse">
+                      new high!
+                    </span>
                   )}
                 </div>
               </div>
 
               {/* Best Score */}
               <div className="mb-8">
-                <div className="text-sm text-gray-500 dark:text-gray-400 mb-1 lowercase">best score</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400 mb-1 lowercase">
+                  best score
+                </div>
                 <div className="text-2xl text-gray-800 dark:text-gray-200">
                   {highestScore || 0}
                 </div>
@@ -587,14 +710,20 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
 
               {/* Leaderboard */}
               <div className="flex-1">
-                <div className="text-sm text-gray-500 dark:text-gray-400 mb-3 lowercase">global leaderboard</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400 mb-3 lowercase">
+                  global leaderboard
+                </div>
                 <div className="space-y-2">
                   {leaderboard.slice(0, 5).map((entry, i) => (
-                    <div 
+                    <div
                       key={i}
                       className={`
                         flex items-center justify-between text-sm lowercase
-                        ${entry.score === score ? '[color:var(--color-primary)]' : 'text-gray-800 dark:text-gray-200'}
+                        ${
+                          entry.score === score
+                            ? "[color:var(--color-primary)]"
+                            : "text-gray-800 dark:text-gray-200"
+                        }
                       `}
                     >
                       <div className="flex items-center gap-2">
