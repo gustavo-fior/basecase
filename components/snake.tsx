@@ -182,44 +182,39 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
       setDirectionQueue((prevQueue) => prevQueue.slice(1));
     }
 
-    const newX = snake[0].x + nextDirection.x;
-    const newY = snake[0].y + nextDirection.y;
-    
-    // Check if we're about to eat food
-    if (newX === food.x && newY === food.y) {
-      setScore(score => score + 1);
-      generateFood();
-    }
-
     setSnake((prevSnake) => {
       // Calculate new head position
-      const newX = prevSnake[0].x + nextDirection.x;
-      const newY = prevSnake[0].y + nextDirection.y;
+      const newHead = {
+        x: prevSnake[0].x + nextDirection.x,
+        y: prevSnake[0].y + nextDirection.y
+      };
 
       // Check for wall collisions
-      if (newX < 0 || newX >= gridSize || newY < 0 || newY >= gridSize) {
+      if (newHead.x < 0 || newHead.x >= gridSize || newHead.y < 0 || newHead.y >= gridSize) {
         setGameOver(true);
         return prevSnake;
       }
 
-      const head = { x: newX, y: newY };
-
-      // Check for self collision
-      if (prevSnake.some((segment) => segment.x === head.x && segment.y === head.y)) {
+      // Check for self collision (excluding the tail which will move)
+      if (prevSnake.slice(0, -1).some(segment => segment.x === newHead.x && segment.y === newHead.y)) {
         setGameOver(true);
         return prevSnake;
       }
 
-      const newSnake = [head, ...prevSnake];
+      // Check if we're about to eat food
+      const eatingFood = newHead.x === food.x && newHead.y === food.y;
       
-      if (newX === food.x && newY === food.y) {
-        return newSnake; // Keep the tail when eating food
-      } else {
-        newSnake.pop(); // Remove tail when not eating food
-        return newSnake;
+      if (eatingFood) {
+        setScore(prev => prev + 1);
+        generateFood();
+        // Return new snake with new head and keeping the entire tail
+        return [newHead, ...prevSnake];
       }
+
+      // Regular movement - return new snake with new head and remove tail
+      return [newHead, ...prevSnake.slice(0, -1)];
     });
-  }, [nextDirection, food, generateFood, gridSize, directionQueue, snake]);
+  }, [nextDirection, food, generateFood, gridSize, directionQueue]);
 
   // Konami Code Handler
   const checkKonamiCode = useCallback(
