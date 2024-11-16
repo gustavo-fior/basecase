@@ -95,7 +95,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
   useEffect(() => {
     const storedScore = localStorage.getItem("snakeHighestScore");
     const storedUsername = localStorage.getItem("snakeLastUsername");
-    
+
     if (storedScore) {
       setHighestScore(parseInt(storedScore));
     }
@@ -186,26 +186,35 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
       // Calculate new head position
       const newHead = {
         x: prevSnake[0].x + nextDirection.x,
-        y: prevSnake[0].y + nextDirection.y
+        y: prevSnake[0].y + nextDirection.y,
       };
 
       // Check for wall collisions
-      if (newHead.x < 0 || newHead.x >= gridSize || newHead.y < 0 || newHead.y >= gridSize) {
+      if (
+        newHead.x < 0 ||
+        newHead.x >= gridSize ||
+        newHead.y < 0 ||
+        newHead.y >= gridSize
+      ) {
         setGameOver(true);
         return prevSnake;
       }
 
       // Check for self collision (excluding the tail which will move)
-      if (prevSnake.slice(0, -1).some(segment => segment.x === newHead.x && segment.y === newHead.y)) {
+      if (
+        prevSnake
+          .slice(0, -1)
+          .some((segment) => segment.x === newHead.x && segment.y === newHead.y)
+      ) {
         setGameOver(true);
         return prevSnake;
       }
 
       // Check if we're about to eat food
       const eatingFood = newHead.x === food.x && newHead.y === food.y;
-      
+
       if (eatingFood) {
-        setScore(prev => prev + 1);
+        setScore((prev) => prev + 1);
         generateFood();
         // Return new snake with new head and keeping the entire tail
         return [newHead, ...prevSnake];
@@ -467,7 +476,8 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
           .eq("username", username)
           .maybeSingle();
 
-        if (fetchError && fetchError.code !== 'PGRST116') { // PGRST116 means no rows returned
+        if (fetchError && fetchError.code !== "PGRST116") {
+          // PGRST116 means no rows returned
           console.error("Error fetching existing score:", fetchError);
           setErrorMessage("error checking existing score");
           setIsSubmitting(false);
@@ -485,9 +495,9 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
               {
                 username: username,
                 score: score,
-                submitted_at: new Date().toISOString()
+                submitted_at: new Date().toISOString(),
               },
-              { onConflict: 'username' } // Specify the column to use for conflict resolution
+              { onConflict: "username" } // Specify the column to use for conflict resolution
             );
 
           if (upsertError) {
@@ -506,10 +516,9 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
 
           setLeaderboard(updatedLeaderboard || []);
         }
-        
+
         // Always close the name input form
         setShowNameInput(false);
-        
       } catch (error) {
         console.error("Error:", error);
         setErrorMessage("error submitting score. please try again.");
@@ -529,6 +538,13 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
 
     return () => clearInterval(blinkInterval);
   }, []);
+
+  // Add effect to pause game when minimized
+  useEffect(() => {
+    if (isMinimized) {
+      setGameStarted(false);
+    }
+  }, [isMinimized]);
 
   // Now the conditional return is safe
   if (isMinimized) {
@@ -751,17 +767,21 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
                 <div className="space-y-2">
                   {leaderboard.slice(0, 5).map((entry, i) => {
                     // Check if user submitted a score in last 2 minutes
-                    const isActive = entry.submitted_at && 
-                      (new Date().getTime() - new Date(entry.submitted_at).getTime()) < 120000; // 2 minutes in ms
+                    const isActive =
+                      entry.submitted_at &&
+                      new Date().getTime() -
+                        new Date(entry.submitted_at).getTime() <
+                        120000; // 2 minutes in ms
 
                     return (
                       <div
                         key={i}
                         className={`
                           flex items-center justify-between text-sm lowercase
-                          ${entry.score === score
-                            ? "[color:var(--color-primary)]"
-                            : "text-gray-800 dark:text-gray-200"
+                          ${
+                            entry.score === score
+                              ? "[color:var(--color-primary)]"
+                              : "text-gray-800 dark:text-gray-200"
                           }
                         `}
                       >
@@ -769,9 +789,11 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
                           <span className="text-gray-400 w-4">{i + 1}</span>
                           <span>{entry.username.toLowerCase()}</span>
                           {isActive && (
-                            <div className={`w-2 h-2 rounded-full bg-green-500 ${
-                              isBlinking ? 'opacity-100' : 'opacity-50'
-                            } transition-opacity duration-150`} />
+                            <div
+                              className={`w-2 h-2 rounded-full bg-green-500 ${
+                                isBlinking ? "opacity-100" : "opacity-50"
+                              } transition-opacity duration-150`}
+                            />
                           )}
                         </div>
                         <span className="font-bold">{entry.score}</span>
