@@ -466,16 +466,24 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
         }
 
         // First, check if user already has a score
-        const { data: existingScore } = await supabase
+        const { data: existingScore, error: fetchError } = await supabase
           .from("leaderboard")
           .select("score")
           .eq("username", username)
           .maybeSingle();
 
-        // Only proceed with upsert if there's no existing score or new score is higher
-        if (!existingScore || score > existingScore.score) {
-          localStorage.setItem("snakeLastUsername", username);
+        if (fetchError && fetchError.code !== 'PGRST116') { // PGRST116 means no rows returned
+          console.error("Error fetching existing score:", fetchError);
+          setErrorMessage("error checking existing score");
+          setIsSubmitting(false);
+          return;
+        }
 
+        // Save username to localStorage regardless of submission
+        localStorage.setItem("snakeLastUsername", username);
+
+        // Only update if there's no existing score or new score is higher
+        if (!existingScore || score > existingScore.score) {
           const { error: upsertError } = await supabase
             .from("leaderboard")
             .upsert(
@@ -483,12 +491,14 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
                 username: username,
                 score: score,
                 submitted_at: new Date().toISOString()
-              }
+              },
+              { onConflict: 'username' } // Specify the column to use for conflict resolution
             );
 
           if (upsertError) {
             console.error("Error submitting score:", upsertError);
             setErrorMessage("error submitting score. please try again.");
+            setIsSubmitting(false);
             return;
           }
 
@@ -502,7 +512,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
           setLeaderboard(updatedLeaderboard || []);
         }
         
-        // Always close the name input form, regardless of whether we updated the score
+        // Always close the name input form
         setShowNameInput(false);
         
       } catch (error) {
