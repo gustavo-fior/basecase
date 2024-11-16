@@ -174,6 +174,15 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
       setDirectionQueue((prevQueue) => prevQueue.slice(1));
     }
 
+    const newX = snake[0].x + nextDirection.x;
+    const newY = snake[0].y + nextDirection.y;
+    
+    // Check if we're about to eat food
+    if (newX === food.x && newY === food.y) {
+      setScore(score => score + 1);
+      generateFood();
+    }
+
     setSnake((prevSnake) => {
       // Calculate new head position
       const newX = prevSnake[0].x + nextDirection.x;
@@ -188,33 +197,21 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
       const head = { x: newX, y: newY };
 
       // Check for self collision
-      if (
-        prevSnake.some(
-          (segment) => segment.x === head.x && segment.y === head.y
-        )
-      ) {
+      if (prevSnake.some((segment) => segment.x === head.x && segment.y === head.y)) {
         setGameOver(true);
         return prevSnake;
       }
 
-      const willEatFood = head.x === food.x && head.y === food.y;
       const newSnake = [head, ...prevSnake];
-      if (!willEatFood) {
-        newSnake.pop();
+      
+      if (newX === food.x && newY === food.y) {
+        return newSnake; // Keep the tail when eating food
       } else {
-        generateFood();
+        newSnake.pop(); // Remove tail when not eating food
+        return newSnake;
       }
-
-      return newSnake;
     });
-
-    if (
-      snake[0].x + nextDirection.x === food.x &&
-      snake[0].y + nextDirection.y === food.y
-    ) {
-      setScore((prev) => prev + 1);
-    }
-  }, [nextDirection, food, generateFood, gridSize, snake, directionQueue]);
+  }, [nextDirection, food, generateFood, gridSize, directionQueue, snake]);
 
   // Konami Code Handler
   const checkKonamiCode = useCallback(
