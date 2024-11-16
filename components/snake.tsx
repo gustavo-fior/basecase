@@ -465,39 +465,46 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
           return;
         }
 
-        // Store the username in localStorage
-        localStorage.setItem("snakeLastUsername", username);
-
-        // Upsert the score
-        const { error: upsertError } = await supabase
+        // First, check if user already has a score
+        const { data: existingScore } = await supabase
           .from("leaderboard")
-          .upsert(
-            {
-              username: username,
-              score: score,
-              submitted_at: new Date().toISOString()
-            },
-            {
-              onConflict: 'username',
-              ignoreDuplicates: false // Only update if the new score is higher
-            }
-          );
+          .select("score")
+          .eq("username", username)
+          .maybeSingle();
 
-        if (upsertError) {
-          console.error("Error submitting score:", upsertError);
-          setErrorMessage("error submitting score. please try again.");
-          return;
+        // Only proceed with upsert if there's no existing score or new score is higher
+        if (!existingScore || score > existingScore.score) {
+          localStorage.setItem("snakeLastUsername", username);
+
+          const { error: upsertError } = await supabase
+            .from("leaderboard")
+            .upsert(
+              {
+                username: username,
+                score: score,
+                submitted_at: new Date().toISOString()
+              }
+            );
+
+          if (upsertError) {
+            console.error("Error submitting score:", upsertError);
+            setErrorMessage("error submitting score. please try again.");
+            return;
+          }
+
+          // Fetch updated leaderboard
+          const { data: updatedLeaderboard } = await supabase
+            .from("leaderboard")
+            .select("*")
+            .order("score", { ascending: false })
+            .limit(10);
+
+          setLeaderboard(updatedLeaderboard || []);
         }
-
-        // Fetch updated leaderboard
-        const { data: updatedLeaderboard } = await supabase
-          .from("leaderboard")
-          .select("*")
-          .order("score", { ascending: false })
-          .limit(10);
-
-        setLeaderboard(updatedLeaderboard || []);
+        
+        // Always close the name input form, regardless of whether we updated the score
         setShowNameInput(false);
+        
       } catch (error) {
         console.error("Error:", error);
         setErrorMessage("error submitting score. please try again.");
