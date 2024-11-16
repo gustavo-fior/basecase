@@ -37,7 +37,7 @@ interface LeaderboardEntry {
   id?: number;
   username: string;
   score: number;
-  created_at?: string;
+  submitted_at?: string;
 }
 
 // Add Supabase client configuration
@@ -78,6 +78,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
   const [showNameInput, setShowNameInput] = useState(false);
   const [username, setUsername] = useState("");
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [activeUsers, setActiveUsers] = useState<string[]>([]);
 
   // Add direction queue state
   const [directionQueue, setDirectionQueue] = useState<Direction[]>([]);
@@ -87,6 +88,9 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
 
   // Add loading state
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Add this with other state declarations
+  const [isBlinking, setIsBlinking] = useState(false);
 
   // Add useEffect to load highest score from localStorage on mount
   useEffect(() => {
@@ -436,7 +440,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
     }
   }, [gameOver, score]);
 
-  // Update handleScoreSubmit to validate username first
+  // Update handleScoreSubmit
   const handleScoreSubmit = useCallback(
     async (e: React.FormEvent) => {
       e.preventDefault();
@@ -444,31 +448,32 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
       setIsSubmitting(true);
 
       try {
-        const validateResponse = await fetch("/api/validate-username", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username: username || "Anonymous" }),
-        });
-
-        const validation = await validateResponse.json();
-
-        if (!validation.appropriate) {
-          setErrorMessage("please choose an appropriate username");
+        // Validate username
+        if (!username.trim() || username.trim().length < 2) {
+          setErrorMessage("username must be at least 2 characters");
+          setIsSubmitting(false);
           return;
         }
 
-        // If username is appropriate, proceed with score submission
-        const newEntry: LeaderboardEntry = {
-          username: username || "Anonymous",
-          score,
+        if (username.length > 15) {
+          setErrorMessage("username must be 15 characters or less");
+          setIsSubmitting(false);
+          return;
+        }
+
+        // Create new entry
+        const newEntry = {
+          username: username || "anonymous",
+          score: score
         };
 
-        const { error } = await supabase.from("leaderboard").insert(newEntry);
+        const { error: leaderboardError } = await supabase
+          .from("leaderboard")
+          .insert(newEntry);
 
-        if (error) {
-          console.error("Error submitting score:", error);
+        if (leaderboardError) {
+          console.error("Error submitting score:", leaderboardError);
+          setErrorMessage("error submitting score. please try again.");
           return;
         }
 
@@ -480,8 +485,8 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
           .limit(10);
 
         setLeaderboard(updatedLeaderboard || []);
-        setUsername(""); // Reset username input
-        setShowNameInput(false); // Hide the form
+        setUsername(""); 
+        setShowNameInput(false);
       } catch (error) {
         console.error("Error:", error);
         setErrorMessage("error submitting score. please try again.");
@@ -491,6 +496,16 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
     },
     [username, score]
   );
+
+  // Add this effect to handle the blinking
+  useEffect(() => {
+    const blinkInterval = setInterval(() => {
+      setIsBlinking(true);
+      setTimeout(() => setIsBlinking(false), 1000);
+    }, 3000);
+
+    return () => clearInterval(blinkInterval);
+  }, []);
 
   // Now the conditional return is safe
   if (isMinimized) {
@@ -711,25 +726,35 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
                   global leaderboard
                 </div>
                 <div className="space-y-2">
-                  {leaderboard.slice(0, 5).map((entry, i) => (
-                    <div
-                      key={i}
-                      className={`
-                        flex items-center justify-between text-sm lowercase
-                        ${
-                          entry.score === score
+                  {leaderboard.slice(0, 5).map((entry, i) => {
+                    // Check if user submitted a score in last 2 minutes
+                    const isActive = entry.submitted_at && 
+                      (new Date().getTime() - new Date(entry.submitted_at).getTime()) < 120000; // 2 minutes in ms
+
+                    return (
+                      <div
+                        key={i}
+                        className={`
+                          flex items-center justify-between text-sm lowercase
+                          ${entry.score === score
                             ? "[color:var(--color-primary)]"
                             : "text-gray-800 dark:text-gray-200"
-                        }
-                      `}
-                    >
-                      <div className="flex items-center gap-2">
-                        <span className="text-gray-400 w-4">{i + 1}</span>
-                        <span>{entry.username.toLowerCase()}</span>
+                          }
+                        `}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="text-gray-400 w-4">{i + 1}</span>
+                          <span>{entry.username.toLowerCase()}</span>
+                          {isActive && (
+                            <div className={`w-2 h-2 rounded-full bg-green-500 ${
+                              isBlinking ? 'opacity-100' : 'opacity-50'
+                            } transition-opacity duration-150`} />
+                          )}
+                        </div>
+                        <span className="font-bold">{entry.score}</span>
                       </div>
-                      <span className="font-bold">{entry.score}</span>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 
