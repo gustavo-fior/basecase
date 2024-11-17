@@ -444,23 +444,15 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
     [onClose]
   );
 
-  // Add effect to handle game over score
+  // Modify effect to handle game over score - remove automatic localStorage update
   useEffect(() => {
     if (gameOver && score > 0) {
-      const storedScore = localStorage.getItem("snakeHighestScore");
-      const currentHighest = storedScore ? parseInt(storedScore) : 0;
-
-      if (score > currentHighest) {
-        localStorage.setItem("snakeHighestScore", score.toString());
-        setHighestScore(score);
-      }
-
       setShowNameInput(true);
       setErrorMessage("");
     }
   }, [gameOver, score]);
 
-  // Update handleScoreSubmit
+  // Update handleScoreSubmit to handle localStorage
   const handleScoreSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
@@ -488,7 +480,15 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
         return;
       }
 
-      // Only proceed with leaderboard update if no message
+      // Only update localStorage if submission was successful
+      const storedScore = localStorage.getItem("snakeHighestScore");
+      const currentHighest = storedScore ? parseInt(storedScore) : 0;
+      if (score > currentHighest) {
+        localStorage.setItem("snakeHighestScore", score.toString());
+        setHighestScore(score);
+      }
+
+      // Update leaderboard and close input form
       const { data: updatedLeaderboard } = await supabase
         .from("leaderboard")
         .select("*")
