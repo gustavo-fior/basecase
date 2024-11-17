@@ -40,6 +40,10 @@ interface LeaderboardEntry {
   submitted_at?: string;
 }
 
+interface Error {
+  message: string;
+}
+
 // Add Supabase client configuration
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -90,6 +94,9 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
 
   // Add this with other state declarations
   const [isBlinking, setIsBlinking] = useState(false);
+
+  // At the start of your game
+  const [gameStartTime, setGameStartTime] = useState<number>(Date.now());
 
   // Add useEffect to load highest score from localStorage on mount
   useEffect(() => {
@@ -458,79 +465,50 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
   }, [gameOver, score]);
 
   // Update handleScoreSubmit
-  const handleScoreSubmit = useCallback(
-    async (e: React.FormEvent) => {
-      e.preventDefault();
-      setErrorMessage("");
-      setIsSubmitting(true);
+  const handleScoreSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage("");
+    setIsSubmitting(true);
 
-      try {
-        // Basic validation checks
-        if (!username.trim() || username.trim().length < 2) {
-          setErrorMessage("username must be at least 2 characters");
-          setIsSubmitting(false);
-          return;
-        }
+    try {
+      const response = await fetch('/api/submit-score', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username,
+          score,
+          gameStartTime
+        }),
+      });
 
-        if (username.length > 15) {
-          setErrorMessage("username must be 15 characters or less");
-          setIsSubmitting(false);
-          return;
-        }
+      const data = await response.json();
 
-        // Validate username appropriateness
-        const response = await fetch('/api/validate-username', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ username }),
-        });
+      // Save username to localStorage
+      localStorage.setItem("snakeLastUsername", username);
 
-        const data = await response.json();
-        
-        if (!data.appropriate) {
-          setErrorMessage("username is not appropriate");
-          setIsSubmitting(false);
-          return;
-        }
-
-        // Call the RPC function
-        const { error: rpcError } = await supabase
-          .rpc('submit_score', {
-            p_username: username,
-            p_score: score
-          });
-
-        if (rpcError) {
-          console.error("Error submitting score:", rpcError);
-          setErrorMessage("error submitting score. please try again.");
-          setIsSubmitting(false);
-          return;
-        }
-
-        // Save username to localStorage if submission was successful
-        localStorage.setItem("snakeLastUsername", username);
-
-        // Fetch updated leaderboard
-        const { data: updatedLeaderboard } = await supabase
-          .from("leaderboard")
-          .select("*")
-          .order("score", { ascending: false })
-          .limit(10);
-
-        setLeaderboard(updatedLeaderboard || []);
-        setShowNameInput(false);
-        
-      } catch (error) {
-        console.error("Error:", error);
-        setErrorMessage("error submitting score. please try again.");
-      } finally {
-        setIsSubmitting(false);
+      // If there's a message, show it and return early
+      if (data.message) {
+        setErrorMessage(data.message);
+        return;
       }
-    },
-    [username, score]
-  );
+
+      // Only proceed with leaderboard update if no message
+      const { data: updatedLeaderboard } = await supabase
+        .from("leaderboard")
+        .select("*")
+        .order("score", { ascending: false })
+        .limit(10);
+
+      setLeaderboard(updatedLeaderboard || []);
+      setShowNameInput(false);
+      
+    } catch (error) {
+      console.error('Submission Error:', error instanceof Error ? error.message : 'Unknown error');
+      setErrorMessage(error instanceof Error ? error.message : "error submitting score. please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   // Add this effect to handle the blinking
   useEffect(() => {
@@ -548,6 +526,13 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
       setGameStarted(false);
     }
   }, [isMinimized]);
+
+  // Reset gameStartTime when game starts
+  useEffect(() => {
+    if (!gameOver && gameStarted) {
+      setGameStartTime(Date.now());
+    }
+  }, [gameStarted, gameOver]);
 
   // Now the conditional return is safe
   if (isMinimized) {
