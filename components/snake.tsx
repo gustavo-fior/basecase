@@ -94,6 +94,9 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
   // At the start of your game
   const [gameStartTime, setGameStartTime] = useState<number>(Date.now());
 
+  // Add new state near other state declarations
+  const [konamiUsed, setKonamiUsed] = useState(false);
+
   // Add useEffect to load highest score from localStorage on mount
   useEffect(() => {
     const storedScore = localStorage.getItem("snakeHighestScore");
@@ -182,6 +185,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
     setScore(0);
     setGameOver(false);
     setErrorMessage("");
+    setKonamiUsed(false); // Reset Konami code usage
     generateFood();
   }, [generateFood, gridSize]);
 
@@ -240,6 +244,9 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
   // Konami Code Handler
   const checkKonamiCode = useCallback(
     (key: string) => {
+      // Return early if Konami code was already used
+      if (konamiUsed) return;
+
       const now = Date.now();
       if (now - lastKonamiCheck < 100 || isProcessingKonamiRef.current) return;
 
@@ -258,6 +265,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
       ) {
         isProcessingKonamiRef.current = true;
         setScore((prev) => prev * 2);
+        setKonamiUsed(true); // Mark Konami code as used
         konamiSequenceRef.current = [];
 
         setTimeout(() => {
@@ -265,7 +273,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
         }, 1000);
       }
     },
-    [lastKonamiCheck]
+    [lastKonamiCheck, konamiUsed]
   );
 
   // Modify direction change handlers in keyboard shortcuts
