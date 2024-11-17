@@ -465,7 +465,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
       setIsSubmitting(true);
 
       try {
-        // Validate username
+        // Basic validation
         if (!username.trim() || username.trim().length < 2) {
           setErrorMessage("username must be at least 2 characters");
           setIsSubmitting(false);
@@ -478,55 +478,54 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
           return;
         }
 
-        // First, check if user already has a score
-        const { data: existingScore, error: fetchError } = await supabase
-          .from("leaderboard")
-          .select("score")
-          .eq("username", username)
-          .maybeSingle();
+        // Validate username with API
+        const response = await fetch('/api/validate-username', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username }),
+        });
 
-        if (fetchError && fetchError.code !== "PGRST116") {
-          // PGRST116 means no rows returned
-          console.error("Error fetching existing score:", fetchError);
-          setErrorMessage("error checking existing score");
+        const data = await response.json();
+        
+        // Check if username is appropriate
+        if (!data.appropriate) {
+          setErrorMessage("username is not appropriate");
           setIsSubmitting(false);
           return;
         }
 
-        // Save username to localStorage regardless of submission
+        // Save username to localStorage
         localStorage.setItem("snakeLastUsername", username);
 
-        // Only update if there's no existing score or new score is higher
-        if (!existingScore || score > existingScore.score) {
-          const { error: upsertError } = await supabase
-            .from("leaderboard")
-            .upsert(
-              {
-                username: username,
-                score: score,
-                submitted_at: new Date().toISOString(),
-              },
-              { onConflict: "username" } // Specify the column to use for conflict resolution
-            );
+        // Submit score to Supabase
+        const { error: upsertError } = await supabase
+          .from("leaderboard")
+          .upsert(
+            {
+              username: username,
+              score: score,
+              submitted_at: new Date().toISOString(),
+            },
+            { onConflict: "username" }
+          );
 
-          if (upsertError) {
-            console.error("Error submitting score:", upsertError);
-            setErrorMessage("error submitting score. please try again.");
-            setIsSubmitting(false);
-            return;
-          }
-
-          // Fetch updated leaderboard
-          const { data: updatedLeaderboard } = await supabase
-            .from("leaderboard")
-            .select("*")
-            .order("score", { ascending: false })
-            .limit(10);
-
-          setLeaderboard(updatedLeaderboard || []);
+        if (upsertError) {
+          console.error("Error submitting score:", upsertError);
+          setErrorMessage("error submitting score. please try again.");
+          setIsSubmitting(false);
+          return;
         }
 
-        // Always close the name input form
+        // Fetch updated leaderboard
+        const { data: updatedLeaderboard } = await supabase
+          .from("leaderboard")
+          .select("*")
+          .order("score", { ascending: false })
+          .limit(10);
+
+        setLeaderboard(updatedLeaderboard || []);
         setShowNameInput(false);
       } catch (error) {
         console.error("Error:", error);
@@ -692,10 +691,8 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
                                     maxLength={15}
                                     autoFocus
                                   />
-                                </div>
-                                <div>
                                   {errorMessage && (
-                                    <p className="text-red-500 text-xs transition-opacity duration-200">
+                                    <p className="text-red-500 text-xs py-1 transition-opacity duration-200">
                                       {errorMessage}
                                     </p>
                                   )}
