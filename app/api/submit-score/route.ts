@@ -53,11 +53,10 @@ export async function POST(request: NextRequest) {
       .eq('username', username)
       .maybeSingle();
 
-    // If user exists and new score is lower, do nothing
+    // If user exists and new score is lower, return success without message
     if (existingUser && score <= existingUser.score) {
       return NextResponse.json({ 
-        success: true,
-        message: 'Existing score is higher'
+        success: true
       });
     }
 
