@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY! // Use service key for admin privileges
+  process.env.SUPABASE_SERVICE_ROLE_KEY! 
 );
 
 export async function POST(request: NextRequest) {
