@@ -104,7 +104,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
     }
   }, []);
 
-  // Add after existing useEffect that loads highest score
+  // Add this effect to periodically fetch leaderboard
   useEffect(() => {
     const fetchLeaderboard = async () => {
       const { data, error } = await supabase
@@ -121,7 +121,16 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
       setLeaderboard(data || []);
     };
 
+    // Initial fetch
     fetchLeaderboard();
+
+    // Set up interval to fetch every 30 seconds
+    const interval = setInterval(fetchLeaderboard, 30000);
+
+    // Cleanup interval on unmount
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   // Game Logic
@@ -594,7 +603,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
                 onClick={() => setIsFullscreen(!isFullscreen)}
                 className="px-2 hover:bg-gray-100 dark:hover:bg-gray-900"
               >
-                {isFullscreen ? "⊡" : "□"}
+                {isFullscreen ? "��" : "□"}
               </button>
               <button
                 onClick={onClose}
@@ -771,8 +780,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
                       entry.submitted_at &&
                       new Date().getTime() -
                         new Date(entry.submitted_at).getTime() <
-                        120000; // 2 minutes in ms
-
+                        120000;
                     return (
                       <div
                         key={i}
