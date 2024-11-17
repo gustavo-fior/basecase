@@ -496,7 +496,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
         }
 
         // Call the RPC function
-        const { data: rpcResponse, error: rpcError } = await supabase
+        const { error: rpcError } = await supabase
           .rpc('submit_score', {
             p_username: username,
             p_score: score
