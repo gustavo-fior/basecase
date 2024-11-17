@@ -764,10 +764,10 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
                 </div>
               </div>
 
-              {/* Best Score */}
+              {/* High Score */}
               <div className="mb-8">
                 <div className="text-sm text-gray-500 dark:text-gray-400 mb-1 lowercase">
-                  best score
+                  high score
                 </div>
                 <div className="text-2xl text-gray-800 dark:text-gray-200">
                   {highestScore || 0}
@@ -777,7 +777,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
               {/* Leaderboard */}
               <div className="flex-1">
                 <div className="text-sm text-gray-500 dark:text-gray-400 mb-3 lowercase">
-                  global leaderboard
+                  leaderboard
                 </div>
                 <div className="space-y-2">
                   {leaderboard.slice(0, 5).map((entry, i) => {
