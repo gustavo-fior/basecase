@@ -465,7 +465,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
       setIsSubmitting(true);
 
       try {
-        // Basic validation
+        // Basic validation checks
         if (!username.trim() || username.trim().length < 2) {
           setErrorMessage("username must be at least 2 characters");
           setIsSubmitting(false);
@@ -478,55 +478,64 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
           return;
         }
 
-        // Validate username with API
-        const response = await fetch('/api/validate-username', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ username }),
-        });
-
-        const data = await response.json();
-        
-        // Check if username is appropriate
-        if (!data.appropriate) {
-          setErrorMessage("username is not appropriate");
-          setIsSubmitting(false);
-          return;
-        }
-
-        // Save username to localStorage
-        localStorage.setItem("snakeLastUsername", username);
-
-        // Submit score to Supabase
-        const { error: upsertError } = await supabase
+        // Check if user already has a score
+        const { data: existingScore } = await supabase
           .from("leaderboard")
-          .upsert(
-            {
-              username: username,
-              score: score,
-              submitted_at: new Date().toISOString(),
+          .select("score")
+          .eq("username", username)
+          .maybeSingle();
+
+        // Only proceed if there's no existing score or new score is higher
+        if (!existingScore || score > existingScore.score) {
+          // Validate username and proceed with submission
+          const response = await fetch('/api/validate-username', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
             },
-            { onConflict: "username" }
-          );
+            body: JSON.stringify({ username }),
+          });
 
-        if (upsertError) {
-          console.error("Error submitting score:", upsertError);
-          setErrorMessage("error submitting score. please try again.");
-          setIsSubmitting(false);
-          return;
+          const data = await response.json();
+          
+          if (!data.appropriate) {
+            setErrorMessage("username is not appropriate");
+            setIsSubmitting(false);
+            return;
+          }
+
+          localStorage.setItem("snakeLastUsername", username);
+
+          const { error: upsertError } = await supabase
+            .from("leaderboard")
+            .upsert(
+              {
+                username: username,
+                score: score,
+                submitted_at: new Date().toISOString(),
+              },
+              { onConflict: "username" }
+            );
+
+          if (upsertError) {
+            console.error("Error submitting score:", upsertError);
+            setErrorMessage("error submitting score. please try again.");
+            setIsSubmitting(false);
+            return;
+          }
+
+          const { data: updatedLeaderboard } = await supabase
+            .from("leaderboard")
+            .select("*")
+            .order("score", { ascending: false })
+            .limit(10);
+
+          setLeaderboard(updatedLeaderboard || []);
         }
-
-        // Fetch updated leaderboard
-        const { data: updatedLeaderboard } = await supabase
-          .from("leaderboard")
-          .select("*")
-          .order("score", { ascending: false })
-          .limit(10);
-
-        setLeaderboard(updatedLeaderboard || []);
+        
+        // Close the name input form regardless of submission
         setShowNameInput(false);
+        
       } catch (error) {
         console.error("Error:", error);
         setErrorMessage("error submitting score. please try again.");
