@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
   } catch (error: unknown) {
     console.error('API Error:', error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : 'Failed to submit score' },
+      { error: 'an error occurred' },
       { status: 500 }
     );
   }
