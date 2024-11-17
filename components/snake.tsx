@@ -478,62 +478,48 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
           return;
         }
 
-        // Check if user already has a score
-        const { data: existingScore } = await supabase
-          .from("leaderboard")
-          .select("score")
-          .eq("username", username)
-          .maybeSingle();
+        // Validate username appropriateness
+        const response = await fetch('/api/validate-username', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username }),
+        });
 
-        // Only proceed if there's no existing score or new score is higher
-        if (!existingScore || score > existingScore.score) {
-          // Validate username and proceed with submission
-          const response = await fetch('/api/validate-username', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ username }),
+        const data = await response.json();
+        
+        if (!data.appropriate) {
+          setErrorMessage("username is not appropriate");
+          setIsSubmitting(false);
+          return;
+        }
+
+        // Call the RPC function
+        const { data: rpcResponse, error: rpcError } = await supabase
+          .rpc('submit_score', {
+            p_username: username,
+            p_score: score
           });
 
-          const data = await response.json();
-          
-          if (!data.appropriate) {
-            setErrorMessage("username is not appropriate");
-            setIsSubmitting(false);
-            return;
-          }
-
-          localStorage.setItem("snakeLastUsername", username);
-
-          const { error: upsertError } = await supabase
-            .from("leaderboard")
-            .upsert(
-              {
-                username: username,
-                score: score,
-                submitted_at: new Date().toISOString(),
-              },
-              { onConflict: "username" }
-            );
-
-          if (upsertError) {
-            console.error("Error submitting score:", upsertError);
-            setErrorMessage("error submitting score. please try again.");
-            setIsSubmitting(false);
-            return;
-          }
-
-          const { data: updatedLeaderboard } = await supabase
-            .from("leaderboard")
-            .select("*")
-            .order("score", { ascending: false })
-            .limit(10);
-
-          setLeaderboard(updatedLeaderboard || []);
+        if (rpcError) {
+          console.error("Error submitting score:", rpcError);
+          setErrorMessage("error submitting score. please try again.");
+          setIsSubmitting(false);
+          return;
         }
-        
-        // Close the name input form regardless of submission
+
+        // Save username to localStorage if submission was successful
+        localStorage.setItem("snakeLastUsername", username);
+
+        // Fetch updated leaderboard
+        const { data: updatedLeaderboard } = await supabase
+          .from("leaderboard")
+          .select("*")
+          .order("score", { ascending: false })
+          .limit(10);
+
+        setLeaderboard(updatedLeaderboard || []);
         setShowNameInput(false);
         
       } catch (error) {
