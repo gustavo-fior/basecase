@@ -272,8 +272,8 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
     setErrorMessage("");
 
     // Add client-side validation
-    if (!username?.trim() || username.length < 2 || username.length > 15) {
-      setErrorMessage("username must be between 2 and 15 characters");
+    if (!username?.trim() || username.length < 2 || username.length > 10) {
+      setErrorMessage("username must be between 2 and 10 characters");
       return;
     }
 
@@ -677,7 +677,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
                                     }
                                     placeholder="username"
                                     className="px-2 py-1 border rounded bg-transparent lowercase w-[250px]"
-                                    maxLength={15}
+                                    maxLength={10}
                                     autoFocus
                                     autoComplete="off"
                                   />

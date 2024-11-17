@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     const { username, score, gameStartTime } = body;
 
     // Basic username validation
-    if (!username?.trim() || username.length < 2 || username.length > 15) {
+    if (!username?.trim() || username.length < 2 || username.length > 10) {
       return NextResponse.json(
         { error: 'Invalid username' },
         { status: 400 }
