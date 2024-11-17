@@ -603,7 +603,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
                 onClick={() => setIsFullscreen(!isFullscreen)}
                 className="px-2 hover:bg-gray-100 dark:hover:bg-gray-900"
               >
-                {isFullscreen ? "��" : "□"}
+                {isFullscreen ? "⊡" : "□"}
               </button>
               <button
                 onClick={onClose}
