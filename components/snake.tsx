@@ -666,6 +666,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
                                     className="px-2 py-1 border rounded bg-transparent lowercase w-[250px]"
                                     maxLength={15}
                                     autoFocus
+                                    autoComplete="off"
                                   />
                                   {errorMessage && (
                                     <p className="text-red-500 text-xs py-1 transition-opacity duration-200">
