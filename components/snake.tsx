@@ -40,17 +40,16 @@ interface LeaderboardEntry {
   submitted_at?: string;
 }
 
-// Add Supabase client configuration
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
-// Add new type for direction queue
 interface Direction {
   x: number;
   y: number;
 }
+
+// Services
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 // Game
 export const SnakeGame: React.FC<SnakeGameProps> = ({
@@ -64,74 +63,33 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
   const isProcessingKonamiRef = useRef(false);
 
   // State
-  const [isFullscreen, setIsFullscreen] = useState(false);
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const [lastKonamiCheck, setLastKonamiCheck] = useState<number>(0);
+  // Game State
   const [snake, setSnake] = useState<Position[]>([{ x: 15, y: 15 }]);
+  const [food, setFood] = useState<Position>({ x: 15, y: 10 });
   const [direction, setDirection] = useState<Position>({ x: 1, y: 0 });
   const [nextDirection, setNextDirection] = useState<Position>({ x: 1, y: 0 });
-  const [food, setFood] = useState<Position>({ x: 15, y: 10 });
-  const [score, setScore] = useState(0);
-  const [gameOver, setGameOver] = useState(false);
+  const [directionQueue, setDirectionQueue] = useState<Direction[]>([]);
   const [gameStarted, setGameStarted] = useState(false);
+  const [gameOver, setGameOver] = useState(false);
+  const [gameStartTime, setGameStartTime] = useState<number>(Date.now());
+
+  // UI State
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isBlinking, setIsBlinking] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
+  // Score State
+  const [score, setScore] = useState(0);
   const [highestScore, setHighestScore] = useState<number | null>(null);
   const [showNameInput, setShowNameInput] = useState(false);
   const [username, setUsername] = useState("");
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
 
-  // Add direction queue state
-  const [directionQueue, setDirectionQueue] = useState<Direction[]>([]);
-
-  // Add state for error message
-  const [errorMessage, setErrorMessage] = useState<string>("");
-
-  // Add loading state
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Add this with other state declarations
-  const [isBlinking, setIsBlinking] = useState(false);
-
-  // Add useEffect to load highest score from localStorage on mount
-  useEffect(() => {
-    const storedScore = localStorage.getItem("snakeHighestScore");
-    const storedUsername = localStorage.getItem("snakeLastUsername");
-
-    if (storedScore) {
-      setHighestScore(parseInt(storedScore));
-    }
-    if (storedUsername) {
-      setUsername(storedUsername); // Just set the username directly
-    }
-  }, []);
-
-  // Add this effect to periodically fetch leaderboard
-  useEffect(() => {
-    const fetchLeaderboard = async () => {
-      const { data, error } = await supabase
-        .from("leaderboard")
-        .select("*")
-        .order("score", { ascending: false })
-        .limit(10);
-
-      if (error) {
-        console.error("Error fetching leaderboard:", error);
-        return;
-      }
-
-      setLeaderboard(data || []);
-    };
-
-    // Initial fetch
-    fetchLeaderboard();
-
-    // Set up interval to fetch every 30 seconds
-    const interval = setInterval(fetchLeaderboard, 30000);
-
-    // Cleanup interval on unmount
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
+  // Konami Code State
+  const [lastKonamiCheck, setLastKonamiCheck] = useState<number>(0);
+  const [konamiUsed, setKonamiUsed] = useState(false);
 
   // Game Logic
   const calculateGameDimensions = useCallback(() => {
@@ -179,6 +137,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
     setScore(0);
     setGameOver(false);
     setErrorMessage("");
+    setKonamiUsed(false); // Reset Konami code usage
     generateFood();
   }, [generateFood, gridSize]);
 
@@ -237,6 +196,9 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
   // Konami Code Handler
   const checkKonamiCode = useCallback(
     (key: string) => {
+      // Return early if Konami code was already used
+      if (konamiUsed) return;
+
       const now = Date.now();
       if (now - lastKonamiCheck < 100 || isProcessingKonamiRef.current) return;
 
@@ -255,6 +217,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
       ) {
         isProcessingKonamiRef.current = true;
         setScore((prev) => prev * 2);
+        setKonamiUsed(true); // Mark Konami code as used
         konamiSequenceRef.current = [];
 
         setTimeout(() => {
@@ -262,7 +225,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
         }, 1000);
       }
     },
-    [lastKonamiCheck]
+    [lastKonamiCheck, konamiUsed]
   );
 
   // Modify direction change handlers in keyboard shortcuts
@@ -293,62 +256,82 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
     [direction]
   );
 
-  // Effects
-  // Game loop
-  useEffect(() => {
-    if (!gameOver && gameStarted && !isMinimized) {
-      const interval = setInterval(moveSnake, GAME_SPEED);
-      return () => clearInterval(interval);
+  // Add new handler for click outside
+  const handleClickOutside = useCallback(
+    (e: React.MouseEvent) => {
+      if (e.target === e.currentTarget) {
+        onClose();
+      }
+    },
+    [onClose]
+  );
+
+  // Update handleScoreSubmit to handle localStorage
+  const handleScoreSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage("");
+
+    // Add client-side validation
+    if (!username?.trim() || username.length < 2 || username.length > 10) {
+      setErrorMessage("username must be between 2 and 10 characters");
+      return;
     }
-  }, [gameOver, gameStarted, moveSnake, isMinimized]);
 
-  // Window resize handler
-  useEffect(() => {
-    const handleResize = () => {
-      const { gridSize } = calculateGameDimensions();
+    setIsSubmitting(true);
 
-      const scalePositions = (
-        positions: Position[],
-        oldGridSize: number,
-        newGridSize: number
-      ) => {
-        return positions.map((pos) => ({
-          x: Math.min(
-            Math.floor((pos.x / oldGridSize) * newGridSize),
-            newGridSize - 1
-          ),
-          y: Math.min(
-            Math.floor((pos.y / oldGridSize) * newGridSize),
-            newGridSize - 1
-          ),
-        }));
-      };
-
-      // Scale snake and food positions
-      setSnake((prev) => {
-        const oldGridSize = Math.max(
-          MIN_GRID_SIZE,
-          prev.length > 0
-            ? Math.max(...prev.map((p) => Math.max(p.x, p.y))) + 1
-            : MIN_GRID_SIZE
-        );
-        return scalePositions(prev, oldGridSize, gridSize);
+    try {
+      const response = await fetch("/api/submit-score", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username,
+          score,
+          gameStartTime,
+        }),
       });
 
-      setFood((prev) => {
-        const oldGridSize = Math.max(
-          MIN_GRID_SIZE,
-          Math.max(prev.x, prev.y) + 1
-        );
-        return scalePositions([prev], oldGridSize, gridSize)[0];
-      });
-    };
+      const data = await response.json();
 
-    window.addEventListener("resize", handleResize);
-    handleResize();
+      // Save username to localStorage
+      localStorage.setItem("snakeLastUsername", username);
 
-    return () => window.removeEventListener("resize", handleResize);
-  }, [calculateGameDimensions, isFullscreen]);
+      // If there's a message, show it and return early
+      if (data.message) {
+        setErrorMessage(data.message);
+        return;
+      }
+
+      // Only update localStorage if submission was successful
+      const storedScore = localStorage.getItem("snakeHighestScore");
+      const currentHighest = storedScore ? parseInt(storedScore) : 0;
+      if (score > currentHighest) {
+        localStorage.setItem("snakeHighestScore", score.toString());
+        setHighestScore(score);
+      }
+
+      // Update leaderboard and close input form
+      const { data: updatedLeaderboard } = await supabase
+        .from("leaderboard")
+        .select("*")
+        .order("score", { ascending: false })
+        .limit(10);
+
+      setLeaderboard(updatedLeaderboard || []);
+      setShowNameInput(false);
+    } catch (error) {
+      console.error(
+        "Submission Error:",
+        error instanceof Error ? error.message : "Unknown error"
+      );
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "error submitting score. please try again."
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   // Keyboard Shortcuts
   useKeyboardShortcut({
@@ -431,108 +414,114 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
     ],
   });
 
-  // Add new handler for click outside
-  const handleClickOutside = useCallback(
-    (e: React.MouseEvent) => {
-      if (e.target === e.currentTarget) {
-        onClose();
-      }
-    },
-    [onClose]
-  );
+  // Effects
+  // Game loop
+  useEffect(() => {
+    if (!gameOver && gameStarted && !isMinimized) {
+      const interval = setInterval(moveSnake, GAME_SPEED);
+      return () => clearInterval(interval);
+    }
+  }, [gameOver, gameStarted, moveSnake, isMinimized]);
 
-  // Add effect to handle game over score
+  // Window resize handler
+  useEffect(() => {
+    const handleResize = () => {
+      const { gridSize } = calculateGameDimensions();
+
+      const scalePositions = (
+        positions: Position[],
+        oldGridSize: number,
+        newGridSize: number
+      ) => {
+        return positions.map((pos) => ({
+          x: Math.min(
+            Math.floor((pos.x / oldGridSize) * newGridSize),
+            newGridSize - 1
+          ),
+          y: Math.min(
+            Math.floor((pos.y / oldGridSize) * newGridSize),
+            newGridSize - 1
+          ),
+        }));
+      };
+
+      // Scale snake and food positions
+      setSnake((prev) => {
+        const oldGridSize = Math.max(
+          MIN_GRID_SIZE,
+          prev.length > 0
+            ? Math.max(...prev.map((p) => Math.max(p.x, p.y))) + 1
+            : MIN_GRID_SIZE
+        );
+        return scalePositions(prev, oldGridSize, gridSize);
+      });
+
+      setFood((prev) => {
+        const oldGridSize = Math.max(
+          MIN_GRID_SIZE,
+          Math.max(prev.x, prev.y) + 1
+        );
+        return scalePositions([prev], oldGridSize, gridSize)[0];
+      });
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, [calculateGameDimensions, isFullscreen]);
+
+  // Load highest score from localStorage on mount
+  useEffect(() => {
+    const storedScore = localStorage.getItem("snakeHighestScore");
+    const storedUsername = localStorage.getItem("snakeLastUsername");
+
+    if (storedScore) {
+      setHighestScore(parseInt(storedScore));
+    }
+    if (storedUsername) {
+      setUsername(storedUsername); // Just set the username directly
+    }
+  }, []);
+
+  // Leaderboard
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      const { data, error } = await supabase
+        .from("leaderboard")
+        .select("*")
+        .order("score", { ascending: false })
+        .limit(10);
+
+      if (error) {
+        console.error("Error fetching leaderboard:", error);
+        return;
+      }
+
+      setLeaderboard(data || []);
+    };
+
+    // Initial fetch
+    fetchLeaderboard();
+
+    // Set up interval to fetch every 30 seconds
+    const interval = setInterval(fetchLeaderboard, 30000);
+
+    // Cleanup interval on unmount
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  // Game over score
   useEffect(() => {
     if (gameOver && score > 0) {
-      const storedScore = localStorage.getItem("snakeHighestScore");
-      const currentHighest = storedScore ? parseInt(storedScore) : 0;
-
-      if (score > currentHighest) {
-        localStorage.setItem("snakeHighestScore", score.toString());
-        setHighestScore(score);
-      }
-
       setShowNameInput(true);
       setErrorMessage("");
     }
   }, [gameOver, score]);
 
-  // Update handleScoreSubmit
-  const handleScoreSubmit = useCallback(
-    async (e: React.FormEvent) => {
-      e.preventDefault();
-      setErrorMessage("");
-      setIsSubmitting(true);
-
-      try {
-        // Basic validation checks
-        if (!username.trim() || username.trim().length < 2) {
-          setErrorMessage("username must be at least 2 characters");
-          setIsSubmitting(false);
-          return;
-        }
-
-        if (username.length > 15) {
-          setErrorMessage("username must be 15 characters or less");
-          setIsSubmitting(false);
-          return;
-        }
-
-        // Validate username appropriateness
-        const response = await fetch('/api/validate-username', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ username }),
-        });
-
-        const data = await response.json();
-        
-        if (!data.appropriate) {
-          setErrorMessage("username is not appropriate");
-          setIsSubmitting(false);
-          return;
-        }
-
-        // Call the RPC function
-        const { error: rpcError } = await supabase
-          .rpc('submit_score', {
-            p_username: username,
-            p_score: score
-          });
-
-        if (rpcError) {
-          console.error("Error submitting score:", rpcError);
-          setErrorMessage("error submitting score. please try again.");
-          setIsSubmitting(false);
-          return;
-        }
-
-        // Save username to localStorage if submission was successful
-        localStorage.setItem("snakeLastUsername", username);
-
-        // Fetch updated leaderboard
-        const { data: updatedLeaderboard } = await supabase
-          .from("leaderboard")
-          .select("*")
-          .order("score", { ascending: false })
-          .limit(10);
-
-        setLeaderboard(updatedLeaderboard || []);
-        setShowNameInput(false);
-        
-      } catch (error) {
-        console.error("Error:", error);
-        setErrorMessage("error submitting score. please try again.");
-      } finally {
-        setIsSubmitting(false);
-      }
-    },
-    [username, score]
-  );
-
-  // Add this effect to handle the blinking
+  // Live blinking
   useEffect(() => {
     const blinkInterval = setInterval(() => {
       setIsBlinking(true);
@@ -542,14 +531,21 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
     return () => clearInterval(blinkInterval);
   }, []);
 
-  // Add effect to pause game when minimized
+  // Pause game when minimized
   useEffect(() => {
     if (isMinimized) {
       setGameStarted(false);
     }
   }, [isMinimized]);
 
-  // Now the conditional return is safe
+  // Reset gameStartTime when game starts
+  useEffect(() => {
+    if (!gameOver && gameStarted) {
+      setGameStartTime(Date.now());
+    }
+  }, [gameStarted, gameOver]);
+
+  // Hide game when minimized
   if (isMinimized) {
     return null;
   }
@@ -608,7 +604,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
             </div>
           </div>
 
-          {/* New Layout: Game Board + Stats Side Panel */}
+          {/* Game Board + Stats Side Panel */}
           <div className="flex-1 flex">
             {/* Game Board Side */}
             <div className="flex items-center justify-center p-4 border-r border-gray-300 dark:border-gray-700">
@@ -620,7 +616,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
                     height: gridSize * cellSize,
                   }}
                 >
-                  {/* Add snake segments */}
+                  {/* Snake segments */}
                   {snake.map((segment, i) => (
                     <div
                       key={i}
@@ -635,7 +631,6 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
                       }}
                     />
                   ))}
-
                   {/* Add food */}
                   <div
                     className={`absolute ${
@@ -649,8 +644,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
                       backgroundColor: "var(--color-primary)",
                     }}
                   />
-
-                  {/* Game over/start overlay remains the same */}
+                  {/* Game over/start overlay */}
                   {(!gameStarted || gameOver) && (
                     <div className="absolute inset-0 flex items-center justify-center font-mono">
                       <div className="text-center">
@@ -683,8 +677,9 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
                                     }
                                     placeholder="username"
                                     className="px-2 py-1 border rounded bg-transparent lowercase w-[250px]"
-                                    maxLength={15}
+                                    maxLength={10}
                                     autoFocus
+                                    autoComplete="off"
                                   />
                                   {errorMessage && (
                                     <p className="text-red-500 text-xs py-1 transition-opacity duration-200">
@@ -767,7 +762,6 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
                 </div>
                 <div className="space-y-2">
                   {leaderboard.slice(0, 5).map((entry, i) => {
-                    // Check if user submitted a score in last 2 minutes
                     const isActive =
                       entry.submitted_at &&
                       new Date().getTime() -
