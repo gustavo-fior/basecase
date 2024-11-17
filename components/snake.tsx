@@ -652,17 +652,17 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
                     <div className="absolute inset-0 flex items-center justify-center font-mono">
                       <div className="text-center">
                         {!gameStarted && !gameOver && (
-                          <>
+                          <div className="h-[125px]">
                             <div className="text-gray-800 dark:text-gray-200">
                               press p to play or pause
                             </div>
                             <div className="text-gray-600 dark:text-gray-400 mt-2">
                               use arrow keys to move
                             </div>
-                          </>
+                          </div>
                         )}
                         {gameOver && (
-                          <>
+                          <div className="h-[125px]">
                             <div className="text-gray-800 dark:text-gray-200">
                               game over
                             </div>
@@ -723,7 +723,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
                                 press r to restart
                               </div>
                             )}
-                          </>
+                          </div>
                         )}
                       </div>
                     </div>
