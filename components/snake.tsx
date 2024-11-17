@@ -1,13 +1,25 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Gamepad } from "lucide-react";
 import Draggable from "react-draggable";
-import { useKeyboardShortcut } from '../hooks/keyboard-shortcuts';
+import { useKeyboardShortcut } from "../hooks/keyboard-shortcuts";
+import { createClient } from "@supabase/supabase-js";
 
 // Constants
 const BASE_CELL_SIZE = 15;
 const MIN_GRID_SIZE = 30;
 const GAME_SPEED = 100;
-const KONAMI_CODE = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+const KONAMI_CODE = [
+  "ArrowUp",
+  "ArrowUp",
+  "ArrowDown",
+  "ArrowDown",
+  "ArrowLeft",
+  "ArrowRight",
+  "ArrowLeft",
+  "ArrowRight",
+  "b",
+  "a",
+];
 
 // Types
 interface Position {
@@ -21,8 +33,31 @@ interface SnakeGameProps {
   onMinimize: (minimized: boolean) => void;
 }
 
+interface LeaderboardEntry {
+  id?: number;
+  username: string;
+  score: number;
+  submitted_at?: string;
+}
+
+// Add Supabase client configuration
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+// Add new type for direction queue
+interface Direction {
+  x: number;
+  y: number;
+}
+
 // Game
-export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMinimize }) => {
+export const SnakeGame: React.FC<SnakeGameProps> = ({
+  onClose,
+  isMinimized,
+  onMinimize,
+}) => {
   // Refs
   const nodeRef = useRef(null);
   const konamiSequenceRef = useRef<string[]>([]);
@@ -40,20 +75,69 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
   const [gameOver, setGameOver] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
   const [highestScore, setHighestScore] = useState<number | null>(null);
+  const [showNameInput, setShowNameInput] = useState(false);
+  const [username, setUsername] = useState("");
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+
+  // Add direction queue state
+  const [directionQueue, setDirectionQueue] = useState<Direction[]>([]);
+
+  // Add state for error message
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
+  // Add loading state
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Add this with other state declarations
+  const [isBlinking, setIsBlinking] = useState(false);
 
   // Add useEffect to load highest score from localStorage on mount
   useEffect(() => {
-    const stored = localStorage.getItem('snakeHighestScore');
-    if (stored) {
-      setHighestScore(parseInt(stored));
+    const storedScore = localStorage.getItem("snakeHighestScore");
+    const storedUsername = localStorage.getItem("snakeLastUsername");
+
+    if (storedScore) {
+      setHighestScore(parseInt(storedScore));
     }
+    if (storedUsername) {
+      setUsername(storedUsername); // Just set the username directly
+    }
+  }, []);
+
+  // Add this effect to periodically fetch leaderboard
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      const { data, error } = await supabase
+        .from("leaderboard")
+        .select("*")
+        .order("score", { ascending: false })
+        .limit(10);
+
+      if (error) {
+        console.error("Error fetching leaderboard:", error);
+        return;
+      }
+
+      setLeaderboard(data || []);
+    };
+
+    // Initial fetch
+    fetchLeaderboard();
+
+    // Set up interval to fetch every 30 seconds
+    const interval = setInterval(fetchLeaderboard, 30000);
+
+    // Cleanup interval on unmount
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   // Game Logic
   const calculateGameDimensions = useCallback(() => {
     if (isFullscreen) {
       const maxWidth = window.innerWidth - 200;
-      const maxHeight = window.innerHeight - 200;
+      const maxHeight = window.innerHeight - 100;
 
       const horizontalCells = Math.floor(maxWidth / BASE_CELL_SIZE);
       const verticalCells = Math.floor(maxHeight / BASE_CELL_SIZE);
@@ -79,7 +163,11 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
         x: Math.floor(Math.random() * (gridSize - 1)),
         y: Math.floor(Math.random() * (gridSize - 1)),
       };
-    } while (snake.some(segment => segment.x === newFood.x && segment.y === newFood.y));
+    } while (
+      snake.some(
+        (segment) => segment.x === newFood.x && segment.y === newFood.y
+      )
+    );
     setFood(newFood);
   }, [snake, calculateGameDimensions]);
 
@@ -90,74 +178,120 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
     setNextDirection({ x: 1, y: 0 });
     setScore(0);
     setGameOver(false);
+    setErrorMessage("");
     generateFood();
   }, [generateFood, gridSize]);
 
   const moveSnake = useCallback(() => {
-    setDirection(nextDirection);
+    // Process next direction from queue if available
+    if (directionQueue.length > 0) {
+      const nextDir = directionQueue[0];
+      setDirection(nextDir);
+      setNextDirection(nextDir);
+      setDirectionQueue((prevQueue) => prevQueue.slice(1));
+    }
 
     setSnake((prevSnake) => {
       // Calculate new head position
-      const newX = prevSnake[0].x + nextDirection.x;
-      const newY = prevSnake[0].y + nextDirection.y;
+      const newHead = {
+        x: prevSnake[0].x + nextDirection.x,
+        y: prevSnake[0].y + nextDirection.y,
+      };
 
       // Check for wall collisions
-      if (newX < 0 || newX >= gridSize || newY < 0 || newY >= gridSize) {
-        setGameOver(true);
-        return prevSnake;
-      }
-
-      const head = { x: newX, y: newY };
-
-      // Check for self collision
       if (
-        prevSnake.some(
-          (segment) => segment.x === head.x && segment.y === head.y
-        )
+        newHead.x < 0 ||
+        newHead.x >= gridSize ||
+        newHead.y < 0 ||
+        newHead.y >= gridSize
       ) {
         setGameOver(true);
         return prevSnake;
       }
 
-      const willEatFood = head.x === food.x && head.y === food.y;
-      const newSnake = [head, ...prevSnake];
-      if (!willEatFood) {
-        newSnake.pop();
-      } else {
-        generateFood();
+      // Check for self collision (excluding the tail which will move)
+      if (
+        prevSnake
+          .slice(0, -1)
+          .some((segment) => segment.x === newHead.x && segment.y === newHead.y)
+      ) {
+        setGameOver(true);
+        return prevSnake;
       }
 
-      return newSnake;
-    });
+      // Check if we're about to eat food
+      const eatingFood = newHead.x === food.x && newHead.y === food.y;
 
-    if (snake[0].x + nextDirection.x === food.x && snake[0].y + nextDirection.y === food.y) {
-      setScore(prev => prev + 1);
-    }
-  }, [nextDirection, food, generateFood, gridSize, snake]);
+      if (eatingFood) {
+        setScore((prev) => prev + 1);
+        generateFood();
+        // Return new snake with new head and keeping the entire tail
+        return [newHead, ...prevSnake];
+      }
+
+      // Regular movement - return new snake with new head and remove tail
+      return [newHead, ...prevSnake.slice(0, -1)];
+    });
+  }, [nextDirection, food, generateFood, gridSize, directionQueue]);
 
   // Konami Code Handler
-  const checkKonamiCode = useCallback((key: string) => {
-    const now = Date.now();
-    if (now - lastKonamiCheck < 100 || isProcessingKonamiRef.current) return;
-    
-    setLastKonamiCheck(now);
-    
-    konamiSequenceRef.current = [...konamiSequenceRef.current, key];
-    if (konamiSequenceRef.current.length > KONAMI_CODE.length) {
-      konamiSequenceRef.current.shift();
-    }
-    
-    if (konamiSequenceRef.current.length === KONAMI_CODE.length && 
-        konamiSequenceRef.current.every((k, i) => k.toLowerCase() === KONAMI_CODE[i].toLowerCase())) {
-      isProcessingKonamiRef.current = true;
-      setScore(prev => prev * 2);
-      konamiSequenceRef.current = [];
-      
-      setTimeout(() => {
-        isProcessingKonamiRef.current = false;
-      }, 1000);
-    }
-  }, [lastKonamiCheck]);
+  const checkKonamiCode = useCallback(
+    (key: string) => {
+      const now = Date.now();
+      if (now - lastKonamiCheck < 100 || isProcessingKonamiRef.current) return;
+
+      setLastKonamiCheck(now);
+
+      konamiSequenceRef.current = [...konamiSequenceRef.current, key];
+      if (konamiSequenceRef.current.length > KONAMI_CODE.length) {
+        konamiSequenceRef.current.shift();
+      }
+
+      if (
+        konamiSequenceRef.current.length === KONAMI_CODE.length &&
+        konamiSequenceRef.current.every(
+          (k, i) => k.toLowerCase() === KONAMI_CODE[i].toLowerCase()
+        )
+      ) {
+        isProcessingKonamiRef.current = true;
+        setScore((prev) => prev * 2);
+        konamiSequenceRef.current = [];
+
+        setTimeout(() => {
+          isProcessingKonamiRef.current = false;
+        }, 1000);
+      }
+    },
+    [lastKonamiCheck]
+  );
+
+  // Modify direction change handlers in keyboard shortcuts
+  const addDirectionToQueue = useCallback(
+    (newDirection: Direction) => {
+      // Only add direction if it's different from the last queued direction
+      // and not opposite to the current direction
+      setDirectionQueue((prevQueue) => {
+        const lastDirection =
+          prevQueue.length > 0 ? prevQueue[prevQueue.length - 1] : direction;
+
+        const isOpposite =
+          newDirection.x === -lastDirection.x &&
+          newDirection.y === -lastDirection.y;
+
+        const isSameAsLast =
+          newDirection.x === lastDirection.x &&
+          newDirection.y === lastDirection.y;
+
+        if (!isOpposite && !isSameAsLast) {
+          // Limit queue size to prevent memory issues
+          const newQueue = [...prevQueue, newDirection].slice(-3);
+          return newQueue;
+        }
+        return prevQueue;
+      });
+    },
+    [direction]
+  );
 
   // Effects
   // Game loop
@@ -172,29 +306,47 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
   useEffect(() => {
     const handleResize = () => {
       const { gridSize } = calculateGameDimensions();
-      
-      const scalePositions = (positions: Position[], oldGridSize: number, newGridSize: number) => {
-        return positions.map(pos => ({
-          x: Math.min(Math.floor((pos.x / oldGridSize) * newGridSize), newGridSize - 1),
-          y: Math.min(Math.floor((pos.y / oldGridSize) * newGridSize), newGridSize - 1),
+
+      const scalePositions = (
+        positions: Position[],
+        oldGridSize: number,
+        newGridSize: number
+      ) => {
+        return positions.map((pos) => ({
+          x: Math.min(
+            Math.floor((pos.x / oldGridSize) * newGridSize),
+            newGridSize - 1
+          ),
+          y: Math.min(
+            Math.floor((pos.y / oldGridSize) * newGridSize),
+            newGridSize - 1
+          ),
         }));
       };
 
       // Scale snake and food positions
-      setSnake(prev => {
-        const oldGridSize = Math.max(MIN_GRID_SIZE, prev.length > 0 ? Math.max(...prev.map(p => Math.max(p.x, p.y))) + 1 : MIN_GRID_SIZE);
+      setSnake((prev) => {
+        const oldGridSize = Math.max(
+          MIN_GRID_SIZE,
+          prev.length > 0
+            ? Math.max(...prev.map((p) => Math.max(p.x, p.y))) + 1
+            : MIN_GRID_SIZE
+        );
         return scalePositions(prev, oldGridSize, gridSize);
       });
 
-      setFood(prev => {
-        const oldGridSize = Math.max(MIN_GRID_SIZE, Math.max(prev.x, prev.y) + 1);
+      setFood((prev) => {
+        const oldGridSize = Math.max(
+          MIN_GRID_SIZE,
+          Math.max(prev.x, prev.y) + 1
+        );
         return scalePositions([prev], oldGridSize, gridSize)[0];
       });
     };
 
     window.addEventListener("resize", handleResize);
     handleResize();
-    
+
     return () => window.removeEventListener("resize", handleResize);
   }, [calculateGameDimensions, isFullscreen]);
 
@@ -202,93 +354,81 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
   useKeyboardShortcut({
     handlers: [
       {
-        key: 'Escape',
+        key: "Escape",
         handler: () => onClose(),
-        description: 'Close game'
+        description: "Close game",
       },
       {
-        key: 'm',
+        key: "m",
         handler: () => onMinimize(!isMinimized),
-        description: 'Minimize window'
+        description: "Minimize window",
       },
       {
-        key: 'f',
-        handler: () => setIsFullscreen(prev => !prev),
-        description: 'Toggle fullscreen'
+        key: "f",
+        handler: () => setIsFullscreen((prev) => !prev),
+        description: "Toggle fullscreen",
       },
       {
-        key: 'p',
-        handler: () => setGameStarted(prev => !prev),
-        description: 'Play/Pause game'
+        key: "p",
+        handler: () => setGameStarted((prev) => !prev),
+        description: "Play/Pause game",
       },
       {
-        key: 'r',
+        key: "r",
         handler: () => {
           if (gameOver) {
             resetGame();
           }
         },
-        description: 'Restart game when game over'
+        description: "Restart game when game over",
       },
       {
-        key: 'ArrowUp',
+        key: "ArrowUp",
         handler: () => {
-          checkKonamiCode('ArrowUp');
-          const newDirection = { x: 0, y: -1 };
-          if (newDirection.x !== -direction.x || newDirection.y !== -direction.y) {
-            setNextDirection(newDirection);
-          }
+          checkKonamiCode("ArrowUp");
+          addDirectionToQueue({ x: 0, y: -1 });
         },
-        description: 'Move up'
+        description: "Move up",
       },
       {
-        key: 'ArrowDown',
+        key: "ArrowDown",
         handler: () => {
-          checkKonamiCode('ArrowDown');
-          const newDirection = { x: 0, y: 1 };
-          if (newDirection.x !== -direction.x || newDirection.y !== -direction.y) {
-            setNextDirection(newDirection);
-          }
+          checkKonamiCode("ArrowDown");
+          addDirectionToQueue({ x: 0, y: 1 });
         },
-        description: 'Move down'
+        description: "Move down",
       },
       {
-        key: 'ArrowLeft',
+        key: "ArrowLeft",
         handler: () => {
-          checkKonamiCode('ArrowLeft');
-          const newDirection = { x: -1, y: 0 };
-          if (newDirection.x !== -direction.x || newDirection.y !== -direction.y) {
-            setNextDirection(newDirection);
-          }
+          checkKonamiCode("ArrowLeft");
+          addDirectionToQueue({ x: -1, y: 0 });
         },
-        description: 'Move left'
+        description: "Move left",
       },
       {
-        key: 'ArrowRight',
+        key: "ArrowRight",
         handler: () => {
-          checkKonamiCode('ArrowRight');
-          const newDirection = { x: 1, y: 0 };
-          if (newDirection.x !== -direction.x || newDirection.y !== -direction.y) {
-            setNextDirection(newDirection);
-          }
+          checkKonamiCode("ArrowRight");
+          addDirectionToQueue({ x: 1, y: 0 });
         },
-        description: 'Move right'
+        description: "Move right",
       },
       {
-        key: 'a',
+        key: "a",
         handler: () => {
-          checkKonamiCode('a');
+          checkKonamiCode("a");
         },
-        description: 'Konami code A'
+        description: "Konami code A",
       },
       {
-        key: 'b',
+        key: "b",
         handler: () => {
-          checkKonamiCode('b');
+          checkKonamiCode("b");
         },
-        description: 'Konami code B'
-      }
-    ]
+        description: "Konami code B",
+      },
+    ],
   });
 
   // Add new handler for click outside
@@ -304,15 +444,115 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
   // Add effect to handle game over score
   useEffect(() => {
     if (gameOver && score > 0) {
-      const stored = localStorage.getItem('snakeHighestScore');
-      const currentHighest = stored ? parseInt(stored) : 0;
-      
+      const storedScore = localStorage.getItem("snakeHighestScore");
+      const currentHighest = storedScore ? parseInt(storedScore) : 0;
+
       if (score > currentHighest) {
-        localStorage.setItem('snakeHighestScore', score.toString());
+        localStorage.setItem("snakeHighestScore", score.toString());
         setHighestScore(score);
       }
+
+      setShowNameInput(true);
+      setErrorMessage("");
     }
   }, [gameOver, score]);
+
+  // Update handleScoreSubmit
+  const handleScoreSubmit = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
+      setErrorMessage("");
+      setIsSubmitting(true);
+
+      try {
+        // Basic validation
+        if (!username.trim() || username.trim().length < 2) {
+          setErrorMessage("username must be at least 2 characters");
+          setIsSubmitting(false);
+          return;
+        }
+
+        if (username.length > 15) {
+          setErrorMessage("username must be 15 characters or less");
+          setIsSubmitting(false);
+          return;
+        }
+
+        // Validate username with API
+        const response = await fetch('/api/validate-username', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ username }),
+        });
+
+        const data = await response.json();
+        
+        // Check if username is appropriate
+        if (!data.appropriate) {
+          setErrorMessage("username is not appropriate");
+          setIsSubmitting(false);
+          return;
+        }
+
+        // Save username to localStorage
+        localStorage.setItem("snakeLastUsername", username);
+
+        // Submit score to Supabase
+        const { error: upsertError } = await supabase
+          .from("leaderboard")
+          .upsert(
+            {
+              username: username,
+              score: score,
+              submitted_at: new Date().toISOString(),
+            },
+            { onConflict: "username" }
+          );
+
+        if (upsertError) {
+          console.error("Error submitting score:", upsertError);
+          setErrorMessage("error submitting score. please try again.");
+          setIsSubmitting(false);
+          return;
+        }
+
+        // Fetch updated leaderboard
+        const { data: updatedLeaderboard } = await supabase
+          .from("leaderboard")
+          .select("*")
+          .order("score", { ascending: false })
+          .limit(10);
+
+        setLeaderboard(updatedLeaderboard || []);
+        setShowNameInput(false);
+      } catch (error) {
+        console.error("Error:", error);
+        setErrorMessage("error submitting score. please try again.");
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [username, score]
+  );
+
+  // Add this effect to handle the blinking
+  useEffect(() => {
+    const blinkInterval = setInterval(() => {
+      setIsBlinking(true);
+      setTimeout(() => setIsBlinking(false), 1000);
+    }, 3000);
+
+    return () => clearInterval(blinkInterval);
+  }, []);
+
+  // Add effect to pause game when minimized
+  useEffect(() => {
+    if (isMinimized) {
+      setGameStarted(false);
+    }
+  }, [isMinimized]);
 
   // Now the conditional return is safe
   if (isMinimized) {
@@ -338,7 +578,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
         <div
           ref={nodeRef}
           className={`
-            ${isFullscreen ? "fixed inset-4" : `w-[${gridSize * cellSize + 4}px]`}
+            ${isFullscreen ? "fixed inset-4" : "w-[750px]"}
             flex flex-col
             border border-gray-300 dark:border-gray-700
             [background-color:var(--color-background-light)]
@@ -373,84 +613,208 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({ onClose, isMinimized, onMi
             </div>
           </div>
 
-          {/* Game Board and Score Container */}
-          <div className="flex-1 flex flex-col items-center justify-center p-4">
-            <div className="flex flex-col">
-              <div
-                className="relative border border-gray-300 dark:border-gray-700"
-                style={{
-                  width: gridSize * cellSize,
-                  height: gridSize * cellSize,
-                }}
-              >
-                {(!gameStarted || gameOver) && (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center font-mono z-10">
-                    {!gameStarted && !gameOver && (
-                      <>
-                        <div className="text-gray-800 dark:text-gray-200">
-                          press p to play or pause
-                        </div>
-                        <div className="text-gray-600 dark:text-gray-400 mt-2">
-                          use arrow keys to move
-                        </div>
-                      </>
-                    )}
-                    {gameOver && (
-                      <>
-                        <div className="text-gray-800 dark:text-gray-200">
-                          game over
-                        </div>
-                        <div className="text-gray-600 dark:text-gray-400 mt-2">
-                          press r to restart
-                        </div>
-                      </>
-                    )}
-                  </div>
-                )}
-
-                {gameStarted && (
-                  <>
-                    {snake.map((segment, i) => (
-                      <div
-                        key={i}
-                        className={`absolute bg-gray-800 dark:bg-gray-200 ${
-                          gameOver ? "opacity-20" : ""
-                        }`}
-                        style={{
-                          width: cellSize - 1,
-                          height: cellSize - 1,
-                          left: segment.x * cellSize,
-                          top: segment.y * cellSize,
-                        }}
-                      />
-                    ))}
+          {/* New Layout: Game Board + Stats Side Panel */}
+          <div className="flex-1 flex">
+            {/* Game Board Side */}
+            <div className="flex items-center justify-center p-4 border-r border-gray-300 dark:border-gray-700">
+              <div className="relative">
+                <div
+                  className="relative border border-gray-300 dark:border-gray-700"
+                  style={{
+                    width: gridSize * cellSize,
+                    height: gridSize * cellSize,
+                  }}
+                >
+                  {/* Add snake segments */}
+                  {snake.map((segment, i) => (
                     <div
-                      className={`absolute ${gameOver ? "opacity-20" : ""}`}
+                      key={i}
+                      className={`absolute bg-gray-800 dark:bg-gray-200 ${
+                        !gameStarted || gameOver ? "opacity-20" : ""
+                      }`}
                       style={{
                         width: cellSize - 1,
                         height: cellSize - 1,
-                        left: food.x * cellSize,
-                        top: food.y * cellSize,
-                        backgroundColor: "var(--color-primary)",
+                        left: segment.x * cellSize,
+                        top: segment.y * cellSize,
                       }}
                     />
-                  </>
-                )}
-              </div>
+                  ))}
 
-              {/* Score Display - Updated Design */}
-              <div className="mt-2 font-mono text-sm flex items-center justify-between px-2 text-gray-800 dark:text-gray-200">
-                <div className="flex items-center gap-4">
-                  <span>score: {score}</span>
-                  {highestScore !== null && score > highestScore && (
-                    <span className="text-emerald-500 animate-pulse">new high!</span>
+                  {/* Add food */}
+                  <div
+                    className={`absolute ${
+                      !gameStarted || gameOver ? "opacity-20" : ""
+                    }`}
+                    style={{
+                      width: cellSize - 1,
+                      height: cellSize - 1,
+                      left: food.x * cellSize,
+                      top: food.y * cellSize,
+                      backgroundColor: "var(--color-primary)",
+                    }}
+                  />
+
+                  {/* Game over/start overlay remains the same */}
+                  {(!gameStarted || gameOver) && (
+                    <div className="absolute inset-0 flex items-center justify-center font-mono">
+                      <div className="text-center">
+                        {!gameStarted && !gameOver && (
+                          <div className="h-[125px]">
+                            <div className="text-gray-800 dark:text-gray-200">
+                              press p to play or pause
+                            </div>
+                            <div className="text-gray-600 dark:text-gray-400 mt-2">
+                              use arrow keys to move
+                            </div>
+                          </div>
+                        )}
+                        {gameOver && (
+                          <div className="h-[125px]">
+                            <div className="text-gray-800 dark:text-gray-200">
+                              game over
+                            </div>
+                            {showNameInput ? (
+                              <form
+                                onSubmit={handleScoreSubmit}
+                                className="mt-4 flex flex-col items-center gap-2"
+                              >
+                                <div className="flex flex-col items-center">
+                                  <input
+                                    type="text"
+                                    value={username}
+                                    onChange={(e) =>
+                                      setUsername(e.target.value)
+                                    }
+                                    placeholder="username"
+                                    className="px-2 py-1 border rounded bg-transparent lowercase w-[250px]"
+                                    maxLength={15}
+                                    autoFocus
+                                  />
+                                  {errorMessage && (
+                                    <p className="text-red-500 text-xs py-1 transition-opacity duration-200">
+                                      {errorMessage}
+                                    </p>
+                                  )}
+                                </div>
+                                <div className="flex gap-2">
+                                  <button
+                                    type="submit"
+                                    disabled={isSubmitting}
+                                    className={`px-3 py-1 bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800 rounded lowercase w-[160px] ${
+                                      isSubmitting
+                                        ? "opacity-50 cursor-not-allowed"
+                                        : ""
+                                    }`}
+                                  >
+                                    {isSubmitting
+                                      ? "submitting..."
+                                      : "submit score"}
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setUsername("");
+                                      setShowNameInput(false);
+                                      setErrorMessage("");
+                                    }}
+                                    className="px-3 py-1 border border-gray-800 dark:border-gray-200 text-gray-800 dark:text-gray-200 rounded lowercase w-[82px]"
+                                  >
+                                    skip
+                                  </button>
+                                </div>
+                              </form>
+                            ) : (
+                              <div className="text-gray-600 dark:text-gray-400 mt-2">
+                                press r to restart
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   )}
                 </div>
-                {highestScore !== null && (
-                  <div className="text-gray-500 dark:text-gray-400">
-                    best: {highestScore}
-                  </div>
-                )}
+              </div>
+            </div>
+
+            {/* Stats Side */}
+            <div className="w-[250px] flex flex-col p-6 font-mono">
+              {/* Current Score */}
+              <div className="mb-8">
+                <div className="text-sm text-gray-500 dark:text-gray-400 mb-1 lowercase">
+                  current score
+                </div>
+                <div className="text-4xl font-bold text-gray-800 dark:text-gray-200">
+                  {score}
+                  {highestScore !== null && score > highestScore && (
+                    <span className="text-sm text-emerald-500 ml-2 animate-pulse">
+                      new high!
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Best Score */}
+              <div className="mb-8">
+                <div className="text-sm text-gray-500 dark:text-gray-400 mb-1 lowercase">
+                  best score
+                </div>
+                <div className="text-2xl text-gray-800 dark:text-gray-200">
+                  {highestScore || 0}
+                </div>
+              </div>
+
+              {/* Leaderboard */}
+              <div className="flex-1">
+                <div className="text-sm text-gray-500 dark:text-gray-400 mb-3 lowercase">
+                  global leaderboard
+                </div>
+                <div className="space-y-2">
+                  {leaderboard.slice(0, 5).map((entry, i) => {
+                    // Check if user submitted a score in last 2 minutes
+                    const isActive =
+                      entry.submitted_at &&
+                      new Date().getTime() -
+                        new Date(entry.submitted_at).getTime() <
+                        120000;
+                    return (
+                      <div
+                        key={i}
+                        className={`
+                          flex items-center justify-between text-sm lowercase
+                          ${
+                            entry.score === score
+                              ? "[color:var(--color-primary)]"
+                              : "text-gray-800 dark:text-gray-200"
+                          }
+                        `}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span className="text-gray-400 w-4">{i + 1}</span>
+                          <span>{entry.username.toLowerCase()}</span>
+                          {isActive && (
+                            <div
+                              className={`w-2 h-2 rounded-full bg-green-500 ${
+                                isBlinking ? "opacity-100" : "opacity-50"
+                              } transition-opacity duration-150`}
+                            />
+                          )}
+                        </div>
+                        <span className="font-bold">{entry.score}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Controls Help */}
+              <div className="mt-auto pt-4 border-t border-gray-300 dark:border-gray-700">
+                <div className="text-xs text-gray-500 dark:text-gray-400 lowercase space-y-1">
+                  <div>p - play/pause</div>
+                  <div>r - restart</div>
+                  <div>arrows - move</div>
+                </div>
               </div>
             </div>
           </div>
