@@ -83,10 +83,10 @@ export async function POST(request: NextRequest) {
       isNewHigh: existingUser ? score > existingUser.score : false
     });
     
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('API Error:', error);
     return NextResponse.json(
-      { error: error?.message || 'Failed to submit score' },
+      { error: error instanceof Error ? error.message : 'Failed to submit score' },
       { status: 500 }
     );
   }

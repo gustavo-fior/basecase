@@ -40,10 +40,6 @@ interface LeaderboardEntry {
   submitted_at?: string;
 }
 
-interface Error {
-  message: string;
-}
-
 // Add Supabase client configuration
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
