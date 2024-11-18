@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
       if (score > gameDurationSeconds) {
         return NextResponse.json({
           success: false,
-          message: `nice try ;)`,
+          message: `${score} in ${gameDurationSeconds} seconds? nice try!`,
         });
       }
 
@@ -60,14 +60,15 @@ export async function POST(request: NextRequest) {
       if (score > 300) {
         return NextResponse.json({
           success: false,
-          message: "really? send a screenshot of your score to @alanaagoyal",
+          message:
+            "impressive work! send a screenshot of your score to @alanaagoyal",
         });
       }
     } catch (error) {
       console.error("Game session error:", error);
       return NextResponse.json({
         success: false,
-        message: "invalid game session",
+        message: "that's an invalid game session, but good effort!",
       });
     }
 
