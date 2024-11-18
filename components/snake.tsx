@@ -71,8 +71,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
   const [directionQueue, setDirectionQueue] = useState<Direction[]>([]);
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
-  const [gameStartTime, setGameStartTime] = useState<number>(Date.now());
-
+  const [gameToken, setGameToken] = useState<string>("");
   // UI State
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -137,7 +136,8 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
     setScore(0);
     setGameOver(false);
     setErrorMessage("");
-    setKonamiUsed(false); // Reset Konami code usage
+    setKonamiUsed(false);
+    setGameToken("");
     generateFood();
   }, [generateFood, gridSize]);
 
@@ -269,11 +269,15 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
   // Update handleScoreSubmit to handle localStorage
   const handleScoreSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMessage("");
 
     // Add client-side validation
     if (!username?.trim() || username.length < 2 || username.length > 10) {
       setErrorMessage("username must be between 2 and 10 characters");
+      return;
+    }
+
+    if (!gameToken) {
+      setErrorMessage("invalid game session");
       return;
     }
 
@@ -286,7 +290,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
         body: JSON.stringify({
           username,
           score,
-          gameStartTime,
+          gameToken,
         }),
       });
 
@@ -319,15 +323,8 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
       setLeaderboard(updatedLeaderboard || []);
       setShowNameInput(false);
     } catch (error) {
-      console.error(
-        "Submission Error:",
-        error instanceof Error ? error.message : "Unknown error"
-      );
-      setErrorMessage(
-        error instanceof Error
-          ? error.message
-          : "error submitting score. please try again."
-      );
+      console.error("Error:", error);
+      setErrorMessage("failed to submit score");
     } finally {
       setIsSubmitting(false);
     }
@@ -538,10 +535,29 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
     }
   }, [isMinimized]);
 
-  // Reset gameStartTime when game starts
+  // Reset game token when game starts
   useEffect(() => {
     if (!gameOver && gameStarted) {
-      setGameStartTime(Date.now());
+      const startGame = async () => {
+        try {
+          const response = await fetch("/api/start-game", {
+            method: "POST",
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to start game");
+          }
+
+          const data = await response.json();
+          setGameToken(data.token);
+        } catch (error) {
+          console.error("Failed to start game:", error);
+          setErrorMessage("failed to start game");
+          setGameStarted(false);
+        }
+      };
+
+      startGame();
     }
   }, [gameStarted, gameOver]);
 
