@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
       console.error('Game session error:', error);
       return NextResponse.json({ 
         success: false,
-        message: "invalid game session"
+        message: "nice try ;)"
       });
     }
 
