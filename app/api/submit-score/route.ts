@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
 
     if (!validationData.appropriate) {
       return NextResponse.json({
-        success: true,
+        success: false,
         message: "username is not appropriate",
       });
     }
