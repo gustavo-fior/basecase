@@ -55,6 +55,14 @@ export async function POST(request: NextRequest) {
           message: `nice try ;)`,
         });
       }
+
+      // Check for suspiciously high scores
+      if (score > 300) {
+        return NextResponse.json({
+          success: false,
+          message: "really? send a screenshot of your score to @alanaagoyal",
+        });
+      }
     } catch (error) {
       console.error("Game session error:", error);
       return NextResponse.json({
