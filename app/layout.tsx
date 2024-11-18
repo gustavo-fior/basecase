@@ -5,6 +5,7 @@ import { siteConfig } from "@/config/site";
 import { Analytics } from "@vercel/analytics/react";
 import localFont from "next/font/local";
 import "./globals.css";
+import "./highlight.css";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
