@@ -70,8 +70,7 @@ export async function POST(request: NextRequest) {
           submitted_at: new Date().toISOString()
         },
         { 
-          onConflict: 'username',
-          ignoreDuplicates: false 
+          onConflict: 'username'
         }
       );
 
