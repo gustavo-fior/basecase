@@ -89,6 +89,7 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
   // Konami Code State
   const [lastKonamiCheck, setLastKonamiCheck] = useState<number>(0);
   const [konamiUsed, setKonamiUsed] = useState(false);
+  const [showKonamiMessage, setShowKonamiMessage] = useState(false);
 
   // Game Logic
   const calculateGameDimensions = useCallback(() => {
@@ -528,6 +529,17 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
     return () => clearInterval(blinkInterval);
   }, []);
 
+  // Konami bonus indicator
+  useEffect(() => {
+    if (konamiUsed) {
+      setShowKonamiMessage(true);
+      const timer = setTimeout(() => {
+        setShowKonamiMessage(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [konamiUsed]);
+
   // Pause game when minimized
   useEffect(() => {
     if (isMinimized) {
@@ -756,6 +768,11 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
                   {highestScore !== null && score > highestScore && (
                     <span className="text-sm text-emerald-500 ml-2 animate-pulse">
                       new high!
+                    </span>
+                  )}
+                  {showKonamiMessage && (
+                    <span className="text-sm ml-2 animate-pulse" style={{ color: 'var(--color-primary)' }}>
+                      konami bonus!
                     </span>
                   )}
                 </div>
