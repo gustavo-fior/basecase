@@ -13,6 +13,11 @@ export async function createToken(startTime: number) {
 }
 
 export async function verifyToken(token: string) {
-  const { payload } = await jwtVerify(token, SECRET);
-  return payload as { startTime: number };
+  try {
+    const { payload } = await jwtVerify(token, SECRET);
+    return payload as { startTime: number };
+  } catch (error) {
+    // Handle specific JWT errors or throw a custom error
+    throw new Error('Invalid or expired token');
+  }
 }
