@@ -270,6 +270,12 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
   const handleScoreSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Add client-side validation
+    if (!username?.trim() || username.length < 2 || username.length > 10) {
+      setErrorMessage("username must be between 2 and 10 characters");
+      return;
+    }
+
     if (!gameToken) {
       setErrorMessage("invalid game session");
       return;
