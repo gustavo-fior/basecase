@@ -71,7 +71,6 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
   const [directionQueue, setDirectionQueue] = useState<Direction[]>([]);
   const [gameStarted, setGameStarted] = useState(false);
   const [gameOver, setGameOver] = useState(false);
-  const [gameStartTime, setGameStartTime] = useState<number>(Date.now());
   const [gameToken, setGameToken] = useState<string>("");
   // UI State
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -529,13 +528,6 @@ export const SnakeGame: React.FC<SnakeGameProps> = ({
       setGameStarted(false);
     }
   }, [isMinimized]);
-
-  // Reset gameStartTime when game starts
-  useEffect(() => {
-    if (!gameOver && gameStarted) {
-      setGameStartTime(Date.now());
-    }
-  }, [gameStarted, gameOver]);
 
   // Reset game token when game starts
   useEffect(() => {

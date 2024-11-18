@@ -56,6 +56,7 @@ export async function POST(request: NextRequest) {
         });
       }
     } catch (error) {
+      console.error('Game session error:', error);
       return NextResponse.json({ 
         success: false,
         message: "invalid game session"
@@ -97,7 +98,7 @@ export async function POST(request: NextRequest) {
       isNewHigh: existingUser ? score > existingUser.score : false
     });
     
-  } catch (error: unknown) {
+  } catch (error) {
     console.error('API Error:', error);
     return NextResponse.json(
       { error: 'an error occurred' },
