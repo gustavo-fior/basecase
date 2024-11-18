@@ -1,15 +1,16 @@
-import { createClient } from '@supabase/supabase-js';
 import { NextRequest, NextResponse } from 'next/server';
+import { verifyToken } from '@/lib/jwt';
+import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY! 
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { username, score, gameStartTime } = body;
+    const { username, score, gameToken } = body;
 
     // Basic username validation
     if (!username?.trim() || username.length < 2 || username.length > 10) {
@@ -35,14 +36,29 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Calculate game duration in seconds
-    const gameDurationSeconds = Math.floor((Date.now() - Number(gameStartTime)) / 1000);
-    
-    // Ensure score isn't more than 1 point per second
-    if (score > gameDurationSeconds) {
+    if (!gameToken) {
       return NextResponse.json({ 
-        success: true,
-        message: `${score} points in ${gameDurationSeconds} seconds? nice try!`
+        success: false,
+        message: "invalid game session" 
+      });
+    }
+
+    // Verify the game token
+    try {
+      const { startTime } = await verifyToken(gameToken);
+      const gameDurationSeconds = Math.floor((Date.now() - startTime) / 1000);
+      
+      // Ensure score isn't more than 1 point per second
+      if (score > gameDurationSeconds) {
+        return NextResponse.json({ 
+          success: false,
+          message: `${score} points in ${gameDurationSeconds} seconds? nice try!`
+        });
+      }
+    } catch (error) {
+      return NextResponse.json({ 
+        success: false,
+        message: "invalid game session"
       });
     }
 
@@ -50,7 +66,7 @@ export async function POST(request: NextRequest) {
     const { data: existingUser } = await supabase
       .from('leaderboard')
       .select('score')
-      .eq('username', username)
+      .eq('username', username.toLowerCase())
       .maybeSingle();
 
     // If user exists and new score is lower, return success without message
@@ -65,7 +81,7 @@ export async function POST(request: NextRequest) {
       .from('leaderboard')
       .upsert(
         { 
-          username, 
+          username: username.toLowerCase(), 
           score,
           submitted_at: new Date().toISOString()
         },
