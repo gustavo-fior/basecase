@@ -16,8 +16,7 @@ export async function verifyToken(token: string) {
   try {
     const { payload } = await jwtVerify(token, SECRET);
     return payload as { startTime: number };
-  } catch (error) {
-    // Handle specific JWT errors or throw a custom error
-    throw new Error('Invalid or expired token');
+  } catch {
+    throw new Error("Invalid or expired token");
   }
 }
