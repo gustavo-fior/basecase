@@ -1,0 +1,120 @@
+---
+title: "building with the batch w24"
+date: "2024-04-03"
+readingTimeMin: 5
+meta:
+  og:title: "yc w24: building with the batch"
+  og:description: "how i built an ai-powered startup name generator using a dozen ai developer tools and infrastructure companies from the yc w24 batch"
+  og:image: "https://basecase.vc/building-with-the-batch-w24/og.jpg"
+  twitter:image: "https://basecase.vc/building-with-the-batch-w24/og.jpg"
+  twitter:card: "summary_large_image"
+  twitter:title: "building with the yc w24 batch"
+  twitter:description: "how i built an ai-powered startup name generator using a dozen ai developer tools and infrastructure companies from the yc w24 batch"
+---
+
+congratulations to all of the founders in the yc w24 batch! whenever yc is session, i get the urge to build something myself. last year, i started what has now become a tradition of building and open-sourcing a project that leverages some of the companies in the batch. today, i’m excited to share the latest edition.
+
+[branded](https://branded.ai) helps founders name their startup, secure the domain, and brand it—all in one place. as an investor who partners with founders at inception, one of the first challenges i see companies face is what to name their startup. it’s often one of the most difficult, yet important decisions any founder will make. to solve that problem, i decided to build branded. in addition to helping you find the perfect name for your startup or side project, it also helps you secure the domain name, generate a logo, and even create branded content. 
+
+<div className="image-container">
+  <img src="/building-with-the-batch-w24/demo.gif" alt="" />
+</div>
+
+to build it, i used the following companies from the yc w24 batch:
+
+- [aqua](https://withaqua.com/) is a voice-driven text editor that organizes your thoughts as you speak. i used it to brainstorm for the project and this blog post.
+- [ellipsis](https://ellipsis.dev/) is an ai developer tool that converts technical instructions into working, tested code. i used it to summarize and review pull requests.
+- [fume](https://fumedev.com/) is an ai software developer in slack. i used it to make some small tweaks.
+- [greptile](https://www.greptile.com/) is an ai-powered api that can search and understand large codebases in natural language. i used it to ask questions of my codebase.
+- [markprompt](https://markprompt.com/)[^1] is ai infrastructure to power customer support at scale. i used it to embed an ai-chatbot to help users with common questions.
+- [million](https://million.dev/) is an apm that uses ai to make websites automatically fast. i used it to uncover performance improvements.
+- [momentic](https://momentic.ai/) uses ai agents to let developers run end-to-end tests 10x faster. i used it to automate testing.
+- [onedoc](https://www.onedoclabs.com/) is an api for pdf document generation. i used it to generate the branded one-pagers.
+- [tusk](https://usetusk.ai/) is an ai coding agent that fixes customers' bugs instantly. i used it for some surprisingly nontrivial tasks.
+
+the application is built with [next.js](https://nextjs.org/) & [supabase](https://supabase.com/)[^2] and leverages [shadcn/ui](https://ui.shadcn.com/) for many of the ui components, [openai](https://openai.com/) for the ai generations, [whoxy](https://www.whoxy.com/) for domain lookups, and [braintrust](https://www.braintrustdata.com/)[^3] for prompt management, logging, and evals.
+
+unlike previous projects of mine, branded is an ai-first application. furthermore, almost all of the yc companies i used are ai companies themselves, so i got to experience first-hand what good developer experience looks like in the age of ai. in the remainder of this post, i’ll share some of my observations and takeaways for other founders building in the space.
+
+### set expectations
+
+there’s been a lot of cool work done by model providers like openai to reduce latency and infrastructure providers like vercel to improve the end-user experience by streaming responses, but the reality is that ai applications can be frustratingly slow. yet after using many ai tools over the past month, i realized that it’s not the absolute time it takes for a response that bothers me, but the lack of clear expectations as to when to expect the response. 
+
+tusk, the ai coding agent, communicates these expectations really well. when you open up a new github issue and assign tusk to start working on it, it tells you it will be back with an update in 10 minutes. as a result, instead of sitting there staring at the screen, i can go on to other work, or even fire off another task for tusk to work on.
+
+<div className="image-container">
+  <img src="/building-with-the-batch-w24/tusk.png" alt="" />
+</div>
+
+i also felt this acutely myself when building branded. when a user wants to generate names that are optimized for .com availability, for example, it takes a lot longer because each name generated by openai needs to be passed to the domain lookup api. since .com domain names are often unavailable, this means it can take up to ~30 seconds before getting a response back to the user. for this reason, i tried to indicate to users that making this selection will take longer. in future versions, i’d love to come up with a cooler way of displaying this information, but for now it’s just in the form description. 
+
+### show your work
+
+regardless of whether you’re an ai engineer immersed in the ai ecosystem or an average person with no knowledge of llms, ai products can feel like a black box. with ai agents in particular, i find it super helpful to see how a problem is being broken down. as my friend paul dornier said eloquently: [“more transparency, less magic”](https://blog.alpharun.com/p/the-ai-chasm).
+
+fume is an ai coding agent invoked through slack. when you ask fume to work on something, the first thing it will do is ask you to select which files you want it to index. next, it will give you an overview of the changes it plans to make. only then will it create a pull request for your review. as an opinionated engineer, i like this approach because it allows me to steer the agent in the direction i want, without worrying about having to start from scratch if it goes off track.
+
+<div className="image-container">
+  <img src="/building-with-the-batch-w24/fume.gif" alt="" />
+</div>
+
+tusk accomplishes this in a slightly different way. while the agent doesn’t show it’s work or ask for approval before submitting a pull request, you can see its detailed approach documented in the activity log, including which files it’s looking at, checks it’s making, errors it’s encountering, and more.
+
+<div className="image-container">
+  <img src="/building-with-the-batch-w24/tusk.gif" alt="" />
+</div>
+
+### build escape hatches
+
+the ai wave has a lot of similarities to the “no-code” era of the last decade: it has the potential to give users superpowers. but just like no-code applications, ai applications also must include escape hatches to let users take over when necessary.
+
+momentic, for example, is a powerful tool that allows developers (or even product managers) define end-to-end tests in natural language. while it works really well for a lot of use cases, there are still times when i need to take control or fix something. 
+
+<div className="image-container">
+  <img src="/building-with-the-batch-w24/momentic.gif" alt="" />
+</div>
+
+markprompt’s ticket deflector is another great example of this concept. markprompt helps enterprises automate their customer support by indexing all available knowledge within a company as the basis for answering questions from users. if a user is not satisfied with the answer, it can choose to submit a ticket, which markprompt enriches with all of the relevant knowledge from the session. 
+
+### learn from your users
+
+llms get better with more data, and in particular, data from your users. when i first started working on this project, i was frustrated to find that only a few companies had self-service products. when i started reaching out to founders, however, many kindly agreed to give me access to the beta if they could do a quick onboarding session. while i’m generally not a big fan of products that require white-glove onboarding, i eventually realized that trade offs are a bit different for ai products.
+
+in many of these onboarding calls, the founders weren’t so much teaching me how to use their product, but rather observing me to see what i was doing without their direction. their goal was to learn from my behavior in order to make the product better. 
+
+white glove onboarding sessions are definitely not the only way to accomplish this. in fact, products like braintrust help ai companies log users’ responses and incorporate that feedback back into the development cycle. when working on branded, i found braintrust particularly helpful in debugging real users’ examples and making prompt adjustments to improve the user experience.
+
+<div className="image-container">
+  <img src="/building-with-the-batch-w24/braintrust.gif" alt="" />
+</div>
+
+similarly, markprompt provides a simple interface for users to go in and see exactly what questions their customers are asking, how the llm responded, and make improvements for future cases.
+
+<div className="image-container">
+  <img src="/building-with-the-batch-w24/markprompt.gif" alt="" />
+</div>
+
+
+### be opinionated
+
+in building my own ai product, i found the “blank canvas” problem to be very real. llms have the power to generate an incredible amount of content, but the real challenge is often determining which of it is useful to the user and which affordances allow them to accomplish what they need.
+
+aqua has a really interesting approach to this. aqua is a voice-first notes application that listens to what you say and organizes your thoughts as you’re speaking. at first, it felt weird to see my thoughts being modified in real-time, but i quickly became addicted and impressed by the output.
+
+<div className="image-container">
+  <img src="/building-with-the-batch-w24/aqua.gif" alt="" />
+</div>
+
+another example is million, a copilot for performance optimization. million has a really interesting ux for surfacing performance problems and suggesting potential improvements. while most apm solutions throw tons of data in a dashboard for you to make use of, million takes a more opinionated approach. 
+
+### closing thoughts
+
+i had such a blast building branded and experimenting with these ai tools over the past month. building an ai product is not easy—the non-deterministic nature of llms can make debugging incredibly frustrating and the landscape is changing so quickly that it’s hard to keep up. as with previous iterations of this exercise, i came away super impressed by the founders and builders in yc w24. 
+
+i’m also excited to continue working on branded and improve it with your feedback. in future releases, i'd love to improve the algorithm for finding names that are optimized to have .com availability. i'd also like to explore ways to improve the logo generation so that the generated logos have a consistent vector image type and a transparent background. i’m also planning to integrate usage-based billing via [orb](https://withorb.com) to allow users to generate more names and logos and a model selector via [baseten](https://baseten.co) to let users swap between different open-source models. if you have feature requests or suggestions for me, please reach out. the code is fully open-source, so please check it out for yourself and submit a pull request. 
+
+last but not least, a big thank you to [ankur goyal](https://twitter.com/ankrgyl), [david lorenz](https://activeno.de/), [guillermo rauch](https://twitter.com/rauchg), [hassan el mghari](https://twitter.com/nutlope), [indragie karunaratne](https://twitter.com/indragie), [jj kasper](https://twitter.com/_ijjk), [jordan singer](https://twitter.com/jsngr), [paul dornier](https://twitter.com/pauldornier_), [sarup banskota](https://twitter.com/sarupbanskota), & [vincent van der meulen](https://twitter.com/vincentmvdm) for being beta testers and giving me feedback on this project.
+
+[^1]: i'm an investor in markprompt
+[^2]: i'm an investor in supabase
+[^3]: i'm an investor in braintrust

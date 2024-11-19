@@ -79,7 +79,8 @@ export default async function BlogPost({ params }: Props) {
                    prose-a:text-primary hover:prose-a:opacity-70
                    prose-strong:text-foreground prose-em:text-muted-foreground 
                    prose-blockquote:border-border prose-blockquote:text-muted-foreground
-                   prose-li:text-foreground prose-li:marker:text-muted-foreground"
+                   prose-li:text-foreground prose-li:marker:text-muted-foreground
+                   prose-img:rounded-lg prose-img:mx-auto"
           dangerouslySetInnerHTML={{ __html: post.content }} 
         />
       </article>

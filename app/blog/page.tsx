@@ -24,9 +24,9 @@ export default async function BlogPage() {
             this is my version of an engineering blog.
           </p>
         </div>
-        <div className="space-y-10">
+        <div className="space-y-5">
           {posts.map((post) => (
-            <article key={post.slug} className="border-b border-border py-10">
+            <article key={post.slug} className="border-b border-border py-5">
               <Link href={`/blog/${post.slug}`} className="block group">
                 <h2 className="text-xl mb-2 text-foreground group-hover:[color:var(--color-primary)]">
                   {post.meta?.['og:title'] || post.title}
