@@ -21,7 +21,7 @@ export default async function BlogPage() {
             </span>
           </h1>
           <p className="text-sm">
-            this is my version of an engineering blog.
+            some learnings from building and breaking things.
           </p>
         </div>
         <div className="space-y-5">

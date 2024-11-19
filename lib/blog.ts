@@ -27,6 +27,7 @@ export interface BlogPost {
   title: string
   date: string
   readingTimeMin: number
+  hidden: boolean
 }
 
 const postsDirectory = path.join(process.cwd(), 'app/blog')
@@ -65,11 +66,15 @@ export async function getAllPosts(): Promise<BlogPost[]> {
             title: data.title || '',
             date: data.date ? new Date(data.date).toISOString() : new Date().toISOString(),
             readingTimeMin: data.readingTimeMin || 1,
+            hidden: data.hidden || false,
           }
         })
     )
 
-    return allPosts.sort((a, b) => (new Date(b.date).getTime() - new Date(a.date).getTime()))
+    // Filter out hidden posts
+    const visiblePosts = allPosts.filter(post => !post.hidden)
+
+    return visiblePosts.sort((a, b) => (new Date(b.date).getTime() - new Date(a.date).getTime()))
   } catch (error) {
     console.error('Error getting all posts:', error)
     return []
@@ -91,6 +96,7 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
       title: data.title || '',
       date: data.date ? new Date(data.date).toISOString() : new Date().toISOString(),
       readingTimeMin: data.readingTimeMin || 1,
+      hidden: data.hidden || false,
     }
   } catch (error) {
     console.error('Error getting post by slug:', error)
