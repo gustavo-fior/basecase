@@ -15,12 +15,12 @@ export async function generateStaticParams() {
 }
 
 type Props = {
-  params: Params
+  params: Promise<Params>
 }
 
-export async function generateMetadata(props: Props) {
-  const params = await props.params
-  const post = await getPostBySlug(params.slug)
+export async function generateMetadata({ params }: Props) {
+  const { slug } = await params
+  const post = await getPostBySlug(slug)
   if (!post) return {}
 
   return {
@@ -40,9 +40,9 @@ export async function generateMetadata(props: Props) {
   }
 }
 
-export default async function BlogPost(props: Props) {
-  const params = await props.params
-  const post = await getPostBySlug(params.slug)
+export default async function BlogPost({ params }: Props) {
+  const { slug } = await params
+  const post = await getPostBySlug(slug)
   
   if (!post) {
     notFound()
@@ -68,14 +68,16 @@ export default async function BlogPost(props: Props) {
           )}
         </div>
         <div 
-          className="prose prose-neutral dark:prose-invert max-w-none prose-h1:lowercase prose-h2:lowercase prose-h3:lowercase
+          className="prose prose-neutral dark:prose-invert max-w-none text-sm
+                   prose-h1:text-xl prose-h2:text-lg prose-h3:text-base
+                   prose-h1:lowercase prose-h2:lowercase prose-h3:lowercase
                    prose-h1:font-mono prose-h2:font-mono prose-h3:font-mono
                    prose-h1:text-foreground prose-h2:text-foreground prose-h3:text-foreground
-                   prose-p:text-foreground
+                   prose-p:text-foreground prose-p:leading-relaxed
                    prose-code:font-mono prose-code:bg-secondary prose-code:rounded
                    prose-pre:bg-secondary prose-pre:p-4 prose-pre:rounded-lg
                    prose-a:text-primary hover:prose-a:opacity-70
-                   prose-strong:text-foreground prose-em:text-muted-foreground
+                   prose-strong:text-foreground prose-em:text-muted-foreground 
                    prose-blockquote:border-border prose-blockquote:text-muted-foreground
                    prose-li:text-foreground prose-li:marker:text-muted-foreground"
           dangerouslySetInnerHTML={{ __html: post.content }} 
