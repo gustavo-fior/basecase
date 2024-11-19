@@ -43,3 +43,6 @@ next-env.d.ts
 supabase/.gitignore
 supabase/config.toml
 supabase/migrations/
+
+# blog drafts
+app/blog/drafts/*.mdx
