@@ -60,6 +60,11 @@ export default function Navigation() {
         handler: () => setShowShortcuts(true),
         description: "Show keyboard shortcuts",
       },
+      {
+        key: "b",
+        handler: () => window.location.href = "/blog",
+        description: "Go to blog",
+      },
     ],
   });
 
@@ -131,6 +136,12 @@ export default function Navigation() {
                 >
                   [s] snake
                 </button>
+                <a
+                  href="/blog"
+                  className="p-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-flex items-center text-xs"
+                >
+                  [b] blog
+                </a>
               </div>
             </div>
             <div className="flex items-center space-x-2">
