@@ -1,47 +1,69 @@
 ---
-title: 'how i secured a snake leaderboard (and made it fun for devs)'
-date: '2024-01-17'
+title: "securing snake"
+date: "2024-11-19"
 meta:
-  'og:title': 'how i secured a snake leaderboard (and made it fun for devs)'
-  'og:description': 'a journey from insecure to secure, with some fun dev easter eggs along the way'
-  'twitter:card': 'summary'
-  'twitter:title': 'how i secured a snake leaderboard (and made it fun for devs)'
-  'twitter:description': 'a journey from insecure to secure, with some fun dev easter eggs along the way'
+  "og:title": "securing snake"
+  "og:description": "how i secured a snake leaderboard (and made it fun for devs)"
+  "twitter:card": "summary"
+  "twitter:title": "securing snake"
+  "twitter:description": "how i secured a snake leaderboard (and made it fun for devs)"
 readingTimeMin: 5
 ---
-over the weekend, i added a live leaderboard for the snake game on my website. it was a fun project, but like most quick builds, it had some serious security issues. here's the journey of how i went from "anyone can hack this" to a reasonably secure implementation, along with some code and lessons learned.
+
+over the weekend, i added a live leaderboard for the snake game on my website. it was a super fun
+feature, but like many of my projects, i shipped it with some apparent security issues. this is a
+quick write up on how i went from "anyone can hack this" to a reasonably secure implementation,
+along with some code and lessons learned.
 
 ## the naive implementation: client-side score submission
 
-initially, the snake game and leaderboard updates ran entirely client-side. the snake component would send your score to supabase directly, and since i didn't want users to have to authenticate to play the game or appear on the leaderboard, the rls (row level security) policies were set up to allow anyone to read, insert, and update from the leaderboard table. this seemed fine at first, but i quickly realized that anyone could inspect the network requests and submit scores via curl, like this:
+initially, the snake game and leaderboard updates ran entirely client-side. the snake component
+would send your score to supabase directly, and since i didn't want users to have to authenticate to
+play the game or appear on the leaderboard, the rls (row level security) policies were set up to
+allow anyone to read, insert, and update from the leaderboard table. this seemed fine at first, but
+i quickly realized that anyone could inspect the network requests and submit scores via curl, like
+this:
 
 ```bash
+# send a request to supabase
+
 curl 'https://supabase.co/rest/v1/leaderboard?on_conflict=username' \
  -H 'apikey: <supabase-key>' \
  -H 'authorization: Bearer <supabase-key>' \
  --data-raw '{"username":"pk_iv","score":999999,"submitted_at":"2024-11-17T17:45:22.381Z"}'
 ```
 
-within minutes, i had "players" with impossibly high scores showing up. shout out to pk_iv for being the first.
+within minutes, i had leaderboard entries with impossibly high scores showing up. shout out to pk_iv
+for being the first.
 
 ## moving to rpc functions (and why that wasn't enough)
 
-in my first attempt to secure the leaderboard, i switched to using a supabase rpc (remote procedure call) function instead of allowing direct inserts to the database. the rpc function added a layer of abstraction and some basic validation, but it still ran on the client-side, so anyone could see the rpc call and submit scores using another simple curl command:
+for my first attempt to secure the leaderboard, i thought i would use a supabase rpc (remote
+procedure call) function instead of allowing direct inserts to the database. the rpc function added
+a layer of abstraction and some basic validation, but still ran on the client, so anyone could see
+the rpc call and submit scores using another simple curl command:
 
 ```bash
+# send a request to the rpc function
 curl 'https://supabase.co/rest/v1/rpc/submit_score' \
  -H 'apikey: <supabase-key>' \
  --data-raw '{"username":"hacker","score":999999}'
 ```
 
-still a piece of cake.
+still a piece of cake. i had more work to do.
 
 ## adding server-side validation
 
-alas, i realized that i'd need a more robust solution to at least make hackers break a sweat, so i moved the score submission logic to the server. the server would validate the score by checking the timestamp: you could only submit a score where the time-to-score ratio made sense (e.g. 1 point per second). this was a step in the right direction, but again, determined hackers found a workaround by sending carefully crafted requests with all the expected headers and parameters:
+i realized that i'd need a more robust solution to at least make hackers break a sweat, so i moved
+the score submission logic to the server. the server would validate the score by checking the
+timestamp: you could only submit a score where the time-to-score ratio made sense (e.g. 1 point per
+second). this was a step in the right direction, making it at least more than a simple curl command
+to game the system. but again, those curious or determined enough found a workaround by calculating
+a different start time:
 
 ```bash
-# submit a score with manipulated data
+# send a request to the backend with a manipulated game start time
+
 curl 'https://www.basecase.sh/api/submit-score' \
   -H 'accept: */*' \
   -H 'content-type: application/json' \
@@ -54,15 +76,26 @@ this was a pretty reasonable fix, but it was still too easy to hack.
 
 ## introducing jwt tokens
 
-to make it harder, i implemented jwt tokens. here's how it worked:
+alas, it was time to get serious. enter jwts: jwts (json web tokens) are a secure way to transmit
+information between parties as a json object. they're signed using a secret key that only the server
+knows, making them tamper-proof. when you sign data into a jwt, that data becomes immutable. any
+attempt to modify the token's contents invalidates the signature, so the server will reject it. this
+was perfect for my use case: i could essentially "lock" the start time into a token that players
+couldn't manipulate.
 
-1. when a game started, the client requested a token from the server.
-2. the token was tied to the start time of the game.
-3. when the game ended, the token was submitted along with the score.
+here's how i implemented it:
 
-this meant that hackers couldn't easily fake timestamps anymore because the token's start time was baked into its payload. even if they fetched a token, they'd have to wait in real-time to submit a high score, and tokens expired after 10 minutes.
+1. when a game starts, the client requests a token from the server. the server creates a jwt
+   containing the exact start timestamp and signs it with a secret key.
+2. this token is tied to the start time of the game. the timestamp is encrypted inside the token's
+   payload and can't be changed without breaking the signature.
+3. when the game ends, the token is submitted along with the score. the server verifies the token's
+   signature and extracts the original start time.
 
-and of course, people still found a way to hack it:
+this means that hackers can't easily fake timestamps because the token's start time is baked into
+its payload and cryptographically signed. even if someone is able to fetch a token, they still have
+to wait in real-time to submit a high score, since the start time can't be manipulated. and yet
+again, that window of opportunity was all it took:
 
 ```bash
 # fetch a game token
@@ -72,26 +105,34 @@ TOKEN=$(curl www.basecase.sh/api/start-game -XPOST | jq -r .token)
 curl -d "{\"gameToken\":\"$TOKEN\", \"username\":\"hacker\", \"score\":5}" www.basecase.sh/api/submit-score
 ```
 
-this added a lot more friction for hackers, but i still wasn't done.
+i also added a 10-minute expiration to the tokens to prevent players from starting a game and
+waiting too long to submit an artificially high score. this added a lot more friction for hackers,
+but i still wasn't done.
 
 ## detecting unrealistic scores
 
-finally, i added a manual check for suspiciously high scores. if someone submitted a score over 300, the server would reject it with a message that poked a little fun:
+finally, i added a manual check for suspiciously high scores. if someone submits a score over 300,
+the server rejects it with a message that pokes a little fun:
 
 ```javascript
 // check for suspiciously high scores
 if (score > 300) {
-  return NextResponse.json({ 
-    error: "nice try! scores over 300 aren't possible... yet 😉" 
-  }, { status: 400 })
+  return NextResponse.json({
+    success: false,
+    message: "impressive work! send a screenshot of your score to @alanaagoyal",
+  });
 }
 ```
 
-lessons learned
-this journey taught me a lot about securing small projects:
+lessons learned this journey taught me a lot about securing small projects:
 
-1. client-side code is never secure. anything on the client can and will be inspected, so always validate on the server.
-2. layered defenses work best. combining techniques (e.g., backend validation, tokens, and manual checks) makes it much harder to hack a system.
-3. embrace the playful side. adding a fun response to suspicious scores made the game feel less rigid and more personal.
+1. client-side code is never secure. anything on the client can and will be inspected, so always
+   validate on the server.
+2. layered defenses work best. combining techniques (e.g., backend validation, tokens, and manual
+   checks) makes it much harder to hack a system.
+3. embrace the playful side. adding a fun response to suspicious scores made the game feel less
+   rigid and more personal.
 
-if you're a dev working on your own projects, i hope this breakdown helps you think about security in a practical way. and if you happen to submit a 300+ score, don’t forget to send me a screenshot :)
+if you're a dev working on your own projects, i hope this breakdown helps you think about security
+in a practical way. and if you happen to submit a 300+ score, don’t forget to send me a screenshot
+:)

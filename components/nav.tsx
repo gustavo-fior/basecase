@@ -8,6 +8,7 @@ import { GitHistory } from "./git";
 import { Gamepad, GitCommit, Keyboard } from "lucide-react";
 import { useKeyboardShortcut } from "../hooks/keyboard-shortcuts";
 import Shortcuts from "./shortcuts";
+import Link from "next/link";
 
 export default function Navigation() {
   const [showSnake, setShowSnake] = useState(false);
@@ -20,14 +21,9 @@ export default function Navigation() {
   useKeyboardShortcut({
     handlers: [
       {
-        key: "w",
-        handler: () => window.open("https://alanagoyal.com", "_blank"),
-        description: "Open website",
-      },
-      {
-        key: "t",
-        handler: () => window.open("https://x.com/alanaagoyal", "_blank"),
-        description: "Open Twitter",
+        key: "b",
+        handler: () => (window.location.href = "/blog"),
+        description: "Go to blog",
       },
       {
         key: "c",
@@ -42,17 +38,13 @@ export default function Navigation() {
       {
         key: "j",
         handler: () =>
-          !showGit &&
-          !showShortcuts &&
-          window.scrollBy({ top: 100, behavior: "smooth" }),
+          !showGit && !showShortcuts && window.scrollBy({ top: 100, behavior: "smooth" }),
         description: "Scroll down",
       },
       {
         key: "k",
         handler: () =>
-          !showGit &&
-          !showShortcuts &&
-          window.scrollBy({ top: -100, behavior: "smooth" }),
+          !showGit && !showShortcuts && window.scrollBy({ top: -100, behavior: "smooth" }),
         description: "Scroll up",
       },
       {
@@ -60,20 +52,12 @@ export default function Navigation() {
         handler: () => setShowShortcuts(true),
         description: "Show keyboard shortcuts",
       },
-      {
-        key: "b",
-        handler: () => window.location.href = "/blog",
-        description: "Go to blog",
-      },
     ],
   });
 
   return (
     <>
-      <meta
-        name="terminal-description"
-        content="Use W/T/G/S keyboard shortcuts to navigate"
-      />
+      <meta name="terminal-description" content="Use W/T/G/S keyboard shortcuts to navigate" />
       <nav className="w-full sticky top-0 z-50 mb-10">
         <div className="px-4 max-w-4xl mx-auto">
           <div className="flex justify-between items-center py-4 sm:py-6">
@@ -108,22 +92,6 @@ export default function Navigation() {
                 </svg>
               </a>
               <div className="hidden md:flex items-center space-x-2 ml-2">
-                <a
-                  href="https://alanagoyal.com"
-                  className="p-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-flex items-center text-xs"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  [w] website
-                </a>
-                <a
-                  href="https://x.com/alanaagoyal"
-                  className="p-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-flex items-center text-xs"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  [t] twitter
-                </a>
                 <button
                   onClick={() => setShowGit(true)}
                   className="p-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-flex items-center text-xs"
@@ -136,12 +104,12 @@ export default function Navigation() {
                 >
                   [s] snake
                 </button>
-                <a
+                <Link
                   href="/blog"
                   className="p-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-flex items-center text-xs"
                 >
                   [b] blog
-                </a>
+                </Link>
               </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -183,10 +151,7 @@ export default function Navigation() {
       {(minimizedSnake || minimizedGit || minimizedShortcuts) && (
         <div className="fixed bottom-4 right-4 flex gap-2 z-50">
           {minimizedSnake && showSnake && (
-            <div
-              className="cursor-pointer"
-              onClick={() => setMinimizedSnake(false)}
-            >
+            <div className="cursor-pointer" onClick={() => setMinimizedSnake(false)}>
               <div className="flex items-center gap-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 py-2 px-4 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]">
                 <Gamepad className="w-4 h-4 text-gray-500" />
                 <span className="font-mono text-sm">snake game</span>
@@ -194,10 +159,7 @@ export default function Navigation() {
             </div>
           )}
           {minimizedGit && showGit && (
-            <div
-              className="cursor-pointer"
-              onClick={() => setMinimizedGit(false)}
-            >
+            <div className="cursor-pointer" onClick={() => setMinimizedGit(false)}>
               <div className="flex items-center gap-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 py-2 px-4 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]">
                 <GitCommit className="w-4 h-4 text-gray-500" />
                 <span className="font-mono text-sm">git commit history</span>
@@ -205,10 +167,7 @@ export default function Navigation() {
             </div>
           )}
           {minimizedShortcuts && showShortcuts && (
-            <div
-              className="cursor-pointer"
-              onClick={() => setMinimizedShortcuts(false)}
-            >
+            <div className="cursor-pointer" onClick={() => setMinimizedShortcuts(false)}>
               <div className="flex items-center gap-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 py-2 px-4 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]">
                 <Keyboard className="w-4 h-4 text-gray-500" />
                 <span className="font-mono text-sm">keyboard shortcuts</span>
