@@ -2,10 +2,18 @@ import Link from 'next/link'
 import Layout from '@/components/layout'
 import { getAllPosts } from '@/lib/blog'
 import { ScrambleText } from '@/components/hero'
+import { baseMetadata } from '@/config/metadata'
+import { Metadata } from 'next'
 
-export const metadata = {
-  title: 'blog',
-  description: 'first check to future founders',
+export const metadata: Metadata = {
+  ...baseMetadata,
+  title: `${(baseMetadata.title as { default: string }).default} | blog`,
+  description: 'some learnings from building and breaking things.',
+  openGraph: {
+    ...baseMetadata.openGraph,
+    title: 'blog',
+    description: 'some learnings from building and breaking things.',
+  }
 }
 
 export default async function BlogPage() {
