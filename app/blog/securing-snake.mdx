@@ -49,7 +49,6 @@ inspect the network requests and submit scores via curl:
 
 ```bash
 # send a request to supabase
-
 curl 'https://supabase.co/rest/v1/leaderboard?on_conflict=username' \
  -H 'apikey: <supabase-key>' \
  -H 'authorization: Bearer <supabase-key>' \
@@ -69,7 +68,6 @@ curl command:
 
 ```bash
 # send a request to the rpc function
-
 curl 'https://supabase.co/rest/v1/rpc/submit_score' \
  -H 'apikey: <supabase-key>' \
  --data-raw '{"username":"hacker","score":999999}'
@@ -87,7 +85,6 @@ was still relatively easy to manipulate the start time and submit a higher score
 
 ```bash
 # send a request to the backend with a manipulated game start time
-
 curl 'https://www.basecase.sh/api/submit-score' \
   -H 'accept: */*' \
   -H 'content-type: application/json' \
@@ -119,12 +116,10 @@ here's how it works:
 
 ```javascript
 // verify the token and check the score against the game duration
-
 const { startTime } = await verifyToken(gameToken);
 const gameDurationSeconds = Math.floor((Date.now() - startTime) / 1000);
 
 // ensure score isn't more than 1 point per second
-
 if (score > gameDurationSeconds) {
   return NextResponse.json({
     success: false,
@@ -140,7 +135,6 @@ too high of a score. it was still gameable, but at least i'd make them work for 
 
 ```bash
 # fetch a game token
-
 TOKEN=$(curl www.basecase.sh/api/start-game -XPOST | jq -r .token)
 
 # wait 5 seconds, then submit a score
@@ -161,7 +155,6 @@ reject scores over a certain threshold with a message that pokes a little fun:
 
 ```javascript
 // check for suspiciously high scores
-
 if (score > 300) {
   return NextResponse.json({
     success: false,
