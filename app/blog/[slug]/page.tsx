@@ -50,7 +50,7 @@ export default async function BlogPost(props: Props) {
 
   return (
     <Layout>
-      <article className="py-8">
+      <article className="py-5">
         <h1 className="text-3xl font-bold mb-4 lowercase">{post.title}</h1>
         <div className="mb-8 text-sm">
           <time dateTime={post.date}>{new Date(post.date).toLocaleDateString('en-US', {
@@ -72,7 +72,7 @@ export default async function BlogPost(props: Props) {
                    prose-h1:font-mono prose-h2:font-mono prose-h3:font-mono
                    prose-h1:text-foreground prose-h2:text-foreground prose-h3:text-foreground
                    prose-p:text-foreground
-                   prose-code:font-mono prose-code:bg-secondary prose-code:p-1 prose-code:rounded
+                   prose-code:font-mono prose-code:bg-secondary prose-code:rounded
                    prose-pre:bg-secondary prose-pre:p-4 prose-pre:rounded-lg
                    prose-a:text-primary hover:prose-a:opacity-70
                    prose-strong:text-foreground prose-em:text-muted-foreground
