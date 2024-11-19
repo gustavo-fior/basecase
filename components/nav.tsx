@@ -91,22 +91,22 @@ export default function Navigation() {
                   </g>
                 </svg>
               </a>
-              <div className="hidden md:flex items-center space-x-2 ml-2">
+              <div className="flex items-center space-x-2 ml-2">
                 <button
                   onClick={() => setShowGit(true)}
-                  className="p-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-flex items-center text-xs"
+                  className="hidden md:flex p-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-flex items-center text-xs"
                 >
                   [c] commits
                 </button>
                 <button
                   onClick={() => setShowSnake(true)}
-                  className="p-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-flex items-center text-xs"
+                  className="hidden md:flex p-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-flex items-center text-xs"
                 >
                   [s] snake
                 </button>
                 <Link
                   href="/blog"
-                  className="p-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-flex items-center text-xs"
+                  className="hidden md:flex p-2 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] inline-flex items-center sm:text-xs text-sm sm:h-auto h-12"
                 >
                   [b] blog
                 </Link>

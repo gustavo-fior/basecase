@@ -1,6 +1,7 @@
 "use client";
 
 import { useKeyboardShortcut } from "@/hooks/keyboard-shortcuts";
+import Link from "next/link";
 
 export default function Footer() {
   useKeyboardShortcut({
@@ -19,11 +20,11 @@ export default function Footer() {
   });
 
   return (
-    <footer className="mx-auto px-4 py-5 text-center">
+    <footer className="mx-auto px-4 py-10 text-center">
       <div className="flex justify-center space-x-4">
         <a
           href="https://alanagoyal.com"
-          className="p-2 rounded-lg [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] hover:text-gray-300 dark:hover:text-gray-600 inline-flex items-center text-xs"
+          className="p-2 hover:text-[var(--color-primary)] inline-flex items-center text-xs"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -31,12 +32,18 @@ export default function Footer() {
         </a>
         <a
           href="https://x.com/alanaagoyal"
-          className="p-2 rounded-lg [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)] hover:text-gray-300 dark:hover:text-gray-600 inline-flex items-center text-xs"
+          className="p-2 hover:text-[var(--color-primary)] inline-flex items-center text-xs"
           target="_blank"
           rel="noopener noreferrer"
         >
           [t] twitter
         </a>
+        <Link
+          href="/blog"
+          className="md:hidden p-2 hover:text-[var(--color-primary)] inline-flex items-center text-xs"
+        >
+          [b] blog
+        </Link>
       </div>
     </footer>
   );
