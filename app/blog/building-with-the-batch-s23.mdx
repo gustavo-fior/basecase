@@ -15,9 +15,7 @@ meta:
 
 it's yc s23 demo day, which means it's launch day here at basecase. every batch, we build an open-source project using whichever developer tools from the cohort we can get our hands on. today, i'm excited to share what we've been working on.
 
-<div className="image-container">
-  <img src="/building-with-the-batch-s23/demo.gif" alt="" />
-</div>
+<img src="/building-with-the-batch-s23/demo.gif" alt="" />
 
 [rebase](https://re-base.vercel.app) is an open-source email platform purpose-built for sending investor updates. as a founder, i send monthly update emails to my investors to share what i've been up to using a product called [cabal](https://getcabal.com). i'm a huge fan of their product, so i wanted to try to build my own from scratch. 
 
@@ -38,45 +36,35 @@ working to integrate so many different tools into a single project was definitel
 ### meet users where they are
 developer tools and ai products often require a deep understanding of the context in which they operate to be effective. one way to speed up adoption is to meet users where they are and build touch points into existing products and workflows. for developer tools, this could mean building a vs code extension, github plugin, or cli. over time, you'll likely want to expand your surface area. copilot, for example, did this well by starting out in vs code and quickly shipping support for other ides over time. of course, there are counterexamples to this, like chatgpt. but as they say, "the exception proves the rule".
  
-<div className="image-container">
-  <img src="/building-with-the-batch-s23/codestory.png" alt="" />
-</div>
+<img src="/building-with-the-batch-s23/codestory.png" alt="" />
 
 [codestory](https://codestory.ai/) illustrates this concept well. although their main product is a mod of vs code, which indeed requires developers to ditch their existing environment, they also offers a lightweight bot that integrates with github to autosummarize pull requests. this serves as a great, lower-touch entry point to their main product.
 
 ### leverage existing habits
 developers have certain habits – like ⌘. to jump to a quick fix in vs code or j/k to navigate vim – that can be extremely hard to break. rather than fighting an uphill battle, developer tools can instead try to use certain habits to their advantage. great developer tools do this by latching onto existing workflows to jump-start adoption and gradually introduce new behavior over time. 
 
-<div className="image-container">
-  <img src="/building-with-the-batch-s23/vscode.png" alt="" />
-</div>
+<img src="/building-with-the-batch-s23/vscode.png" alt="" />
 
 [continue](https://continue.dev/), for example, is a vs code extension that brings the power of chatgpt to your ide. one of my favorite parts of their product is their use of the ⌘. shortcut in vs code, which brings up the "ask continue" option in the "quick fix" menu. by leveraging this already-ingrained workflow, it makes it that much easier for developers to adopt. 
 
 ### avoid unnecessary abstractions
 abstractions can simplify a lot for developers, but the wrong ones can be worse than no abstraction at all. with ui in particular, it's hard to build an api or library that gives developers the freedom to build exactly what they need. when working with new tools, i usually prefer those that favor composability. on a recent episode of the [no priors pod](https://youtu.be/gxtyx1nvgg8), [guillermo rauch](https://twitter.com/rauchg) said it well: "copy and paste is always better than the wrong abstraction." 
 
-<div className="image-container">
-  <img src="/building-with-the-batch-s23/shadcn.png" alt="" />
-</div>
+<img src="/building-with-the-batch-s23/shadcn.png" alt="" />
 
 while not a yc company, [shadcn/ui](https://github.com/shadcn/ui) is the best example of this point. it's famously **not** a component library, but a collection of reusable components that you can copy and paste into your code. i think more developer tools should follow suit, especially now that copilot can help you follow patterns in others' code and tidy things up over time.
 
 ### use examples to set expectations
 given the non-deterministic nature of ai products, users often struggle to know what is possible or what to expect. for that reason, it's incredibly important to clearly convey your product's capabilities and use cases up front. nothing builds intuition like specific examples, so pick a few use cases that showcase what is possible and include them in your documentation.
 
-<div className="image-container">
-  <img src="/building-with-the-batch-s23/tiptap.gif" alt="" />
-</div>
+<img src="/building-with-the-batch-s23/tiptap.gif" alt="" />
 
 [tiptap](https://tiptap.dev/) a suite of open-source content editing and real-time collaboration tools for building notion-like applications. they have a live example of their collaborative editor embedded right on their website. similarly, [sweep](https://sweep.dev/) has a fun "resume" of example issues that its ai junior developer has solved to help users understand the types of tasks it can reliably complete.
 
 ### build feedback loops into the product
 it's no surprise that ai products don't always produce perfect results, but the best ones use that to their advantage by productizing feedback loops. product that let users steer the underlying models by providing additional text (or even just ratings) tend to produce much better outcomes. if you're building a business around ai, you can even capture and learn from these feedback loops to train better models.
 
-<div className="image-container">
-  <img src="/building-with-the-batch-s23/sweep.gif" alt="" />
-</div>
+<img src="/building-with-the-batch-s23/sweep.gif" alt="" />
 
 [sweep](https://sweep.dev/), for example, is an ai junior developer that transforms bug reports and feature requests into code changes. one of the most magical parts of the product is that you can give the bot feedback directly in the pull request, just like you would give to a real developer who is submitting a pull request.
 
@@ -85,9 +73,7 @@ this is my second time doing this exercise, and i'm already looking forward to t
 
 reflecting on this experience, one of my regrets is that i wasn't able to include all of the companies i found interesting. some of the enterprise-oriented products like [humanlike](https://humanlike.app/)[^3], [peerdb](https://peerdb.io/), and [telophase](https://www.telophase.dev/) are super cool, but didn't quite fit with this project. i also really enjoyed experimenting with  [can of soup](https://canofsoup.com/) as a consumer.
 
-<div className="image-container">
-  <img src="/building-with-the-batch-s23/canofsoup.png" alt="" />
-</div>
+<img src="/building-with-the-batch-s23/canofsoup.png" alt="" />
 
 in the yc spirit of launching early and often, there are a lot of features we cut in order to ship something by demo day. in future versions, we're eager to make some improvements to email drafting to allow users to copy & paste in gifs or images, add analytics to allow users to see who has opened their emails and how many times, and make it easier for users to verify their own domains. it's [fully open-source](https://github.com/alanagoyal/rebase), so feel free to contribute to help us add these features and more.
 
