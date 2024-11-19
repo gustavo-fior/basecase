@@ -3,7 +3,6 @@
 import Content from "./content";
 import CTA from "./cta";
 import Navigation from "./nav";
-import Footer from "./footer";
 
 export default function HomePage() {
   return (
@@ -13,7 +12,6 @@ export default function HomePage() {
         <Content />
         <CTA />
       </div>
-      <Footer />
     </div>
   );
 }
