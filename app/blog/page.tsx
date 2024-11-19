@@ -47,6 +47,7 @@ export default async function BlogPage() {
       </Layout>
     )
   } catch (error) {
+    console.error('Error getting all posts:', error)
     return (
       <Layout>
         <h1 className="text-4xl mb-8 text-foreground">blog</h1>
