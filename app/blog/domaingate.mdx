@@ -2,68 +2,92 @@
 title: "domain-gate"
 date: "2024-04-07"
 readingTimeMin: 5
-hidden: true
+hidden: false
 meta:
   og:title: "domain-gate"
   og:description: "how i accidentally violated namecheap's trademark and got my domain taken down"
-  og:image: ""
-  twitter:image: ""
-  twitter:card: "summary"
+  og:image: "https://basecase.sh/building-with-the-batch-w24/og.jpg"
+  twitter:image: "https://basecase.sh/building-with-the-batch-w24/og.jpg"
+  twitter:card: "summary_large_image"
   twitter:title: "domain-gate"
   twitter:description:
     "how i accidentally violated namecheap's trademark and got my domain taken down"
 ---
 
-until recently, i chose to name all of my side projects with "base" as a fun play on "basecase". so
-when i built an ai-powered startup name generator, it was only natural that i call it
-[namebase.ai](https://namebase.ai). i built the project as part of my tradition to build with the yc
-batch and launched it on demo day. 
+until recently, i made an effort to weave the word "base" into my project names as a fun play on
+"basecase". so when i built an ai-powered name generator for startups, it felt obvious to call it
+"namebase". i built the project as part of my tradition to
+[build with the yc batch](/blog/building-with-the-batch-w24) and launched it on demo day.
 
-<Tweet id="1775576396670341602" />
+https://x.com/alanaagoyal/status/1775576396670341602
 
-a surprising turn of events on april 5th, 2024, our domain namebase.ai was suddenly taken down by
-namecheap, citing a "trademark violation." what makes this situation particularly interesting is
-that namecheap themselves own the trademark in question.
+the launch was a success. within 24 hours, there had been 11.5k names created, 4.4k site visitors
+(from 79 different countries), 350 domains suggested, and 200 logos generated. i got a ton of great
+feedback and shipped some more features.
+
+https://x.com/alanaagoyal/status/1775940905788453011
 
 ## the incident
 
-without any prior warning or opportunity to respond, our domain was suspended. the first indication
-of an issue came when our services became inaccessible, followed by the discovery that namecheap had
-taken down the domain citing trademark concerns.
+a few days after the launch, a user reached out to tell me that the website wasn't loading. i logged
+into my namecheap account and discovered that namebase.ai had completely disappeared from my
+domains. i reached out to their support team and got a cryptic response back:
+
+```
+It has been noticed that fraudulent and misleading content is hosted on the following domain name:
+
+namebase.ai
+
+Please be informed that the domain has been permanently null-routed/placed on Hold and locked due to
+a violation of our Universal Terms of Service Agreement. Please refer to paragraph 7. "Acceptable
+Use Policy (AUP)" at https://www.namecheap.com/legal/universal/universal-tos.aspx.
+```
 
 ## the plot thickens
 
-upon investigation, we discovered something rather concerning: namecheap owns the trademark
-themselves. what's more troubling is that according to their own terms of service, they are required
-to:
+digging deeper into their terms of service, i found something interesting. the policy states that
+when a customer violates a trademark, they must:
 
 1. send a takedown notice to the domain owner
 2. provide an opportunity to submit a counter-notice
 
-neither of these steps occurred in our case.
+but they didn't take either of these steps. i decided to keep digging. i visited the
+[united states patent and trademark office](https://www.uspto.gov/trademarks/search) database to see
+if i could find any trademark registrations for "namebase". i discovered something even more
+surprising: namecheap owned it themselves. now it was all making sense: they had circumvented their
+standard trademark policy when dealing with their own trademark.
 
-## the workaround
+## the resolution
 
-for now, we've temporarily relocated our services to:
-[namebase.vercel.app](https://namebase.vercel.app)
+i tweeted out a new vercel link to my project, so it could still be accessed, and called it a day.
+the next morning, i woke up to a long dm from namecheap's ceo. he explained that he was sorry for
+how the incident was handled and that the proper process wasn't followed. he explained that namebase
+was an existing business they owned and they needed to protect the trademark, but understood that i
+wasn't intentionally trying to violate it. as a gesture of goodwill, he offered me a new domain for
+free and restored the original domain while i made the transition.
 
-## the broader implications
+## the silver lining
 
-this incident raises serious questions about:
+now it was time to have some fun. fully recognizing the irony of the situation, i created a fun
+launch video using the product to generate a new name (so meta). but i didn't stop there. next, i
+shipped a new feature to help userscheck for potential trademark conflicts while generating names,
+helping others avoid the same situation i had encountered.
+
+https://x.com/alanaagoyal/status/1777078345660068316
+
+https://x.com/alanaagoyal/status/1777498938603618466
+
+## lessons learned
+
+this incident raised important questions about:
 
 - the power domain registrars have over their customers
 - the potential for abuse in trademark enforcement
 - the importance of due process in domain disputes
 - the need for clear and fair domain takedown procedures
 
-## moving forward
-
-we're currently exploring our options and working to resolve this situation. this incident serves as
-a reminder of the importance of:
-
-- having backup domain options ready
-- understanding your registrar's policies
-- maintaining documentation of your domain usage
-- being prepared for unexpected service disruptions
-
-we'll continue to update this post as the situation develops.
+for me, this was a low-stakes situation. i got to make a cheeky launch video, ship a useful new
+feature, and even score a free domain out of it. but more importantly, it gave me a tiny glimpse
+into the challenges that founders face every day. while my domain incident was just a small bump in
+the road, it helped me appreciate the resilience required when founders face similar (and often much
+bigger) challenges while building their companies.
