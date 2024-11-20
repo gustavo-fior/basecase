@@ -34,7 +34,7 @@ export default function CopyButton() {
     addCopyButtons()
 
     // Optional: Setup MutationObserver for dynamic content
-    const observer = new MutationObserver((mutations) => {
+    const observer = new MutationObserver(() => {
       addCopyButtons()
     })
 

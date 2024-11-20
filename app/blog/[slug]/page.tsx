@@ -1,10 +1,9 @@
 import { notFound } from "next/navigation";
 import { getPostBySlug, getAllPosts } from "@/lib/blog";
-import "highlight.js/styles/github-dark.css";
 import Layout from "@/components/layout";
 import TweetHydrator from "@/components/tweet-hydrator";
 import CopyButton from "@/components/copy-button";
-import EmbeddedCode from "@/components/copy-button";
+import "highlight.js/styles/github-dark.css";
 
 type Params = {
   slug: string;
