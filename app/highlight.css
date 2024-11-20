@@ -44,8 +44,9 @@
   color: #1750EB !important;
 }
 
+/* Light mode comment color - darker grey */
 .prose .hljs-comment {
-  color: #8C8C8C !important;
+  color: #6e7781 !important;
   font-style: italic;
 }
 
@@ -80,8 +81,9 @@
   color: #79c0ff !important;
 }
 
+/* Dark mode comment color - lighter grey */
 .dark .prose .hljs-comment {
-  color: #8b949e !important;
+  color: #9ca3af !important;
   font-style: italic;
 }
 
@@ -108,4 +110,35 @@
 .prose code::before,
 .prose code::after {
   content: "" !important;
+}
+
+/* Light mode - template literal expressions */
+.prose .hljs-template-variable,
+.prose .hljs-title.function_,
+.prose .hljs-subst {
+  color: #2563eb !important;  
+}
+
+/* Dark mode - template literal expressions */
+.dark .prose .hljs-template-variable,
+.dark .prose .hljs-title.function_,
+.dark .prose .hljs-subst {
+  color: #93c5fd !important;
+}
+
+/* Add copy button styles */
+.copy-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.25rem;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.copy-button:hover {
+  opacity: 1;
 }

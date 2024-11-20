@@ -85,7 +85,9 @@ export default function EmbeddedTweet({
             </div>
           </div>
           <div className="text-primary pr-6">
-            <p className="whitespace-pre-wrap [&>*]:!my-0 leading-[1.2] space-y-0 not-prose pt-[1.2em]">{content}</p>
+            <p className="whitespace-pre-wrap [&>*]:!my-0 leading-[1.2] space-y-0 not-prose pt-[1.2em]">
+              {content}
+            </p>
             {mediaUrl && (
               <div className="rounded-xl overflow-hidden">
                 <Image
