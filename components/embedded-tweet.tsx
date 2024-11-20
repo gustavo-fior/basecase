@@ -33,7 +33,6 @@ export default function EmbeddedTweet({
   avatar,
   url,
   mediaUrl,
-  mediaType,
   mediaAspectRatio,
 }: TweetProps) {
   const [liked, setLiked] = useState(false);
