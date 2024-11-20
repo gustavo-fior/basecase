@@ -42,10 +42,39 @@ function createTweetComponent() {
       if (node.tagName === 'tweet') {
         const props = node.properties || {}
         
-        // Create a placeholder div with data attributes
+        // Helper function to safely convert string numbers
+        const parseNumericProp = (value: unknown): number => {
+          if (typeof value === 'string') {
+            return Number(value.replace(/[{}]/g, ''))
+          }
+          if (typeof value === 'number') {
+            return value
+          }
+          return 0
+        }
+
+        // Convert string numbers and booleans to proper types
+        const tweetData = {
+          name: String(props.name || ''),
+          handle: String(props.handle || ''),
+          content: String(props.content || ''),
+          avatar: String(props.avatar || ''),
+          date: String(props.date || ''),
+          likes: parseNumericProp(props.likes),
+          retweets: parseNumericProp(props.retweets),
+          replies: parseNumericProp(props.replies),
+          verified: props.verified === 'true' || props.verified === '{true}',
+          url: String(props.url || ''),
+          mediaUrl: String(props.mediaurl || props.mediaUrl || ''),
+          mediaType: String(props.mediatype || props.mediaType || 'image'),
+          mediaAspectRatio: String(props.mediaaspectratio || props.mediaAspectRatio || '')
+        }
+        
+        console.log('Processed tweet data:', tweetData)
+        
         const tweetNode = h('div', {
           className: 'tweet-embed my-4',
-          'data-tweet': JSON.stringify(props)
+          'data-tweet': JSON.stringify(tweetData)
         })
         
         Object.assign(node, tweetNode)

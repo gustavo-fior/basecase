@@ -17,6 +17,9 @@ type TweetProps = {
   verified?: boolean;
   url: string;
   views?: number;
+  mediaUrl?: string;
+  mediaType?: 'image' | 'gif';
+  mediaAspectRatio?: string;
 };
 
 export default function EmbeddedTweet({
@@ -29,7 +32,12 @@ export default function EmbeddedTweet({
   replies,
   avatar,
   url,
+  mediaUrl,
+  mediaType,
+  mediaAspectRatio,
 }: TweetProps) {
+  console.log('Tweet render props:', { mediaUrl, mediaType, mediaAspectRatio })
+
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(Number(likes));
   const [retweeted, setRetweeted] = useState(false);
@@ -75,6 +83,18 @@ export default function EmbeddedTweet({
           </div>
           <div className="text-primary pr-6">
             <p className="whitespace-pre-wrap">{content}</p>
+            {mediaUrl && (
+              <div className="rounded-xl overflow-hidden">
+                <Image
+                  src={mediaUrl}
+                  alt="Tweet media"
+                  width={500}
+                  height={mediaAspectRatio ? 500 * Number(mediaAspectRatio) : 500}
+                  className="w-full object-cover"
+                  onError={(e) => console.error('Image loading error:', e)}
+                />
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-6 pt-4 text-muted-foreground">
             <Link
