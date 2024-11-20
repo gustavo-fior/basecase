@@ -38,6 +38,7 @@ export default function EmbeddedTweet({
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(Number(likes));
   const [retweeted, setRetweeted] = useState(false);
+  const [retweetsCount, setRetweetsCount] = useState(Number(retweets));
 
   const handleLike = () => {
     if (liked) {
@@ -46,6 +47,15 @@ export default function EmbeddedTweet({
       setLikesCount((prev) => prev + 1);
     }
     setLiked(!liked);
+  };
+
+  const handleRetweet = () => {
+    if (retweeted) {
+      setRetweetsCount((prev) => prev - 1);
+    } else {
+      setRetweetsCount((prev) => prev + 1);
+    }
+    setRetweeted(!retweeted);
   };
 
   return (
@@ -117,10 +127,10 @@ export default function EmbeddedTweet({
                 retweeted ? "text-emerald-500 hover:text-emerald-600" : "hover:text-foreground"
               }`}
               aria-label="Retweet"
-              onClick={() => setRetweeted(!retweeted)}
+              onClick={handleRetweet}
             >
               <Repeat2 className="h-4 w-4" />
-              <span className="text-xs">{retweets}</span>
+              <span className="text-xs">{retweetsCount}</span>
             </button>
             <button
               className={`flex items-center gap-2 ${
