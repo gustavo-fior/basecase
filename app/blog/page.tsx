@@ -54,7 +54,7 @@ export default async function BlogPage() {
                     </>
                   )}
                 </div>
-                <p className="text-muted-foreground font-mono">
+                <p className="text-muted-foreground font-mono text-sm">
                   {post.meta?.['og:description'] || ''}
                 </p>
               </Link>
