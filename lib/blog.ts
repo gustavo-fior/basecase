@@ -12,6 +12,8 @@ import rehypeStringify from 'rehype-stringify'
 import rehypeSlug from 'rehype-slug'
 import { visit } from 'unist-util-visit'
 import { h } from 'hastscript'
+import type { Node } from 'unist'
+import type { Element } from 'hast'
 
 export interface BlogPost {
   slug: string
@@ -35,8 +37,8 @@ export interface BlogPost {
 const postsDirectory = path.join(process.cwd(), 'app/blog')
 
 function createTweetComponent() {
-  return (tree: any) => {
-    visit(tree, 'element', (node) => {
+  return (tree: Node) => {
+    visit(tree, 'element', (node: Element) => {
       if (node.tagName === 'tweet') {
         const props = node.properties || {}
         
