@@ -1,10 +1,10 @@
-import type { Metadata } from "next";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Inter } from "next/font/google";
-import { siteConfig } from "@/config/site";
 import { Analytics } from "@vercel/analytics/react";
 import localFont from "next/font/local";
 import "./globals.css";
+import "./highlight.css";
+import { baseMetadata } from '@/config/metadata'
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -22,18 +22,7 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.url),
-  title: siteConfig.name,
-  description: siteConfig.description,
-  openGraph: {
-    images: [siteConfig.ogImage],
-    siteName: siteConfig.name,
-    title: siteConfig.name,
-    description: siteConfig.description,
-    url: siteConfig.url,
-  },
-};
+export const metadata = baseMetadata
 
 export default function RootLayout({
   children,

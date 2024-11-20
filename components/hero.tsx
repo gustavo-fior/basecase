@@ -21,7 +21,7 @@ export const Hero = () => {
   );
 };
 
-const ScrambleText = ({ text, className = "" }: { text: string; className?: string }) => {
+export const ScrambleText = ({ text, className = "" }: { text: string; className?: string }) => {
   const { ref } = useScramble({
     text,
     speed: 0.8,

@@ -1,0 +1,144 @@
+/* Reset any inherited colors first */
+.prose pre,
+.prose pre code {
+  background: none;
+  color: inherit;
+}
+
+/* Light mode - default state */
+.prose pre {
+  background-color: hsl(var(--card)) !important;
+  color: #24292f !important;
+  border: 1px solid hsl(var(--border)) !important;
+  position: relative;
+  padding: 1rem;
+  margin: 1rem 0;
+  border-radius: 0.5rem;
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+  word-break: break-word !important;
+}
+
+.prose pre code {
+  color: #24292f !important;
+}
+
+/* Light mode syntax colors */
+.prose .hljs-keyword,
+.prose .hljs-built_in,
+.prose .hljs-selector-tag {
+  color: #0033B3 !important;
+}
+
+.prose .hljs-string {
+  color: #067D17 !important;
+}
+
+.prose .hljs-attr,
+.prose .hljs-property {
+  color: #0033B3 !important;
+}
+
+.prose .hljs-number,
+.prose .hljs-literal {
+  color: #1750EB !important;
+}
+
+/* Light mode comment color - darker grey */
+.prose .hljs-comment {
+  color: #6e7781 !important;
+  font-style: italic;
+}
+
+/* Dark mode overrides */
+.dark .prose pre {
+  background-color: hsl(var(--card)) !important;
+  color: #c9d1d9 !important;
+  border-color: hsl(var(--border));
+}
+
+.dark .prose pre code {
+  color: #c9d1d9 !important;
+}
+
+.dark .prose .hljs-keyword,
+.dark .prose .hljs-built_in,
+.dark .prose .hljs-selector-tag {
+  color: #ff7b72 !important;
+}
+
+.dark .prose .hljs-string {
+  color: #a5d6ff !important;
+}
+
+.dark .prose .hljs-attr,
+.dark .prose .hljs-property {
+  color: #79c0ff !important;
+}
+
+.dark .prose .hljs-number,
+.dark .prose .hljs-literal {
+  color: #79c0ff !important;
+}
+
+/* Dark mode comment color - lighter grey */
+.dark .prose .hljs-comment {
+  color: #9ca3af !important;
+  font-style: italic;
+}
+
+/* Inline code styling */
+.prose :not(pre) > code {
+  background-color: hsl(var(--card));
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-size: 0.875em;
+  color: #24292f;
+  border: 1px solid hsl(var(--border));
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+/* Dark mode for inline code */
+.dark .prose :not(pre) > code {
+  background-color: hsl(var(--card));
+  color: #c9d1d9;
+  border-color: hsl(var(--border));
+}
+
+/* Remove backticks from inline code */
+.prose code::before,
+.prose code::after {
+  content: "" !important;
+}
+
+/* Light mode - template literal expressions */
+.prose .hljs-template-variable,
+.prose .hljs-title.function_,
+.prose .hljs-subst {
+  color: #2563eb !important;  
+}
+
+/* Dark mode - template literal expressions */
+.dark .prose .hljs-template-variable,
+.dark .prose .hljs-title.function_,
+.dark .prose .hljs-subst {
+  color: #93c5fd !important;
+}
+
+/* Add copy button styles */
+.copy-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  padding: 0.25rem;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.copy-button:hover {
+  opacity: 1;
+}

@@ -1,17 +1,19 @@
 "use client";
 
-import Content from "./content";
+import { Hero } from "./hero";
+import { Portfolio } from "./portfolio";
+import { Quotes } from "./quotes";
+import { About } from "./about";
 import CTA from "./cta";
-import Navigation from "./nav";
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen font-mono">
-      <Navigation />
-      <div className="px-4 max-w-4xl mx-auto mb-8">
-        <Content />
-        <CTA />
-      </div>
+    <div className="mx-auto">
+      <Hero />
+      <About />
+      <Portfolio />
+      <Quotes />
+      <CTA />
     </div>
   );
 }
