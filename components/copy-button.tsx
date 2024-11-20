@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react'
 
-export default function EmbeddedCode() {
+export default function CopyButton() {
   useEffect(() => {
     const addCopyButtons = () => {
       const codeBlocks = document.querySelectorAll('pre')

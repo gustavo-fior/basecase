@@ -3,7 +3,8 @@ import { getPostBySlug, getAllPosts } from "@/lib/blog";
 import "highlight.js/styles/github-dark.css";
 import Layout from "@/components/layout";
 import TweetHydrator from "@/components/tweet-hydrator";
-import EmbeddedCode from "@/components/embedded-code"
+import CopyButton from "@/components/copy-button";
+import EmbeddedCode from "@/components/copy-button";
 
 type Params = {
   slug: string;
@@ -52,7 +53,7 @@ export default async function BlogPost({ params }: Props) {
 
   return (
     <Layout>
-      <EmbeddedCode />
+      <CopyButton />
       <article className="py-5">
         <h1 className="text-3xl font-bold mb-4 lowercase">{post.title}</h1>
         <div className="mb-8 text-sm">
