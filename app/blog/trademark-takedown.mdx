@@ -1,0 +1,120 @@
+---
+title: "trademark takedown"
+date: "2024-04-07"
+readingTimeMin: 5
+hidden: false
+meta:
+  og:title: "trademark takedown"
+  og:description: "how i accidentally violated namecheap's trademark and got my domain taken down"
+  og:image: "/trademark-takedown/og.jpg"
+  twitter:image: "/trademark-takedown/og.jpg"
+  twitter:card: "summary_large_image"
+  twitter:title: "trademark takedown"
+  twitter:description:
+    "how i accidentally violated namecheap's trademark and got my domain taken down"
+---
+
+until recently, i've made an effort to weave the word "base" into my project names as a fun nod to
+"basecase". so when i built an ai-powered name generator for startups, it felt obvious to call it
+"namebase". i built the project as part of my tradition to
+[build with the yc batch](/blog/building-with-the-batch-w24) and launched it on demo day.
+
+<tweet
+  name="alana goyal"
+  handle="alanaagoyal"
+  avatar="/avatar.png"
+  content="announcing namebase.ai ⚡️\n\nnamebase helps founders name their startup, secure the domain, and brand it—all in one place"
+  date="april 3, 2024"
+  likes=273
+  retweets=25
+  replies=26
+  url="https://x.com/alanaagoyal/status/1775576396670341602"
+/>
+the launch was a success. within 24 hours, the site had generated over 11k names, 350 domains, and 200
+logos from more than 4k unique users.
+
+## the incident
+
+a few days after the launch, a user reached out to tell me that the website was down. i quickly
+identified it do be a dns issue and logged into my namecheap account to see what was up. to my
+surprise, namebase.ai had completely disappeared from my domains. i reached out to their support
+team and got a cryptic response back (several hours later):
+
+```text
+It has been noticed that fraudulent and misleading content is hosted on the following domain name: namebase.ai
+
+Please be informed that the domain has been permanently null-routed/placed on Hold and locked due to
+a violation of our Universal Terms of Service Agreement. Please refer to paragraph 7. "Acceptable
+Use Policy (AUP)" at https://www.namecheap.com/legal/universal/universal-tos.aspx.
+```
+
+## the plot thickens
+
+digging deeper into their terms of service, i found something interesting. the policy stated that
+when a customer violates a trademark, namecheap will:
+
+1. send a takedown notice to the domain owner
+2. provide an opportunity to submit a counter-notice
+
+but in my case, they didn't take either of these steps. i decided to keep digging. i searched the
+united states patent and trademark office's [database](https://www.uspto.gov/trademarks/search) to
+see if i could find any relevant trademark registrations. i discovered something even more
+interesting: namecheap owned the trademark for "namebase" themselves. now it was all making sense:
+they had circumvented their standard trademark policy when dealing with their own trademark.
+
+## the resolution
+
+i tweeted out a new vercel link to my project as a temporary fix and called it a day. the next
+morning, i woke up to a long dm from namecheap's ceo. he explained that he was sorry for how the
+incident was handled and that the proper process wasn't followed. he explained that namebase.io was
+an existing business they owned and they needed to protect the trademark, but understood that i
+wasn't intentionally trying to violate it. as a gesture of goodwill, he offered me a new domain for
+free and restored the original domain while i made the transition. i was
+
+## the silver lining
+
+now it was time to have some fun. fully recognizing the irony of the situation, i created a fun
+launch video using the product to generate a new name (so meta). but i didn't stop there. next, i
+shipped a new feature to help userscheck for potential trademark conflicts while generating names,
+helping others avoid the same situation i had encountered.
+
+<tweet
+  name="alana goyal"
+  handle="alanaagoyal"
+  content="sunday ship 🚢\n\nyou can now use namebase.ai to check for potential trademark violations 🙃"
+  avatar="/avatar.png"
+  date="april 7, 2024"
+  likes=32
+  retweets=1
+  replies=4
+  verified=true
+  url="https://x.com/alanaagoyal/status/1777078345660068316"
+/>
+
+<tweet
+  name="alana goyal"
+  handle="alanaagoyal"
+  avatar="/avatar.png"
+  content="namebase.ai is now... branded.ai 🦄\n\ntransform your idea into a billion-dollar brand (and make sure you're not violating any trademarks in one click!)"
+  date="april 8, 2024"
+  likes=66
+  retweets=2
+  replies=3
+  verified=true
+  url="https://x.com/alanaagoyal/status/1777498938603618466"
+/>
+
+## lessons learned
+
+this incident raised important questions about:
+
+- the power domain registrars have over their customers
+- the potential for abuse in trademark enforcement
+- the importance of due process in domain disputes
+- the need for clear and fair domain takedown procedures
+
+for me, this was a low-stakes situation. i got to make a cheeky launch video, ship a useful new
+feature, and even score a free domain out of it. but more importantly, it gave me a tiny glimpse
+into the challenges that founders face every day. while my domain incident was just a small bump in
+the road, it helped me appreciate the resilience required when founders face similar (and often much
+bigger) challenges while building their companies.

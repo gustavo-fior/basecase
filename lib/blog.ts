@@ -10,6 +10,8 @@ import rehypeFormat from 'rehype-format'
 import rehypeHighlight from 'rehype-highlight'
 import rehypeStringify from 'rehype-stringify'
 import rehypeSlug from 'rehype-slug'
+import { visit } from 'unist-util-visit'
+import { h } from 'hastscript'
 
 export interface BlogPost {
   slug: string
@@ -32,6 +34,24 @@ export interface BlogPost {
 
 const postsDirectory = path.join(process.cwd(), 'app/blog')
 
+function createTweetComponent() {
+  return (tree: any) => {
+    visit(tree, 'element', (node) => {
+      if (node.tagName === 'tweet') {
+        const props = node.properties || {}
+        
+        // Create a placeholder div with data attributes
+        const tweetNode = h('div', {
+          className: 'tweet-embed my-4',
+          'data-tweet': JSON.stringify(props)
+        })
+        
+        Object.assign(node, tweetNode)
+      }
+    })
+  }
+}
+
 async function processMarkdown(content: string) {
   const result = await unified()
     .use(remarkParse)
@@ -39,6 +59,7 @@ async function processMarkdown(content: string) {
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeRaw)
     .use(rehypeSlug)
+    .use(createTweetComponent) 
     .use(rehypeHighlight)
     .use(rehypeFormat)
     .use(rehypeStringify)

@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getPostBySlug, getAllPosts } from "@/lib/blog";
 import "highlight.js/styles/github-dark.css";
 import Layout from "@/components/layout";
+import TweetHydrator from "@/components/tweet-hydrator";
 
 type Params = {
   slug: string;
@@ -71,25 +72,28 @@ export default async function BlogPost({ params }: Props) {
             </>
           )}
         </div>
-        <div
-          className="prose prose-neutral dark:prose-invert max-w-none text-sm
-                   prose-h1:text-xl prose-h2:text-lg prose-h3:text-base
-                   prose-h1:lowercase prose-h2:lowercase prose-h3:lowercase
-                   prose-h1:font-mono prose-h2:font-mono prose-h3:font-mono
-                   prose-h1:text-foreground prose-h2:text-foreground prose-h3:text-foreground
-                   prose-p:text-foreground prose-p:leading-relaxed
-                   prose-code:font-mono prose-code:bg-secondary prose-code:rounded
-                   prose-pre:bg-secondary prose-pre:p-4 prose-pre:rounded-lg
-                   prose-a:[color:var(--color-primary)] hover:prose-a:[color:var(--color-secondary)]
-                   prose-strong:text-foreground prose-em:text-muted-foreground 
-                   prose-blockquote:border-border prose-blockquote:text-muted-foreground
-                   prose-li:text-foreground prose-li:marker:text-muted-foreground
-                   prose-ul:pl-8 prose-ol:pl-8
-                   prose-ol:[counter-reset:list-counter] prose-ol:list-decimal
-                   prose-ol:ml-4
-                   prose-img:rounded-lg prose-img:mx-auto"
-          dangerouslySetInnerHTML={{ __html: post.content }}
-        />
+        <>
+          <div
+            className="prose prose-neutral dark:prose-invert max-w-none text-sm
+                     prose-h1:text-xl prose-h2:text-lg prose-h3:text-base
+                     prose-h1:lowercase prose-h2:lowercase prose-h3:lowercase
+                     prose-h1:font-mono prose-h2:font-mono prose-h3:font-mono
+                     prose-h1:text-foreground prose-h2:text-foreground prose-h3:text-foreground
+                     prose-p:text-foreground prose-p:leading-relaxed
+                     prose-code:font-mono prose-code:bg-secondary prose-code:rounded
+                     prose-pre:bg-secondary prose-pre:p-4 prose-pre:rounded-lg
+                     prose-a:[color:var(--color-primary)] hover:prose-a:[color:var(--color-secondary)]
+                     prose-strong:text-foreground prose-em:text-muted-foreground 
+                     prose-blockquote:border-border prose-blockquote:text-muted-foreground
+                     prose-li:text-foreground prose-li:marker:text-muted-foreground
+                     prose-ul:pl-8 prose-ol:pl-8
+                     prose-ol:[counter-reset:list-counter] prose-ol:list-decimal
+                     prose-ol:ml-4
+                     prose-img:rounded-lg prose-img:mx-auto"
+            dangerouslySetInnerHTML={{ __html: post.content }}
+          />
+          <TweetHydrator content={post.content} />
+        </>
       </article>
     </Layout>
   );
