@@ -69,9 +69,7 @@ function createTweetComponent() {
           mediaType: String(props.mediatype || props.mediaType || 'image'),
           mediaAspectRatio: String(props.mediaaspectratio || props.mediaAspectRatio || '')
         }
-        
-        console.log('Processed tweet data:', tweetData)
-        
+                
         const tweetNode = h('div', {
           className: 'tweet-embed my-4',
           'data-tweet': JSON.stringify(tweetData)

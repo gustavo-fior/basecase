@@ -8,16 +8,13 @@ export default function TweetHydrator({ content }: { content: string }) {
   useEffect(() => {
     try {
       const tweetElements = document.querySelectorAll('div[data-tweet]')
-      console.log('Found tweet elements:', tweetElements.length)
       
       tweetElements.forEach((element) => {
         try {
           const rawData = element.getAttribute('data-tweet')
-          console.log('Raw tweet data:', rawData)
           if (!rawData) return
           
           const tweetData = JSON.parse(rawData)
-          console.log('Parsed tweet data:', tweetData)
           
           const processedTweetData = {
             ...tweetData,
@@ -30,9 +27,7 @@ export default function TweetHydrator({ content }: { content: string }) {
             mediaType: tweetData.mediaType || 'image',
             mediaAspectRatio: tweetData.mediaAspectRatio || ''
           }
-          
-          console.log('Processed tweet data for render:', processedTweetData)
-          
+                    
           let root = (element as { _reactRoot?: Root })._reactRoot
           if (!root) {
             root = createRoot(element)

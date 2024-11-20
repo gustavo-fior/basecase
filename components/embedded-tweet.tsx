@@ -1,6 +1,6 @@
 "use client";
 
-import { Heart, MessageCircle, Repeat2, Share } from "lucide-react";
+import { Heart, MessageCircle, Repeat2, Share, BadgeCheck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -18,7 +18,7 @@ type TweetProps = {
   url: string;
   views?: number;
   mediaUrl?: string;
-  mediaType?: 'image' | 'gif';
+  mediaType?: "image" | "gif";
   mediaAspectRatio?: string;
 };
 
@@ -36,8 +36,6 @@ export default function EmbeddedTweet({
   mediaType,
   mediaAspectRatio,
 }: TweetProps) {
-  console.log('Tweet render props:', { mediaUrl, mediaType, mediaAspectRatio })
-
   const [liked, setLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(Number(likes));
   const [retweeted, setRetweeted] = useState(false);
@@ -53,36 +51,42 @@ export default function EmbeddedTweet({
 
   return (
     <div className="rounded-xl border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-black">
-      <div className="flex gap-4">
+      <div className="flex gap-3">
         <Link
           href={`https://twitter.com/${handle}`}
-          className="flex-shrink-0 self-start"
+          className="flex-shrink-0"
           target="_blank"
           rel="noopener noreferrer"
         >
           <Image
             src={avatar}
             alt={name}
-            className="rounded-full"
-            width={48}
-            height={48}
+            className="rounded-full not-prose"
+            width={36}
+            height={36}
           />
         </Link>
         <div className="flex-1 min-w-0">
-          <div className="text-sm">
-            <Link
-              href={`https://twitter.com/${handle}`}
-              className="text-[#F4212E] hover:underline"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              @{handle}
-            </Link>
-            <span className="text-muted-foreground px-1">·</span>
-            <span className="text-muted-foreground">{date}</span>
+          <div className="flex flex-col">
+            <div className="flex items-center gap-1">
+              <Link
+                href={`https://twitter.com/${handle}`}
+                className="text-gray-900 dark:text-white font-bold hover:underline [&]:text-black [&]:dark:text-white [&]:no-underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {name}
+              </Link>
+              <BadgeCheck className="h-5 w-5 text-white dark:text-black fill-[#1d9bf0]" />
+            </div>
+            <div className="flex gap-1 text-xs text-muted-foreground">
+              <span>@{handle}</span>
+              <span>·</span>
+              <span>{date}</span>
+            </div>
           </div>
           <div className="text-primary pr-6">
-            <p className="whitespace-pre-wrap">{content}</p>
+            <p className="whitespace-pre-wrap [&>*]:!my-0 leading-[1.2] space-y-0 not-prose pt-[1.2em]">{content}</p>
             {mediaUrl && (
               <div className="rounded-xl overflow-hidden">
                 <Image
@@ -91,7 +95,7 @@ export default function EmbeddedTweet({
                   width={500}
                   height={mediaAspectRatio ? 500 * Number(mediaAspectRatio) : 500}
                   className="w-full object-cover"
-                  onError={(e) => console.error('Image loading error:', e)}
+                  onError={(e) => console.error("Image loading error:", e)}
                 />
               </div>
             )}

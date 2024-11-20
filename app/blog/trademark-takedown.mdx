@@ -14,10 +14,10 @@ meta:
     "how i accidentally violated namecheap's trademark and got my domain taken down"
 ---
 
-until recently, i've made an effort to weave the word "base" into my project names as a fun nod to
-"basecase". so when i built an ai-powered name generator for startups, it felt obvious to call it
-"namebase". i built the project as part of my tradition to
-[build with the yc batch](/blog/building-with-the-batch-w24) and launched it on demo day.
+until recently, i made an effort to weave the word "base" into my project names as a fun reference
+to "basecase". so when i built an ai-powered name generator for startups, i obviously had to call it
+"namebase". i built the project as part of my tradition to build something using some of the dev
+tools and infra companies from the current yc batch and launched it on demo day.
 
 <tweet
   name="alana goyal"
@@ -29,19 +29,23 @@ until recently, i've made an effort to weave the word "base" into my project nam
   retweets=25
   replies=26
   url="https://x.com/alanaagoyal/status/1775576396670341602"
-  mediaUrl="/building-with-the-batch-w24/demo.gif"
+  mediaUrl="/trademark-takedown/demo.gif"
   mediaType="gif"
   mediaAspectRatio="1"
 />
-the launch was a success. within 24 hours, the site had generated over 11k names, 350 domains, and 200
-logos from more than 4k unique users.
+
+the launch went well. within 24 hours, the site had generated more than 11,500 startup names, 350
+domains, and 200 logos from more than 4,400 unique users around the world. i was pretty excited.
 
 ## the incident
 
-a few days after the launch, a user reached out to tell me that the website was down. i quickly
-identified it do be a dns issue and logged into my namecheap account to see what was up. to my
-surprise, namebase.ai had completely disappeared from my domains. i reached out to their support
-team and got a cryptic response back (several hours later):
+a couple of days after the launch, a user reached out to tell me the site was down. i scrambled to
+figure out what was wrong. i hadn't made any code changes, so looked to vercel and supabase to see
+if i could find anything. after texting back and forth with [@rauchg](https://x.com/rauchg), we
+identified it to be a dns issue. i logged into my namecheap account, where i had registered the
+domain, to see what was up. to my surprise, namebase.ai had completely disappeared from my list of
+active domains. i reached out to their support team and got a cryptic response back (several hours
+later):
 
 ```text
 It has been noticed that fraudulent and misleading content is hosted on the following domain name: namebase.ai
@@ -53,46 +57,38 @@ Use Policy (AUP)" at https://www.namecheap.com/legal/universal/universal-tos.asp
 
 ## the plot thickens
 
-digging deeper into their terms of service, i found something interesting. the policy stated that
+digging deeper into their terms of service, i found something interesting. the policy states that
 when a customer violates a trademark, namecheap will:
 
 1. send a takedown notice to the domain owner
 2. provide an opportunity to submit a counter-notice
 
-but in my case, they didn't take either of these steps. i decided to keep digging. i searched the
-united states patent and trademark office's [database](https://www.uspto.gov/trademarks/search) to
-see if i could find any relevant trademark registrations. i discovered something even more
-interesting: namecheap owned the trademark for "namebase" themselves. now it was all making sense:
-they had circumvented their standard trademark policy when dealing with their own trademark.
+but in my case, they didn't. i kept digging. i searched the united states patent and trademark
+office (uspto)'s [database](https://www.uspto.gov/trademarks/search) to see if i could find any
+relevant trademark registrations. i discovered something even more interesting: namecheap owned the
+trademark for "namebase" themselves. now it was all making sense. they had circumvented their
+standard trademark policy when dealing with their own trademark.
 
 ## the resolution
 
-i tweeted out a new vercel link to my project as a temporary fix and called it a day. the next
-morning, i woke up to a long dm from namecheap's ceo. he explained that he was sorry for how the
-incident was handled and that the proper process wasn't followed. he explained that namebase.io was
-an existing business they owned and they needed to protect the trademark, but understood that i
-wasn't intentionally trying to violate it. as a gesture of goodwill, he offered me a new domain for
-free and restored the original domain while i made the transition. i was
+i tweeted out a new vercel link to my project as a temporary fix and called it a night. the next
+morning, i woke up to a long message from namecheap's ceo. he apologized for how the incident was
+handled and confirmed that the proper process wasn't followed. he explained that namebase.io was an
+existing business they owned and they needed to protect the trademark, but understood that i wasn't
+intentionally trying to violate it. as a gesture of goodwill, he offered me a new domain for free
+and restored the original domain while i made the transition.
 
-## the silver lining
+i was genuinely impressed by his response and willingness to make things right. as a domain
+registrar, namecheap has a lot of power over the internet. we chatted some more about how they could
+improve their processes for handling these situations in the future.
+
+## the fun begins
 
 now it was time to have some fun. fully recognizing the irony of the situation, i created a fun
-launch video using the product to generate a new name (so meta). but i didn't stop there. next, i
-shipped a new feature to help userscheck for potential trademark conflicts while generating names,
-helping others avoid the same situation i had encountered.
-
-<tweet
-  name="alana goyal"
-  handle="alanaagoyal"
-  content="sunday ship 🚢\n\nyou can now use namebase.ai to check for potential trademark violations 🙃"
-  avatar="/avatar.png"
-  date="april 7, 2024"
-  likes={32}
-  retweets={1}
-  replies={4}
-  verified={true}
-  url="https://x.com/alanaagoyal/status/1777078345660068316"
-/>
+launch video using the product to generate a new name (very meta, i know). but i didn't stop there.
+next, i shipped a new feature to help users check for potential trademark conflicts while generating
+names. i integrated with the uspto's trademark database to identify and flag any potential
+conflicts.
 
 <tweet
   name="alana goyal"
@@ -105,19 +101,23 @@ helping others avoid the same situation i had encountered.
   replies=3
   verified=true
   url="https://x.com/alanaagoyal/status/1777498938603618466"
+  mediaUrl="/trademark-takedown/branded.gif"
+  mediaType="gif"
+  mediaAspectRatio="1"
 />
 
 ## lessons learned
 
-this incident raised important questions about:
+this incident raised important questions about the power domain registrars have over their customers
+and the need for clear and fair domain takedown procedures. while regulation and oversight are
+important, the internet's greatest strength is its ability to empower anyone to build, create, and
+share freely. this permissionless innovation has driven incredible progress and enabled countless
+ideas to flourish. finding the right balance between protecting intellectual property and preserving
+the open spirit of the web is crucial.
 
-- the power domain registrars have over their customers
-- the potential for abuse in trademark enforcement
-- the importance of due process in domain disputes
-- the need for clear and fair domain takedown procedures
-
-for me, this was a low-stakes situation. i got to make a cheeky launch video, ship a useful new
-feature, and even score a free domain out of it. but more importantly, it gave me a tiny glimpse
-into the challenges that founders face every day. while my domain incident was just a small bump in
-the road, it helped me appreciate the resilience required when founders face similar (and often much
-bigger) challenges while building their companies.
+the experience also gave me a glimpse into the situations founders face every day. for me, this was
+a low-stakes situation. i got to make a cheeky launch video, ship a useful new feature, and even
+score a free domain out of it. if this had happened to a founder building a real business, the
+impact could have been much more severe. while my domain incident was just a small bump in the road,
+it helped me appreciate the resilience required when founders face similar (and often much bigger)
+challenges while building their companies.
