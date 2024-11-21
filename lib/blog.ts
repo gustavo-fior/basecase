@@ -32,6 +32,7 @@ export interface BlogPost {
   date: string
   readingTimeMin: number
   hidden: boolean
+  isDraft: boolean
 }
 
 const postsDirectory = path.join(process.cwd(), 'app/blog')
@@ -99,30 +100,52 @@ async function processMarkdown(content: string) {
 
 export async function getAllPosts(): Promise<BlogPost[]> {
   try {
-    const fileNames = await fs.promises.readdir(postsDirectory)
+    // Add drafts directory to search paths in development
+    const searchPaths = [postsDirectory]
+    if (process.env.NODE_ENV === 'development') {
+      searchPaths.push(path.join(postsDirectory, 'drafts'))
+    }
+
+    // Get files from all search paths
+    const allFiles = await Promise.all(
+      searchPaths.map(dir => fs.promises.readdir(dir).catch(() => []))
+    )
+    
     const allPosts = await Promise.all(
-      fileNames
+      allFiles.flat()
         .filter(fileName => fileName.endsWith('.mdx'))
         .map(async (fileName) => {
           const slug = fileName.replace(/\.mdx$/, '')
-          const fullPath = path.join(postsDirectory, fileName)
+          const possiblePaths = searchPaths.map(dir => path.join(dir, fileName))
+          const fullPath = possiblePaths.find(p => fs.existsSync(p)) || possiblePaths[0]
+          
           const fileContents = await fs.promises.readFile(fullPath, 'utf8')
           const { data } = matter(fileContents)
 
+          // Add isDraft flag based on file location
+          const isDraft = fullPath.includes(path.join('blog', 'drafts'))
+
           return {
             slug,
-            content: '',  // We don't need content for the listing
+            content: '',
             meta: data.meta || {},
             title: data.title || '',
             date: data.date ? new Date(data.date).toISOString() : new Date().toISOString(),
             readingTimeMin: data.readingTimeMin || 1,
             hidden: data.hidden || false,
+            isDraft,
           }
         })
     )
 
-    // Filter out hidden posts
-    const visiblePosts = allPosts.filter(post => !post.hidden)
+    // Filter posts based on environment and draft status
+    const visiblePosts = allPosts.filter(post => {
+      if (process.env.NODE_ENV === 'production') {
+        return !post.hidden
+      }
+      // In development, hide posts that are both draft AND hidden
+      return !(post.isDraft && post.hidden)
+    })
 
     return visiblePosts.sort((a, b) => (new Date(b.date).getTime() - new Date(a.date).getTime()))
   } catch (error) {
@@ -133,7 +156,19 @@ export async function getAllPosts(): Promise<BlogPost[]> {
 
 export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
   try {
-    const fullPath = path.join(postsDirectory, `${slug}.mdx`)
+    const searchPaths = [
+      path.join(postsDirectory, `${slug}.mdx`),
+      process.env.NODE_ENV === 'development' 
+        ? path.join(postsDirectory, 'drafts', `${slug}.mdx`)
+        : null
+    ].filter(Boolean) as string[]
+
+    // Try to find the file in any of the possible paths
+    const fullPath = searchPaths.find(p => fs.existsSync(p))
+    if (!fullPath) {
+      throw new Error('Post not found')
+    }
+
     const fileContents = await fs.promises.readFile(fullPath, 'utf8')
     const { data, content } = matter(fileContents)
     
@@ -147,6 +182,7 @@ export async function getPostBySlug(slug: string): Promise<BlogPost | null> {
       date: data.date ? new Date(data.date).toISOString() : new Date().toISOString(),
       readingTimeMin: data.readingTimeMin || 1,
       hidden: data.hidden || false,
+      isDraft: false,
     }
   } catch (error) {
     console.error('Error getting post by slug:', error)
