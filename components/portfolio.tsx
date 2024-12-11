@@ -35,6 +35,14 @@ export const Portfolio = () => {
       status: null,
     },
     {
+      title: "beeps",
+      icon: "/portfolio/beeps.png",
+      description:
+        "beeps is the on-call platform for next.js developers.",
+      url: "https://beeps.dev/",
+      status: null,
+    },
+    {
       title: "braintrust",
       icon: "/portfolio/braintrust.png",
       description:
@@ -97,14 +105,6 @@ export const Portfolio = () => {
         "orb is developer-first billing infrastructure built to help companies succeed with usage-based pricing.",
       url: "https://www.withorb.com/",
       status: null,
-    },
-    {
-      title: "pyroscope",
-      icon: "/portfolio/pyroscope.png",
-      description:
-        "pyroscope is an open source continuous profiling platform that helps you find performance issues in your code, locate and fix memory leaks, and track changes over time.",
-      url: "https://pyroscope.io/",
-      status: "acquired by grafana",
     },
     {
       title: "resend",
