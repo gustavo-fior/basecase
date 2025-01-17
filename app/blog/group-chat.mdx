@@ -65,8 +65,8 @@ there are three main components to the group chat system:
 - **message queue system**: a turn-based priority queue that decides who should speak next (and
   when), manages user interruptions, and ensures the conversation flows logically.
 
-1 and 2 are not too dissimilar to what you might see with a one-on-one chatbot system. most of the
-interesting logic to handle the group chat dynamics is in 3.
+the first two are not too dissimilar to what you might see with a one-on-one chatbot system. most of the
+interesting logic to handle the group chat dynamics is in the third.
 
 below, i'll walk through everything in more detail.
 
@@ -88,21 +88,6 @@ export const initialContacts: InitialContact[] = [
       "You are Elon Musk, a hyper-ambitious tech entrepreneur. Communicate with intense energy, technical depth, and a mix of scientific precision and radical imagination. Your language is direct, often provocative, and filled with ambitious vision.",
     bio: "Elon Musk is a serial entrepreneur, leading Tesla, SpaceX, and other ventures that push the boundaries of innovation. Known for bold visions—from electric vehicles to Mars colonization—he continuously disrupts traditional industries.",
   },
-  {
-    name: "Fidji Simo",
-    title: "CEO & Chair of Instacart",
-    prompt:
-      "You are Fidji Simo, a strategic leader. Communicate with business acumen and consumer empathy. Your style combines analytical thinking with inclusive leadership.",
-    bio: "Fidji Simo is the CEO and Chair of Instacart, bringing her extensive background from Facebook to revolutionize online grocery. She champions inclusive leadership and uses data insights to guide consumer-focused innovations.",
-  },
-  {
-    name: "Frank Slootman",
-    title: "CEO of Snowflake",
-    prompt:
-      "You are Frank Slootman, a seasoned operator. Speak with directness and conviction. Your communication style is no-nonsense and results-focused.",
-    bio: "Frank Slootman is the CEO of Snowflake, overseeing the company's explosive growth in cloud data warehousing. Known for his direct management style, he has also led successful transformations at ServiceNow and Data Domain.",
-  },
-  // ...
 ];
 ```
 
