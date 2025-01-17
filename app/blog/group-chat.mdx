@@ -1,0 +1,617 @@
+---
+title: "engineering the perfect group chat"
+date: "2025-01-20"
+readingTimeMin: 12
+hidden: false
+meta:
+  og:title: "engineering the perfect group chat"
+  og:description: "building an ai-powered group chat (that actually feels human)"
+  og:image: "/group-chat/og.png"
+  twitter:image: "/group-chat/og.png"
+  twitter:card: "summary_large_image"
+  twitter:title: "engineering the perfect group chat"
+  twitter:description: "building an ai-powered group chat (that actually feels human)"
+---
+
+in real life, group chats are chaotic, dynamic, and fun. people respond at their own pace, interrupt
+each other, react to messages, add or remove participants - the list goes on. in my latest project,
+i tried to replicate this same group chat experience, but replaced my usual contact list with ai
+replicas of the people who inspire me. the result is a chat system that feels strikingly realistic
+and very entertaining.
+
+this blog post dives into how i engineered the perfect group chat in detail with code snippets. in
+another post, i'll walk through how i implemented the imessage-inspired interface.
+
+## what is a group chat?
+
+to start, let’s define what a group chat is. group chats are often defined by the following
+characteristics:
+
+- **multiple, dynamic participants**: a group chat has three or more people in a single conversation
+  thread. you can invite someone new mid-conversation or remove someone who’s no longer relevant.
+
+- **unpredictable timing**: not everyone responds right away - some people have their notifications
+  silenced and respond hours later, while others jump in immediately.
+
+- **frequent interruptions**: it's not a turn-based conversation. you might get halfway through
+  typing something, only to see someone else has already changed the subject.
+
+- **reactions**: people often express themselves through reactions, like “like”, "laugh", or
+  "emphasize".
+
+these human dynamics keep group chats interesting and lively. my goal was to replicate those in an
+ai-native context with inspirational figures instead of real people.
+
+## the high-level implementation
+
+i think at this point, we're all pretty familiar with how an ai chatbot works: you pass in an array
+of message history as context and prompt the ai to produce the next message based on that
+conversation history.
+
+in a simple one-on-one chatbot, the flow is always: **user → ai → user → ai**. the ai sends a single
+response each time the human user speaks.
+
+but in a group chat, you have multiple ai participants that not only talk to the user, but talk to
+each other. the flow is more complex. the ai participants take turns speaking without ever needing
+the user to participate in the conversation. the ai can “choose” who talks next and engage with the
+other ai participants.
+
+### quick architecture overview
+
+there are three main components to the group chat system:
+
+- **contacts**: a list of contacts (like elon musk, steve jobs, etc.) with their respective prompts.
+
+- **chat completion endpoint**: an api endpoint (`/api/chat/route.ts`) for generating the ai
+  messages with an llm.
+
+- **message queue system**: a turn-based priority queue that decides who should speak next (and
+  when), manages user interruptions, and ensures the conversation flows logically.
+
+1 and 2 are not too dissimilar to what you might see with a one-on-one chatbot system. most of the
+interesting logic to handle the group chat dynamics is in 3.
+
+below, i'll walk through everything in more detail.
+
+## contacts
+
+one of the first challenges is making these ai participants sound like the people themselves. with a
+well-known figure and a good model, you can often get away with a simple prompt like: “you are elon
+musk. respond to this message.” the model actually does a decent job. but in an effort to make the
+responses feel more realistic, i used o1 to generate concise personality prompts for each persona. i
+asked to keep the prompts short and simple with context on who the person is and how they
+communicate, rather than what they communicate about.
+
+```javascript
+export const initialContacts: InitialContact[] = [
+  {
+    name: "Elon Musk",
+    title: "Founder & CEO of Tesla",
+    prompt:
+      "You are Elon Musk, a hyper-ambitious tech entrepreneur. Communicate with intense energy, technical depth, and a mix of scientific precision and radical imagination. Your language is direct, often provocative, and filled with ambitious vision.",
+    bio: "Elon Musk is a serial entrepreneur, leading Tesla, SpaceX, and other ventures that push the boundaries of innovation. Known for bold visions—from electric vehicles to Mars colonization—he continuously disrupts traditional industries.",
+  },
+  {
+    name: "Fidji Simo",
+    title: "CEO & Chair of Instacart",
+    prompt:
+      "You are Fidji Simo, a strategic leader. Communicate with business acumen and consumer empathy. Your style combines analytical thinking with inclusive leadership.",
+    bio: "Fidji Simo is the CEO and Chair of Instacart, bringing her extensive background from Facebook to revolutionize online grocery. She champions inclusive leadership and uses data insights to guide consumer-focused innovations.",
+  },
+  {
+    name: "Frank Slootman",
+    title: "CEO of Snowflake",
+    prompt:
+      "You are Frank Slootman, a seasoned operator. Speak with directness and conviction. Your communication style is no-nonsense and results-focused.",
+    bio: "Frank Slootman is the CEO of Snowflake, overseeing the company's explosive growth in cloud data warehousing. Known for his direct management style, he has also led successful transformations at ServiceNow and Data Domain.",
+  },
+  // ...
+];
+```
+
+in the chat endpoint, when the llm is generating the next message, it's told to choose the next
+logical participant and mimic their style.
+
+```javascript
+const prompt = `
+    You're in a text message group chat with a human user ("me") and: ${recipients
+      .map((r: Recipient) => r.name)
+      .join(", ")}.
+    You'll be one of these people for your next msg: ${sortedParticipants
+      .map((r: Recipient) => r.name)
+      .join(", ")}.
+
+    Match your character's style: 
+    ${sortedParticipants
+      .map((r: Recipient) => {
+        const contact = initialContacts.find((p) => p.name === r.name);
+        return contact ? `${r.name}: ${contact.prompt}` : `${r.name}: Just be yourself.`;
+      })
+      .join("\n")}
+    `;
+```
+
+## chat completion endpoint
+
+again, the chat endpoint itself looks pretty similar to what you might expect for a one-on-one
+chatbot. we call the llm with an **array of messages** and a tool call that the model must use to
+return structured json:
+
+```javascript
+const response = await client.chat.completions.create({
+  model: "claude-3-5-sonnet-latest",
+  messages: [...chatMessages], // conversation history + system instructions
+  tool_choice: "required",
+  tools: [
+    {
+      type: "function",
+      function: {
+        name: "chat",
+        description: "returns the next message in the conversation",
+        parameters: {
+          type: "object",
+          properties: {
+            sender: {
+              type: "string",
+              enum: sortedParticipants.map((r: Recipient) => r.name),
+            },
+            content: { type: "string" },
+            reaction: {
+              type: "string",
+              enum: ["heart", "like", "dislike", "laugh", "emphasize"],
+              description: "optional reaction to the last message",
+            },
+          },
+          required: ["sender", "content"],
+        },
+      },
+    },
+  ],
+  temperature: 0.5,
+  max_tokens: 1000,
+});
+```
+
+let's break this down a bit:
+
+- **messages**: we're passing in the history so the model knows the conversation context.
+- **sortedParticipants.map(...)**: we specify which ai personas are eligible to speak next.
+- **tool_choice: "required"**: we’re telling the model that it must use the chat tool to return its
+  output in a structured json format (including a required sender and content and an optional
+  reaction).
+
+## message queue system
+
+the most interesting part of this system is the message queue, which coordinates the flow of the
+conversation. this priority-based, turn-taking system allows for the realistic dynamics of a group
+chat including:
+
+- **dynamic flow**: the queue handles when we call the api to generate the next message and the
+  timing of when we display the typing animation, reactions, and the actual message.
+- **user interruptions**: if the user sends a new message, we abort whatever ai task is running, let
+  the user’s message through, and then continue the conversation with updated context.
+- **ai reactions**: we queue potential reactions, process them in order, and display them one at a
+  time.
+- **when to wrap up**: we stop creating more ai messages once we hit a limit (like 5 consecutive ai
+  messages).
+- **concurrent conversations**: we can have multiple conversations going at once, each with its own
+  participants, message history, and tasks.
+
+now, we'll take a closer look at how the queue works to achieve these dynamics.
+
+### dynamic flow
+
+when ai responds instantly, it feels robotic. real humans type at varying speeds, get distracted, or
+react first before they speak. so i built in delays to simulate that.
+
+- **typing animation**: when we first receive the response from the api, we show a “typing bubble”
+  animation labeled with the name of the ai participant who sent that message. after a random delay
+  between 4 and 7 seconds, we display the message.
+
+- **message delay**: in real group chats, people don't always respond right away. once the message
+  is displayed, we have another short delay before the next task is processed. it’s a small detail,
+  but it makes the chat feel more human.
+
+```javascript
+// start typing animation and set a random delay
+const typingDelay = task.priority === 100 ? 4000 : 7000;
+this.callbacks.onTypingStatusChange(task.conversation.id, data.sender);
+
+await new Promise((resolve) => setTimeout(resolve, typingDelay + Math.random() * 2000));
+
+// by the time we reach here, we show the actual message
+const newMessage: Message = {
+  id: crypto.randomUUID(),
+  content: data.content,
+  sender: data.sender,
+  timestamp: new Date().toISOString(),
+};
+
+// notify the ui that a new message is available
+this.callbacks.onMessageGenerated(task.conversation.id, newMessage);
+
+// clear typing status
+this.callbacks.onTypingStatusChange(null, null);
+
+// insert a small pause before we queue the next message
+await new Promise((resolve) => setTimeout(resolve, 2000));
+```
+
+### user interruptions
+
+interruptions are normal in group chats. while an ai participant is “typing,” you could jump in with
+a new question. in this system:
+
+- **abort & re-queue**: the moment a user message arrives, we abort any ongoing ai request to
+  /api/chat and queue the user’s message at the highest priority.
+
+- **versioning**: we use a version counter to prevent the queue from sending stale ai replies if the
+  user has already changed the topic or added new messages. in other words, if a user jumps in
+  multiple times and the conversation “version” changes, old ai tasks become irrelevant and are
+  simply dropped.
+
+- **batch multiple user messages**: if you type multiple messages quickly, we wait a short time
+  (500ms) to batch them before generating the ai response. this avoids disjointed or repeated ai
+  answers.
+
+```javascript
+public enqueueUserMessage(conversation: Conversation) {
+  const conversationState = this.getOrCreateConversationState(conversation.id);
+
+  // cancel all pending ai tasks for this conversation
+  this.cancelConversationTasks(conversation.id);
+
+  // clear any existing debounce timeout
+  if (conversationState.userMessageDebounceTimeout) {
+    clearTimeout(conversationState.userMessageDebounceTimeout);
+    conversationState.userMessageDebounceTimeout = null;
+  }
+
+  // store the user's messages to process after a short debounce
+  conversationState.pendingUserMessages = conversation;
+
+  // after 500ms, finalize the user’s messages as a single task
+  const timeoutId = setTimeout(() => {
+    if (conversationState.pendingUserMessages) {
+      conversationState.version++;
+
+      const task: MessageTask = {
+        id: crypto.randomUUID(),
+        conversation: conversationState.pendingUserMessages,
+        isFirstMessage: false,
+        priority: 100, // user messages have highest priority
+        timestamp: Date.now(),
+        abortController: new AbortController(),
+        consecutiveAiMessages: 0,
+        conversationVersion: conversationState.version,
+      };
+
+      conversationState.pendingUserMessages = null;
+      conversationState.userMessageDebounceTimeout = null;
+      this.addTask(conversation.id, task);
+    }
+  }, 500);
+
+  conversationState.userMessageDebounceTimeout = timeoutId;
+}
+```
+
+### ai reactions
+
+a true group chat needs more than just text. people “like” or “laugh at” messages all the time. i
+decided the ai participants should be able to do that too:
+
+- **prompting the reaction**: the message queue sends a `should` flag to the chat endpoint ~10% of
+  the time.
+- **processing the reaction**: reactions appear first (“steve jobs liked this message”), then a
+  short delay before we see the typing animation, and finally the new message.
+
+in the message queue, we determine whether to request a reaction:
+
+```javascript
+const response = await fetch("/api/chat", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    recipients: task.conversation.recipients,
+    messages: task.conversation.messages,
+    shouldWrapUp,
+    isFirstMessage: task.isFirstMessage,
+    isOneOnOne: task.conversation.recipients.length === 1,
+    shouldReact: Math.random() < 0.25,
+  }),
+  signal: task.abortController.signal,
+});
+```
+
+then in the chat endpoint, the prompt is modified to request a reaction:
+
+```javascript
+const prompt += `
+    ${
+      shouldReact
+        ? `- You must react to the last message
+        - If you love the last message, react with "heart"
+        - If you like the last message, react with "like"
+        - If the last message was funny, react with "laugh"
+        - If you strongly agree with the last message, react with "emphasize"`
+        : ""
+    }`;
+```
+
+then back in the message queue, we process the reaction with a short delay so that the reaction gets
+shown before the next message.
+
+```javascript
+// if there's a reaction in the response, add it to the last message
+if (data.reaction && task.conversation.messages.length > 0) {
+  const lastMessage = task.conversation.messages[task.conversation.messages.length - 1];
+  if (!lastMessage.reactions) {
+    lastMessage.reactions = [];
+  }
+
+  lastMessage.reactions.push({
+    type: data.reaction,
+    sender: data.sender,
+    timestamp: new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
+  });
+
+  // callback to update the ui
+  if (this.callbacks.onMessageUpdated) {
+    this.callbacks.onMessageUpdated(task.conversation.id, lastMessage.id, {
+      reactions: lastMessage.reactions,
+    });
+  }
+
+  // delay to show the reaction before the typing animation
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+}
+```
+
+### when to wrap up
+
+one of the key features of a group chat is that the conversation can go on without the user.
+however, these models are not cheap (well, not the ones i used), so i couldn't have the ai
+participants going on forever without the user's participation.
+
+to solve this, i set a limit on the number of consecutive ai messages. in the message queue, we
+track of the number of consecutive ai messages. once we hit that limit, we pass a flag to the chat
+endpoiint to tell it to wrap up in the next message. then, we display a system message like “fidji
+simo has notifications silenced,” echoing how imessage shows this message when someone turns off
+notifications. as soon as the user speaks again, the cycle resets, and the ai can continue.
+
+in the message queue:
+
+```javascript
+// don't add more ai messages if we've reached the limit
+if (consecutiveAiMessages >= MAX_CONSECUTIVE_AI_MESSAGES) {
+  return;
+}
+
+// if we've hit the limit, tell the chat endpoint to wrap up
+const shouldWrapUp = task.consecutiveAiMessages === MAX_CONSECUTIVE_AI_MESSAGES - 1;
+
+// pass that flag into the api call
+const response = await fetch("/api/chat", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    recipients: task.conversation.recipients,
+    messages: task.conversation.messages,
+    shouldWrapUp,
+    // ...
+  }),
+  signal: task.abortController.signal,
+});
+```
+
+update the prompt in the chat endpoint:
+
+```javascript
+const prompt += `
+    ${
+      shouldWrapUp
+        ? `
+    - This is the last message
+    - Don't ask a question to another recipient unless it's to "me" the user`
+        : ""
+    }`;
+```
+
+once that final message is delivered, we insert a small delay before displaying a system message:
+
+```javascript
+if (shouldWrapUp) {
+  // send notifications silenced message
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+
+  const silencedMessage: Message = {
+    id: crypto.randomUUID(),
+    content: `${data.sender} has notifications silenced`,
+    sender: "system",
+    type: "silenced",
+    timestamp: new Date().toISOString(),
+  };
+
+  this.callbacks.onMessageGenerated(task.conversation.id, silencedMessage);
+}
+```
+
+<img src="/group-chat/notifications-silenced.png" alt="" />
+
+this ensures you won’t end up with an endless ai-on-ai conversation unless the user jumps back in to
+re-engage and wraps it up nicely with a fun, imessage-inspired ui.
+
+### concurrent conversations
+
+one big advantage of this message queue system is that you can have multiple conversations going at
+once—each with its own participants, message history, and tasks. for instance, you might have a
+conversation between “elon musk” and “steve jobs” happening at the same time as another conversation
+between “fidji simo” and “frank slootman.”
+
+#### mapping conversation states
+
+in `message-queue.ts`, we store each conversation’s state in a `Map` keyed by a unique
+`conversationId`:
+
+```javascript
+// the global state of the message queue
+private state: MessageQueueState = {
+  conversations: new Map(),  // <--- each key is a conversation id
+};
+
+// represents the state of a specific conversation
+type ConversationState = {
+  consecutiveAiMessages: number;
+  version: number;
+  status: "idle" | "processing";
+  currentTask: MessageTask | null;
+  tasks: MessageTask[];
+  userMessageDebounceTimeout: NodeJS.Timeout | null;
+  pendingUserMessages: Conversation | null;
+  lastActivity: number;
+};
+```
+
+each conversation has its own queue of tasks (tasks: MessageTask[]), along with a status that can be
+"idle" (waiting for new tasks) or "processing" (already working on one). the
+getOrCreateConversationState(conversationId: string) helper retrieves or initializes the state for a
+given id:
+
+```javascript
+private getOrCreateConversationState(conversationId: string): ConversationState {
+  let conversationState = this.state.conversations.get(conversationId);
+  if (!conversationState) {
+    conversationState = {
+      consecutiveAiMessages: 0,
+      version: 0,
+      status: "idle",
+      currentTask: null,
+      tasks: [],
+      userMessageDebounceTimeout: null,
+      pendingUserMessages: null,
+      lastActivity: Date.now(),
+    };
+    this.state.conversations.set(conversationId, conversationState);
+  } else {
+    // update last activity timestamp
+    conversationState.lastActivity = Date.now();
+  }
+  return conversationState;
+}
+```
+
+#### concurrent processing
+
+the key to concurrency is that each conversation is processed independently. when you call something
+like enqueueAIMessage(conversation), you pass in the conversation info (including its id), and the
+queue decides what to do next for that specific conversation. meanwhile, other conversations can
+continue in parallel, each with its own queue of tasks.
+
+```javascript
+private async processNextTask(conversationId: string) {
+  const conversationState = this.getOrCreateConversationState(conversationId);
+
+  // if this conversation is already busy or has no tasks, just return
+  if (conversationState.status === "processing" || conversationState.tasks.length === 0) {
+    return;
+  }
+
+  // set to processing
+  conversationState.status = "processing";
+
+  const task = conversationState.tasks.shift()!;
+  conversationState.currentTask = task;
+
+  try {
+    // ... handle api call, typing delay, etc.
+  } catch (error) {
+    // handle errors or aborts
+  } finally {
+    // reset status and current task
+    conversationState.status = "idle";
+    conversationState.currentTask = null;
+
+    // process next task in this *same* conversation
+    this.processNextTask(conversationId);
+  }
+}
+```
+
+this includes two key points:
+
+- **no global lock**: each conversation can run processNextTask independently. if conversation a is
+  busy, it doesn’t block conversation b from sending or receiving ai messages.
+- **parallel tasks**: in a serverless environment (or any async runtime), multiple conversation
+  tasks can be in-flight at once. each conversation’s tasks are queued within that conversation, but
+  across conversations, the system operates concurrently.
+
+#### cleanups and conversation ttl
+
+finally, we handle cleanup to avoid unbounded growth in stale conversations. the queue has a timer
+(e.g., running every 30 minutes) that checks each conversation’s lastActivity:
+
+```javascript
+private cleanupOldConversations() {
+  const now = Date.now();
+  for (const [conversationId, state] of this.state.conversations.entries()) {
+    if (now - state.lastActivity > MessageQueue.CONVERSATION_TTL) {
+      this.cleanupConversation(conversationId);
+    }
+  }
+}
+```
+
+any conversation that hasn’t been active for a certain ttl (e.g., 24 hours) is removed from the map,
+ensuring old or abandoned chats don’t pile up forever.
+
+## challenges & reflections
+
+i had a lot of fun building this project and learned a lot along the way.
+
+- **realistic personas**: one of the hardest parts to get right was making the ai personas sound
+  realistic and not talk in circles. i used [braintrust](https://braintrust.dev) to log everything
+  and write evals. i experimented with a few different models: gpt-4o-mini,
+  claude-3-5-sonnet-latest, and grok-beta. i ultimately settled on claude-3-5-sonnet-latest because
+  it was the most human-like and scored the best on my evals. it's super easy to swap out the model
+  because i'm using the braintrust proxy, which supports all of these models and handles the tool
+  calls between them.
+
+- **user interruptions**: coordinating multiple threads handling user interruptions, ai concurrency,
+  and reaction timing was tricky. i went back in forth on how "engineered" this part of the system
+  should be. again, real-life group chats aren't perfect and race conditions happen all the time. i
+  ultimately settled on this approach because i think it has the best end-user experience.
+
+- **concurrent conversations**: i actually didn't even think about this one until i was getting
+  ready to launch the project a few weeks ago. i was testing out the unread notifications feature
+  and realized that anytime i started a new conversation, the previous one would just stop
+  generating new messages. i don't expect users to have more than a few conversations going at once,
+  but i felt that it was important to handle this case gracefully - particularly the cleanup.
+
+despite these challenges, i'm pretty happy with the end result.
+
+it’s been a blast watching elon musk and steve jobs “discuss” new ideas, or seeing sam altman
+spontaneously heart a message. small details—like random typing delays, abrupt user interruptions,
+and the occasional reaction—make everything feel alive.
+
+try it out for yourself and spin up your own multi-participant ai conversations with people who
+inspire you. it’s surprisingly fun (and sometimes hilarious) watching these personas go back and
+forth—even when you’re not talking directly to them.
+
+## further reading & code references
+
+as always, the full code is available on github. it's certainly not perfect, and in fact, i imagine
+there are better ways to handle many of the things i mentioned above. but i hope this gives you some
+ideas for how to build a similar system.
+
+- /api/chat/route.ts the api endpoint that composes prompts and retrieves responses from the ai
+  model.
+- /lib/message-queue.ts the heart of the conversation flow, including priority-based task handling,
+  timing delays, and reaction logic.
+- /data/initial-contacts.ts where all the persona prompts (like elon musk, steve jobs, etc.) live.
+
+thanks for reading, and feel free to share any thoughts or questions. i’d love to hear what you
+think or how you might push this concept further.
