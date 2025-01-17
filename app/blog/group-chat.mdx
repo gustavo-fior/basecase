@@ -36,9 +36,6 @@ characteristics:
 - **frequent interruptions**: it's not a turn-based conversation. you might get halfway through
   typing something, only to see someone else has already changed the subject.
 
-- **reactions**: people often express themselves through reactions, like “like”, "laugh", or
-  "emphasize".
-
 these human dynamics keep group chats interesting and lively. my goal was to replicate those in an
 ai-native context with inspirational figures instead of real people.
 
@@ -440,8 +437,6 @@ if (shouldWrapUp) {
 }
 ```
 
-<img src="/group-chat/notifications-silenced.png" alt="" />
-
 this ensures you won’t end up with an endless ai-on-ai conversation unless the user jumps back in to
 re-engage and wraps it up nicely with a fun, imessage-inspired ui.
 
@@ -604,11 +599,12 @@ forth—even when you’re not talking directly to them.
 ## final thoughts
 
 as always, the full code is available on github:
-- /api/chat/route.ts the api endpoint that composes prompts and retrieves responses from the ai
+- [**/api/chat/route.ts**](https://github.com/alanagoyal/dialogue/blob/main/app/api/chat/route.ts): the api endpoint that composes prompts and retrieves responses from the ai
   model.
-- /lib/message-queue.ts the heart of the conversation flow, including priority-based task handling,
-  timing delays, and reaction logic.
-- /data/initial-contacts.ts where all the persona prompts (like elon musk, steve jobs, etc.) live.
+- [**/lib/message-queue.ts**](https://github.com/alanagoyal/dialogue/blob/main/lib/message-queue.ts): the heart of the conversation flow, including priority-based task
+  handling, timing delays, and reaction logic.
+- [**/data/initial-contacts.ts**](https://github.com/alanagoyal/dialogue/blob/main/data/initial-contacts.ts): where all the persona prompts (like elon musk, steve jobs, etc.)
+  live.
 
 it's certainly not perfect, and in fact, i imagine there are better ways to handle many of the
 things i mentioned above. if you have questions about how it works or suggestions for
