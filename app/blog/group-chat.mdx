@@ -603,15 +603,13 @@ forth—even when you’re not talking directly to them.
 
 ## further reading & code references
 
-as always, the full code is available on github. it's certainly not perfect, and in fact, i imagine
-there are better ways to handle many of the things i mentioned above. but i hope this gives you some
-ideas for how to build a similar system.
-
+as always, the full code is available on github:
 - /api/chat/route.ts the api endpoint that composes prompts and retrieves responses from the ai
   model.
 - /lib/message-queue.ts the heart of the conversation flow, including priority-based task handling,
   timing delays, and reaction logic.
 - /data/initial-contacts.ts where all the persona prompts (like elon musk, steve jobs, etc.) live.
 
-thanks for reading, and feel free to share any thoughts or questions. i’d love to hear what you
-think or how you might push this concept further.
+it's certainly not perfect, and in fact, i imagine there are better ways to handle many of the
+things i mentioned above. if you have questions about how it works or suggestions for
+how to make it better, feel free to reach out to me on [x](https://x.com/alanaagoyal). 
