@@ -19,6 +19,10 @@ bounce between several conversations at once. in my latest project, i tried to r
 experience, but replaced my contact list with ai replicas of people who inspire me. the result is a
 system that feels strikingly realistic and fun.
 
+<div style={{ position: "relative", width: "100%", borderRadius: "8px", overflow: "hidden" }}>
+  <video src="/group-chat/demo.mp4" controls style={{ width: "100%", display: "block" }} />
+</div>
+
 this blog post walks through how i engineered the perfect group chat. i'll walk through the system
 architecture and dive into the code in detail.
 
@@ -142,7 +146,7 @@ const chatMessages = [
 // chat completion
 const response = await client.chat.completions.create({
   model: "claude-3-5-sonnet-latest",
-  messages: [...chatMessages], 
+  messages: [...chatMessages],
   tool_choice: "required",
   tools: [
     {
@@ -447,8 +451,7 @@ between “fidji simo” and “frank slootman.”
 
 #### mapping conversation states
 
-in `message-queue.ts`, we store each conversation’s state in a `Map` keyed by a unique
-`conversationId`:
+we store each conversation’s state in a map, keyed by a unique `conversationId`:
 
 ```javascript
 // the global state of the message queue
@@ -469,10 +472,10 @@ type ConversationState = {
 };
 ```
 
-each conversation has its own queue of tasks (tasks: MessageTask[]), along with a status that can be
-"idle" (waiting for new tasks) or "processing" (already working on one). the
-getOrCreateConversationState(conversationId: string) helper retrieves or initializes the state for a
-given id:
+each conversation has its own queue of tasks (`tasks: MessageTask[]`), along with a status that can
+be "idle" (waiting for new tasks) or "processing" (already working on one). the
+`getOrCreateConversationState(conversationId: string)` helper retrieves or initializes the state for
+a given id:
 
 ```javascript
 private getOrCreateConversationState(conversationId: string): ConversationState {
@@ -500,7 +503,7 @@ private getOrCreateConversationState(conversationId: string): ConversationState 
 #### concurrent processing
 
 the key to concurrency is that each conversation is processed independently. when you call something
-like enqueueAIMessage(conversation), you pass in the conversation info (including its id), and the
+like `enqueueAIMessage(conversation)`, you pass in the conversation info (including its id), and the
 queue decides what to do next for that specific conversation. meanwhile, other conversations can
 continue in parallel, each with its own queue of tasks.
 
@@ -536,8 +539,8 @@ private async processNextTask(conversationId: string) {
 
 this includes two key points:
 
-- **no global lock**: each conversation can run processNextTask independently. if conversation a is
-  busy, it doesn’t block conversation b from sending or receiving ai messages.
+- **no global lock**: each conversation can run `processNextTask` independently. if conversation a
+  is busy, it doesn’t block conversation b from sending or receiving ai messages.
 - **parallel tasks**: in a serverless environment (or any async runtime), multiple conversation
   tasks can be in-flight at once. each conversation’s tasks are queued within that conversation, but
   across conversations, the system operates concurrently.
@@ -545,7 +548,7 @@ this includes two key points:
 #### cleanups and conversation ttl
 
 finally, we handle cleanup to avoid unbounded growth in stale conversations. the queue has a timer
-(e.g., running every 30 minutes) that checks each conversation’s lastActivity:
+(e.g., running every 30 minutes) that checks each conversation’s `lastActivity`:
 
 ```javascript
 private cleanupOldConversations() {
