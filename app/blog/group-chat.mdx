@@ -15,19 +15,17 @@ meta:
 
 in real life, group chats are often unstructured, chaotic, and dynamic. people respond at their own
 pace, interrupt each other, add or remove people mid-conversation, and (if you're really popular)
-bounce between several conversations at once. in my latest project, i tried to replicate this same
-experience, but replaced my contact list with ai replicas of people who inspire me. the result is a
-system that feels strikingly realistic and fun.
+bounce between several conversations at once. in my
+[latest project](https://alanagoyal.com/messages), i tried to replicate this same experience, but
+replaced my contact list with ai replicas of people who inspire me. the result is a system that
+feels strikingly realistic and fun.
 
 <div style={{ position: "relative", width: "100%", borderRadius: "8px", overflow: "hidden" }}>
   <video src="/group-chat/demo.mp4" controls style={{ width: "100%", display: "block" }} />
 </div>
 
-this blog post walks through how i engineered the perfect group chat. i'll walk through the system
+this blog post walks through how i engineered "the perfect group chat". i'll walk through the system
 architecture and dive into the code in detail.
-
-the design and implementation of the group chat mechanics was only half of the fun. in another post,
-i'll share how i replicated the imessage design and user interface.
 
 ## what is a group chat?
 
@@ -566,49 +564,49 @@ ensuring old or abandoned chats don’t pile up forever.
 
 ## challenges & reflections
 
-i had a lot of fun building this project and learned a ton along the way.
+bringing ai personas to life in a group chat was a fun and fascinating challenge. it’s been
+surprisingly entertaining to watch elon musk and steve jobs brainstorm together, or see sam altman
+drop in with a heart reaction.
 
-- **realistic personas**: one of the hardest parts to get right was making the ai personas sound
-  realistic and not talk in circles. i used [braintrust](https://braintrust.dev) to log everything
-  and write evals. i experimented with a few different models: gpt-4o-mini,
-  claude-3-5-sonnet-latest, and grok-beta. i ultimately settled on claude-3-5-sonnet-latest because
-  it was the most human-like and scored the best on my evals. it's super easy to swap out the model
-  because i'm using the braintrust proxy, which supports all of these models and handles the tool
-  calls between them.
+i learned a ton through this project. in particular:
 
-- **user interruptions**: coordinating multiple threads handling user interruptions, ai concurrency,
-  and reaction timing was tricky. i went back in forth on how "engineered" this part of the system
-  should be. again, real-life group chats aren't perfect and race conditions happen all the time. i
-  ultimately settled on this approach because i think it has the best end-user experience.
+- **realistic personas**  
+  one of the trickiest parts was making the ai replicas sound believable. i used the
+  [braintrust](https://braintrust.dev) proxy to easily swap out different llms (gpt-4o-mini,
+  claude-3-5-sonnet-latest, grok-beta) and log everything for evals. claude-3-5-sonnet-latest
+  produced the most human-like interactions in my tests, so i settled on that.
 
-- **concurrent conversations**: i actually didn't even think about this one until i was getting
-  ready to launch the project a few weeks ago. i was testing out the unread notifications feature
-  and realized that anytime i started a new conversation, the previous one would just stop
-  generating new messages. i don't expect users to have more than a few conversations going at once,
-  but i felt that it was important to handle this case gracefully.
-  [windsurf](https://codeium.com/windsurf) actually did most of the work for me here.
+- **handling user interruptions**  
+  coordinating multiple threads, user messages, ai concurrency, and reaction timing required careful
+  engineering. in real life, group chats are chaotic, with overlapping messages and constant
+  recontextualization. i ultimately designed a priority-based queue with conversation versioning to
+  keep the experience smooth for users.
 
-despite these challenges, i'm pretty happy with the end result. it’s been a pretty fun watching elon
-musk and steve jobs discuss new ideas, or seeing sam altman spontaneously love one of my messages.
-small details — like random typing delays, abrupt user interruptions, and the occasional reaction —
-make everything feel alive.
+- **concurrent conversations**  
+  i initially overlooked the idea of having multiple group chats active at once. in testing, i
+  realized i wanted each conversation to continue even if i started a new one. with a few tweaks, i
+  ended up with a design that allows any number of chats to run simultaneously, each with its own
+  queue, tasks, and state.
 
-try it out and spin up your own multi-participant ai conversations with people who inspire you. it’s
-surprisingly fun (and sometimes hilarious) watching these personas go back and forth — even when
-you’re not talking directly to them.
+if you’re curious about the nitty-gritty:
 
-## final thoughts
+- **[**/api/chat/route.ts**](https://github.com/alanagoyal/dialogue/blob/main/app/api/chat/route.ts)**  
+  the api endpoint for composing prompts and fetching responses from the ai model.
 
-as always, the full code is available on github:
+- **[**/lib/message-queue.ts**](https://github.com/alanagoyal/dialogue/blob/main/lib/message-queue.ts)**  
+  the heart of the conversation flow: it manages priority-based tasks, timing delays, reaction
+  logic, and more.
 
-- [**/api/chat/route.ts**](https://github.com/alanagoyal/dialogue/blob/main/app/api/chat/route.ts):
-  the api endpoint that composes prompts and retrieves responses from the ai model.
-- [**/lib/message-queue.ts**](https://github.com/alanagoyal/dialogue/blob/main/lib/message-queue.ts):
-  the heart of the conversation flow, including priority-based task handling, timing delays, and
-  reaction logic.
-- [**/data/initial-contacts.ts**](https://github.com/alanagoyal/dialogue/blob/main/data/initial-contacts.ts):
-  where all the persona prompts (like elon musk, steve jobs, etc.) live.
+- **[**/data/initial-contacts.ts**](https://github.com/alanagoyal/dialogue/blob/main/data/initial-contacts.ts)**  
+  where i store each persona’s style prompt—like elon musk, steve jobs, etc.
 
-it's certainly not perfect, and in fact, i imagine there are probably much better ways to handle
-many of the things i mentioned above. if you have questions about why i made certain choices or
-suggestions for how to make it better, please reach out to me on [x](https://x.com/alanaagoyal).
+it’s certainly not perfect, and i imagine there are countless ways to improve it. if you have
+questions or ideas for making it better, feel free to reach out on [x](https://x.com/alanaagoyal).
+
+## up next
+
+finally, engineering the group chat itself was only half of the fun. in a separate post, i’ll dive
+into the details of the imessage interface - from the scrolling gradient to the message tails to the
+sound effects. in the meantime, try it out for yourself and spin up your own conversations with
+people who inspire you. it’s quite fun (and sometimes hilarious) to partake in the conversation or
+sit back and watch the chaos unfold!
