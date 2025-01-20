@@ -91,7 +91,8 @@ export default async function BlogPost({ params }: Props) {
                      prose-ul:pl-8 prose-ol:pl-8
                      prose-ol:[counter-reset:list-counter] prose-ol:list-decimal
                      prose-ol:ml-4
-                     prose-img:rounded-lg prose-img:mx-auto"
+                     prose-img:rounded-lg prose-img:mx-auto
+                     [&_video]:rounded-lg [&_video]:mx-auto"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
           <TweetHydrator content={post.content} />

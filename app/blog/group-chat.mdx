@@ -17,11 +17,13 @@ in real life, group chats are often unstructured, chaotic, and dynamic. people r
 pace, interrupt each other, add or remove people mid-conversation, and (if you're really popular)
 bounce between several conversations at once. in my
 [latest project](https://alanagoyal.com/messages), i tried to replicate this same experience, but
-replaced my contact list with ai replicas of people who inspire me. the result is a system that
-feels strikingly realistic and fun.
+replaced my contact list with ai replicas of people who inspire me. the idea came from my friend
+[sharif](https://x.com/sharifshameem), who mentioned he'd been using claude to generate
+socratic-style conversations between ai personas to learn about various topics. the result is a
+system that feels strikingly realistic and fun.
 
-<div style={{ position: "relative", width: "100%", borderRadius: "8px", overflow: "hidden" }}>
-  <video src="/group-chat/demo.mp4" controls style={{ width: "100%", display: "block" }} />
+<div style={{ position: "relative", width: "100%", borderRadius: "12px", overflow: "hidden" }}>
+  <video src="/group-chat/demo.mp4" autoPlay loop muted playsInline controls style={{ width: "100%", display: "block" }} />
 </div>
 
 this blog post walks through how i engineered "the perfect group chat". i'll walk through the system
@@ -590,14 +592,14 @@ i learned a ton through this project. in particular:
 
 if you’re curious about the nitty-gritty:
 
-- **[**/api/chat/route.ts**](https://github.com/alanagoyal/dialogue/blob/main/app/api/chat/route.ts)**  
+- **[**/api/chat/route.ts**](https://github.com/alanagoyal/messages/blob/main/app/api/chat/route.ts)**  
   the api endpoint for composing prompts and fetching responses from the ai model.
 
-- **[**/lib/message-queue.ts**](https://github.com/alanagoyal/dialogue/blob/main/lib/message-queue.ts)**  
+- **[**/lib/message-queue.ts**](https://github.com/alanagoyal/messages/blob/main/lib/message-queue.ts)**  
   the heart of the conversation flow: it manages priority-based tasks, timing delays, reaction
   logic, and more.
 
-- **[**/data/initial-contacts.ts**](https://github.com/alanagoyal/dialogue/blob/main/data/initial-contacts.ts)**  
+- **[**/data/initial-contacts.ts**](https://github.com/alanagoyal/messages/blob/main/data/initial-contacts.ts)**  
   where i store each persona’s style prompt—like elon musk, steve jobs, etc.
 
 it’s certainly not perfect, and i imagine there are countless ways to improve it. if you have
