@@ -100,14 +100,13 @@ below, i'll walk through everything in more detail.
 
 ## contacts
 
-one of the first challenges is making these ai participants sound like the people themselves. with a
-well-known figure and a good model, you can often get away with a simple prompt like “respond to
-this message as elon musk” and the model will actually do a decent job. but in an effort to make the
-responses feel more realistic, i used o1 to generate concise personality prompts for each persona. i
-asked to keep the prompts short and simple with context on who the person is and how they
-communicate, rather than what they communicate about. i personally find it frustrating when you're
-communicating with a chatbot that is limited in what it can talk about, so i wanted to make sure the
-prompts focused on the "how" rather than the "what".
+at the core of the system is the contact data. with a well-known figure and a good model, you can
+often get away with a simple prompt like “respond to this message as elon musk” and the model will
+do a pretty good job. but in an effort to make the responses feel more realistic, i used o1 to
+generate concise personality prompts for each person. i kept the prompts short and simple
+with context on who the person is and how they communicate, rather than what they communicate about.
+i personally find it frustrating when you're communicating with a chatbot that is limited in what it
+can talk about, so i wanted to make sure the prompts focused on the "how" rather than the "what".
 
 these contacts and prompts are stored in a separate data file (`initial-contacts.ts`).
 
@@ -123,8 +122,8 @@ export const initialContacts: InitialContact[] = [
 ];
 ```
 
-in the chat endpoint, when the llm generates the next message, it's told to choose the next logical
-participant and mimic their style.
+in the chat endpoint, the llm is told to choose the next participant and mimic their style based on
+the prompt.
 
 ```javascript
 const prompt = `
@@ -145,23 +144,13 @@ const prompt = `
     `;
 ```
 
-i also created some initial conversations with some of my favorite people to populate the empty
+i also created a few initial conversations with some of my favorite people to populate the empty
 state. these conversations are stored in a separate data file (`initial-conversations.ts`) and
-loaded when the app first starts. the app combines these initial conversations with any user-created
-ones that are stored in local storage.
-
-here's how the conversation management works:
-
-1. when the app loads, it first loads the initial conversations from the data file
-2. then it checks local storage for any saved conversations using the storage key
-3. if there are saved conversations, it:
-   - preserves any modifications to initial conversations (like added messages or changed settings)
-   - adds any new user-created conversations
-4. the app maintains this state by saving to local storage whenever conversations are updated
-
-this means that users can start with some interesting example conversations, but also modify them or
-create their own. all user changes persist across sessions, while the initial conversations serve as
-a starting point that can be customized.
+loaded alongside user-created conversations from local storage. when the application loads, it first
+imports the initial conversations, then checks local storage for any saved conversations. if found,
+it preserves any modifications to initial conversations (such as new messages or recipients) as well
+as any new user-created conversations. this state is maintained by automatically saving to local
+storage whenever conversations are updated.
 
 ```javascript
 // load and merge initial conversations and saved conversations
@@ -652,7 +641,7 @@ i learned a ton through this project. in particular:
   `claude-3-5-sonnet-latest`, `grok-beta`) and log everything for evals. claude-3-5-sonnet-latest
   produced the most human-like interactions in my tests, so i settled on that.
 
- <img src="/group-chat/evals.png" width="90%" />
+<img src="/group-chat/evals.png" width="90%" />
 
 - **handling user interruptions**  
   coordinating multiple threads, user messages, ai concurrency, and reaction timing required careful
