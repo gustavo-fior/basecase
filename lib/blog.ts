@@ -82,6 +82,18 @@ function createTweetComponent() {
   }
 }
 
+function addTargetBlankToLinks() {
+  return (tree: Node) => {
+    visit(tree, 'element', (node: Element) => {
+      if (node.tagName === 'a') {
+        node.properties = node.properties || {}
+        node.properties.target = '_blank'
+        node.properties.rel = 'noopener noreferrer'
+      }
+    })
+  }
+}
+
 async function processMarkdown(content: string) {
   const result = await unified()
     .use(remarkParse)
@@ -89,7 +101,8 @@ async function processMarkdown(content: string) {
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeRaw)
     .use(rehypeSlug)
-    .use(createTweetComponent) 
+    .use(createTweetComponent)
+    .use(addTargetBlankToLinks)
     .use(rehypeHighlight)
     .use(rehypeFormat)
     .use(rehypeStringify)
