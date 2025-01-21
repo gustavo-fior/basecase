@@ -5,12 +5,12 @@ readingTimeMin: 10
 hidden: false
 meta:
   og:title: "engineering the perfect group chat"
-  og:description: "building an ai-powered group chat (that actually feels human)"
+  og:description: "how i built an ai-powered group chat (that actually feels human)"
   og:image: "/group-chat/og.png"
   twitter:image: "/group-chat/og.png"
   twitter:card: "summary_large_image"
   twitter:title: "engineering the perfect group chat"
-  twitter:description: "building an ai-powered group chat (that actually feels human)"
+  twitter:description: "how i built an ai-powered group chat (that actually feels human)"
 ---
 
 in real life, group chats are often unstructured, chaotic, and dynamic. people respond at their own
@@ -23,13 +23,13 @@ socratic-style conversations between ai personas to learn about various topics. 
 system that feels strikingly realistic and fun.
 
 <div style={{ marginBlock: "1rem" }}>
-  <video 
-    src="/group-chat/demo.mp4" 
-    autoPlay 
-    loop 
-    muted 
-    playsInline 
-    style={{ width: "100%", display: "block", borderRadius: "0.5rem" }} 
+  <video
+    src="/group-chat/demo.mp4"
+    autoPlay
+    loop
+    muted
+    playsInline
+    style={{ width: "100%", display: "block", borderRadius: "0.5rem" }}
   />
 </div>
 
@@ -597,6 +597,12 @@ i learned a ton through this project. in particular:
   ended up with a design that allows any number of chats to run simultaneously, each with its own
   queue, tasks, and state.
 
+a big thank you to adrian, [ankur](https://x.com/ankgryl), [eden](https://x.com/eden_halperin),
+[jj](https://x.com/_ijjk), [ornella](https://x.com/ornelladotcom), [riley](https://x.com/rtwlz), &
+[sharif](https://x.com/sharifshameem) for their feedback and help tackling these challenges. i
+should also give a shout out to [windsutf](https://codeium.com/windsurf) for helping me write a lot
+of this code.
+
 if you’re curious about the nitty-gritty:
 
 - **[**/api/chat/route.ts**](https://github.com/alanagoyal/messages/blob/main/app/api/chat/route.ts)**  
@@ -614,8 +620,7 @@ questions or ideas for making it better, feel free to reach out on [x](https://x
 
 ## up next
 
-finally, engineering the group chat itself was only half of the fun. in a separate post, i’ll dive
-into the details of the imessage interface - from the scrolling gradient to the message tails to the
-sound effects. in the meantime, try it out for yourself and spin up your own conversations with
-people who inspire you. it’s quite fun (and sometimes hilarious) to partake in the conversation or
-sit back and watch the chaos unfold!
+finally, building this backend was only half of the fun. in a separate post, i’ll dive
+into the wizardry involved in building the frontend to look and feel exactly like imessage. in the meantime, try it out for yourself and spin
+up your own conversations with people who inspire you. it’s quite fun (and sometimes hilarious) to
+partake in the conversation or sit back and watch the chaos unfold!
