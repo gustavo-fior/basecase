@@ -1,6 +1,6 @@
 ---
 title: "engineering the perfect group chat"
-date: "2025-01-20"
+date: "2025-01-21"
 readingTimeMin: 10
 hidden: false
 meta:
@@ -22,19 +22,23 @@ replaced my contact list with ai replicas of people who inspire me. the idea cam
 socratic-style conversations between ai personas to learn about various topics. the result is a
 system that feels super fun and strikingly realistic.
 
-<div style={{ marginBlock: "1rem" }}>
-  <video
-    src="/group-chat/demo.mp4"
-    autoPlay
-    loop
-    muted
-    playsInline
-    style={{ width: "100%", display: "block", borderRadius: "0.5rem" }}
-  />
-</div>
+<tweet
+  name="alana goyal"
+  handle="alanaagoyal"
+  avatar="/avatar.png"
+  content="a good personal website should feel personal\n\nlike reading someone’s notes \n\n...or scrolling through their messages 🙃\n\nalanagoyal.com/messages"
+  date="january 21, 2025"
+  likes=98
+  retweets=4
+  replies=11
+  url="https://x.com/alanaagoyal/status/1881738277440688387"
+  mediaUrl="/group-chat/demo.gif"
+  mediaType="image"
+  mediaAspectRatio="1"
+/>
 
-this blog post walks through how i engineered "the perfect group chat". i'll walk through the system
-architecture and dive into the code in detail.
+this is a technical write up on how i engineered "the perfect group chat". i'll walk through the
+system architecture and dive into the code in detail.
 
 ## what is a group chat?
 
@@ -52,6 +56,17 @@ to start, let’s talk about group chats. a good group chat has the following ch
 
 these human dynamics keep group chats interesting and lively. my goal was to replicate them in an
 ai-native application with inspirational figures instead of real humans.
+
+<div style={{ marginBlock: "1rem" }}>
+  <video
+    src="/group-chat/demo.mp4"
+    autoPlay
+    loop
+    muted
+    playsInline
+    style={{ width: "100%", display: "block", borderRadius: "0.5rem" }}
+  />
+</div>
 
 ## the high-level implementation
 
@@ -94,6 +109,8 @@ communicate, rather than what they communicate about. i personally find it frust
 communicating with a chatbot that is limited in what it can talk about, so i wanted to make sure the
 prompts focused on the "how" rather than the "what".
 
+these contacts and prompts are stored in a separate data file (`initial-contacts.ts`).
+
 ```javascript
 export const initialContacts: InitialContact[] = [
   {
@@ -126,6 +143,56 @@ const prompt = `
       })
       .join("\n")}
     `;
+```
+
+i also created some initial conversations with some of my favorite people to populate the empty
+state. these conversations are stored in a separate data file (`initial-conversations.ts`) and
+loaded when the app first starts. the app combines these initial conversations with any user-created
+ones that are stored in local storage.
+
+here's how the conversation management works:
+
+1. when the app loads, it first loads the initial conversations from the data file
+2. then it checks local storage for any saved conversations using the storage key
+3. if there are saved conversations, it:
+   - preserves any modifications to initial conversations (like added messages or changed settings)
+   - adds any new user-created conversations
+4. the app maintains this state by saving to local storage whenever conversations are updated
+
+this means that users can start with some interesting example conversations, but also modify them or
+create their own. all user changes persist across sessions, while the initial conversations serve as
+a starting point that can be customized.
+
+```javascript
+// load and merge initial conversations and saved conversations
+useEffect(() => {
+  const saved = localStorage.getItem(STORAGE_KEY);
+
+  let allConversations = [...initialConversations];
+
+  if (saved) {
+    const parsedConversations = JSON.parse(saved);
+    const initialIds = new Set(initialConversations.map((conv) => conv.id));
+    const userConversations = [];
+    const modifiedInitialConversations = new Map();
+
+    for (const savedConv of parsedConversations) {
+      if (initialIds.has(savedConv.id)) {
+        modifiedInitialConversations.set(savedConv.id, savedConv);
+      } else {
+        userConversations.push(savedConv);
+      }
+    }
+
+    allConversations = allConversations.map((conv) =>
+      modifiedInitialConversations.has(conv.id) ? modifiedInitialConversations.get(conv.id) : conv
+    );
+
+    allConversations = [...allConversations, ...userConversations];
+  }
+
+  setConversations(allConversations);
+}, []);
 ```
 
 ## chat completion endpoint
@@ -620,7 +687,11 @@ questions or ideas for making it better, feel free to reach out on [x](https://x
 
 ## up next
 
-finally, building this backend was only half of the fun. in a separate post, i’ll dive into the
-wizardry involved in building the frontend to look and feel exactly like imessage. in the meantime,
-try it out for yourself and spin up your own conversations with people who inspire you. it’s quite
-fun (and sometimes hilarious) to partake in the conversation or sit back and watch the chaos unfold!
+finally, building the backend was only half of the fun. in a separate post, i’ll dive into the
+wizardry involved to make it look and feel exactly like imessage. little details like the background
+gradient, mentions, message tails, and sound effects took a lot of effort, but were well worth it to
+get just right.
+
+in the meantime, try it out for yourself and spin up your own conversations with people who inspire
+you. it’s quite fun (and sometimes hilarious) to partake in the conversation or sit back and watch
+the chaos unfold!
