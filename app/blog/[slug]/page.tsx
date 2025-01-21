@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getPostBySlug, getAllPosts } from "@/lib/blog";
 import Layout from "@/components/layout";
 import TweetHydrator from "@/components/tweet-hydrator";
+import VideoHydrator from "@/components/video-hydrator";
 import CopyButton from "@/components/copy-button";
 import "highlight.js/styles/github-dark.css";
 
@@ -96,6 +97,7 @@ export default async function BlogPost({ params }: Props) {
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
           <TweetHydrator content={post.content} />
+          <VideoHydrator content={post.content} />
         </>
       </article>
     </Layout>
