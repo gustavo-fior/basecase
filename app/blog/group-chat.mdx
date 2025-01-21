@@ -648,9 +648,11 @@ i learned a ton through this project. in particular:
 
 - **realistic personas**  
   one of the trickiest parts was making the ai replicas sound believable. i used the
-  [braintrust](https://braintrust.dev) proxy to easily swap out different llms (gpt-4o-mini,
-  claude-3-5-sonnet-latest, grok-beta) and log everything for evals. claude-3-5-sonnet-latest
+  [braintrust](https://braintrust.dev) proxy to easily swap out different llms (`gpt-4o-mini`,
+  `claude-3-5-sonnet-latest`, `grok-beta`) and log everything for evals. claude-3-5-sonnet-latest
   produced the most human-like interactions in my tests, so i settled on that.
+
+ <img src="/group-chat/evals.png" width="90%" />
 
 - **handling user interruptions**  
   coordinating multiple threads, user messages, ai concurrency, and reaction timing required careful
