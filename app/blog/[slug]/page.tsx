@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getPostBySlug, getAllPosts } from "@/lib/blog";
 import Layout from "@/components/layout";
 import TweetHydrator from "@/components/tweet-hydrator";
+import VideoHydrator from "@/components/video-hydrator";
 import CopyButton from "@/components/copy-button";
 import "highlight.js/styles/github-dark.css";
 
@@ -91,10 +92,12 @@ export default async function BlogPost({ params }: Props) {
                      prose-ul:pl-8 prose-ol:pl-8
                      prose-ol:[counter-reset:list-counter] prose-ol:list-decimal
                      prose-ol:ml-4
-                     prose-img:rounded-lg prose-img:mx-auto"
+                     prose-img:rounded-lg prose-img:mx-auto
+                     [&_video]:rounded-lg [&_video]:mx-auto"
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
           <TweetHydrator content={post.content} />
+          <VideoHydrator content={post.content} />
         </>
       </article>
     </Layout>
