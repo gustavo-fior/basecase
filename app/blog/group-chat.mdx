@@ -28,9 +28,9 @@ system that feels super fun and strikingly realistic.
   avatar="/avatar.png"
   content="a good personal website should feel personal\n\nlike reading someone’s notes \n\n...or scrolling through their messages 🙃\n\nalanagoyal.com/messages"
   date="january 21, 2025"
-  likes=98
-  retweets=4
-  replies=11
+  likes=359
+  retweets=21
+  replies=60
   url="https://x.com/alanaagoyal/status/1881738277440688387"
   mediaUrl="/group-chat/demo.gif"
   mediaType="image"
@@ -103,9 +103,9 @@ below, i'll walk through everything in more detail.
 at the core of the system is the contact data. with a well-known figure and a good model, you can
 often get away with a simple prompt like “respond to this message as elon musk” and the model will
 do a pretty good job. but in an effort to make the responses feel more realistic, i used o1 to
-generate concise personality prompts for each person. i kept the prompts short and simple
-with context on who the person is and how they communicate, rather than what they communicate about.
-i personally find it frustrating when you're communicating with a chatbot that is limited in what it
+generate concise personality prompts for each person. i kept the prompts short and simple with
+context on who the person is and how they communicate, rather than what they communicate about. i
+personally find it frustrating when you're communicating with a chatbot that is limited in what it
 can talk about, so i wanted to make sure the prompts focused on the "how" rather than the "what".
 
 these contacts and prompts are stored in a separate data file (`initial-contacts.ts`).
