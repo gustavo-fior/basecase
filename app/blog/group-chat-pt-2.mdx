@@ -1,21 +1,21 @@
 ---
-title: "engineering the perfect group chat (pt 2)"
+title: "engineering the perfect group chat (part 2)"
 date: "2025-01-21"
 readingTimeMin: 10
 meta:
-  "og:title": "engineering the perfect group chat (pt 2)"
+  "og:title": "engineering the perfect group chat (part 2)"
   og:description: "how i replicated apple's imessage ui in an autonomous group chat"
   og:image: "/group-chat/og.png"
   twitter:image: "/group-chat/og.png"
   twitter:card: "summary_large_image"
-  twitter:title: "engineering the perfect group chat (pt 2)"
+  twitter:title: "engineering the perfect group chat (part 2)"
   twitter:description: "how i replicated apple's imessage ui in an autonomous group chat"
 ---
 
-last week, i launched a fun project that lets you chat with ai personas in a group chat that looks
-and feels like imessage. in [pt 1](/blog/group-chat), i shared how i architected the backend so the
-ai participants could talk autonomously, like real people who interrupt each other and keep chatting
-with or without the other participants. now, let's switch gears and focus on the frontend.
+last week, i launched a fun project that lets you chat with ai personas in a group chat setting that
+both looks and feels exactly like imessage. in [part 1](/blog/group-chat), i walked through how i
+built the backend to make the ai personas chat autonomously and mimic the dynamics of a real group
+chat. in this post, i want to switch gears and focus on the frontend.
 
 ## the magic of imessage
 
@@ -26,27 +26,140 @@ closely as possible:
   on their position on the screen
 - **frosted glass effect**: the header and footer have a semi-transparent, blurred look that allows
   content behind it to subtly show through, giving a sense of depth while maintaining readability
-- **message reactions**: like hearts, likes, laughs that animate in and out
+- **reactions**: the familiar heart, like, dislike, laugh, emphasize, and question reactions animate
+  in and out
 - **mentions**: @-mentions turn bright blue with a subtle bounce when a participant's name is typed
 - fun sounds and animations sprinkled throughout
 
 it wasn’t until i tried building these elements from scratch that i fully grasped how much is
-happening under the hood. each of these details requires a good deal of front-end trickery, from
-carefully placed gradients to dynamic css variables to keep everything in sync. let’s walk through
-them.
+happening under the hood. each detail requires a good amount of front-end trickery, from carefully
+placed gradients and svg masks to rich text editors and css animations.
 
 ## overview of components
 
 i split the ui into four main components to keep things organized:
 
-- **chat area**: a top-level container that runs from the header to the message input at the bottom
-- **chat header**: the top part of the chat area, showing the participants and a search bar
+- **chat area**: a top-level container that includes all of the components below
+- **chat header**: the top part of the chat area, showing the conversation's participants
 - **message list**: the scrollable body, where messages and reactions appear
 - **message input**: a text editor for typing new messages, including @-mentions
 
 <img src="/group-chat-2/layout.png" alt="layout" />
 
-here is a simplified code snippet showing how the components fit together:
+let’s walk through how they work together to achieve the imessage look and feel.
+
+## message bubbles
+
+one of the harder parts of replicating imessage was getting the signature blue bubbles just right.
+you've probably noticed that messages near the top of the screen look lighter and those near the
+bottom look darker. that’s because there's a very subtle gradient that shifts with your scroll
+position.
+
+<img src="/group-chat-2/gradient.png" alt="gradient" />
+
+to create this gradient effect, i used a technique inspired by
+[lucas bebber](https://x.com/lucasbebber) (found on
+[codepen](https://codepen.io/lbebber/pen/RVegdO)). here's how it works:
+
+1. there's a large gradient background in the chat area itself:
+
+```typescript
+<div
+  className={cn(
+    "absolute inset-0 bg-gradient-to-b from-[#43CDF6] to-[#0A7CFF]",
+    isMobileView ? "top-24" : "top-16",
+    "bottom-16"
+  )}
+/>
+```
+
+2. each bubble uses an svg-based border for its outline and tail, combined with a pseudo element
+   that has the same gradient pinned with `background-attachment: fixed`. the border is white
+   (`#FFFFFF`) in light mode and dark gray (`#1A1A1A`) in dark mode, so it gives the illusion that
+   the message bubble is just sitting on top of the background. for messages from the user, a
+   transparent center that acts like a window. the fixed gradient doesn't scroll with the rest of
+   the page, so the bubble shows lighter blue near the top and gradually shifts to a deeper blue as
+   you scroll down.
+
+```typescript
+isMe ? "border-[17px] border-solid border-r-[22px] text-white
+before:content-[''] before:absolute before:inset-[-17px] before:bg-[linear-gradient(#43CDF6,#0A7CFF)]
+before:bg-fixed before:-z-10"
+```
+
+- `before:content-['']` creates an empty `::before` pseudo element
+- `before:absolute before:inset-[-17px]` expands it beyond the bubble’s box, so it covers more area
+  behind the bubble shape
+- `before:bg-[linear-gradient(#43CDF6,#0A7CFF)] before:bg-fixed` sets the same blue gradient (from
+  the chat area) and pins it to the viewport with `background-attachment: fixed`
+- placing it behind the bubble (`before:-z-10`) ensures it shows through the transparent portion of
+  the svg outline.
+
+3. for messages from the other participants, the svg mask is given a center that is light gray
+   (`#F3F4F6`) in light mode and dark gray (`#404040`) in dark mode.
+
+4. the typing indicator follows the same pattern with the typing bubble shape instead of the message
+   tail. at first, it’s displayed with some placeholder dots that are animated to blink from left to
+   right as the recipient types. after the typing delay, the typing bubble switches to a message
+   bubble with the content inside.
+
+<img src="/group-chat-2/bubbles.png" alt="message bubbles" />
+
+5. the reactions are a bit trickier. each reaction icon is masked via `webkitmaskimage` or
+   `maskimage`, then filled with the fixed gradient. here’s an example:
+
+```typescript
+style={{
+  ...(reaction.sender === "me"
+    ? {
+        WebkitMaskImage: `url('${getReactionIconSvg(isMe, reaction.type)}')`,
+        maskImage: `url('${getReactionIconSvg(isMe, reaction.type)}')`,
+        WebkitMaskSize: "contain",
+        maskSize: "contain",
+        WebkitMaskRepeat: "no-repeat",
+        maskRepeat: "no-repeat",
+        WebkitMaskPosition: "center",
+        maskPosition: "center",
+        background: "linear-gradient(to bottom, #43CDF6, #0A7CFF)",
+        backgroundAttachment: "fixed",
+      }
+    : {
+        backgroundImage: `url('${getReactionIconSvg(isMe, reaction.type)}')`,
+        backgroundSize: "contain",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+      }),
+}}
+```
+
+the result is that each reaction bubble displays the same fixed gradient behind the scenes, giving
+them the same color variation as the main message bubbles. without the pseudo elements,
+[mobile browsers struggle with fixed backgrounds](https://www.reddit.com/r/csshelp/comments/1cefzv4/trying_to_get_a_fixed_background_on_mobile/).
+
+once the gradients, masks, and pseudo elements are all in place, we get the dynamic, imessage-style
+effect: user messages look light at the top, deeper blue at the bottom, and all the reaction icons
+are seamlessly tinted to match.
+
+## the frosted glass effect
+
+the "frosted glass" effect is another important part of imessage's look and feel. essentially, the
+chat header and message input have a semi-transparent, blurred look that allows the message list
+content behind them to subtly show through like "frosted glass".
+
+<div style={{ marginBlock: "1rem" }}>
+  <video
+    src="/group-chat-2/scroll.mp4"
+    autoPlay
+    loop
+    muted
+    playsInline
+    style={{ width: "100%", display: "block", borderRadius: "0.5rem" }}
+  />
+</div>
+
+the trick to creating this effect is to use absolute positioning to position the chat header and
+message input on top of the message list, then add margins to the scrollbar to make it appear as if
+the message list is in between them.
 
 ```typescript
 export function ChatArea() {
@@ -55,10 +168,16 @@ export function ChatArea() {
       <div className="absolute top-0 left-0 right-0 z-50 bg-background/50 backdrop-blur-md">
         <ChatHeader />
       </div>
+      <div
+        className={cn(
+          "absolute inset-0 bg-gradient-to-b from-[#43CDF6] to-[#0A7CFF]",
+          isMobileView ? "top-24" : "top-16",
+          "bottom-16"
+        )}
+      />
       <ScrollArea withVerticalMargins bottomMargin="calc(var(--dynamic-height, 64px))">
         <div className="pb-[var(--dynamic-height,64px)]">
           <div className="flex-1 relative">
-            <div className="absolute inset-0 bg-gradient-to-b from-[#43CDF6] to-[#0A7CFF]" />
             <div className="relative h-full flex">
               <div className="w-3 bg-background" />
               <MessageList />
@@ -75,176 +194,21 @@ export function ChatArea() {
 }
 ```
 
-in the sections below, i'll walk through the details.
-
-## message bubbles
-
-one of the harder parts of replicating imessage was getting the signature blue bubbles just right.
-you've probably noticed that messages near the top of the screen look lighter, and those near the
-bottom look darker. that’s because there's a very subtle gradient that shifts with your scroll
-position.
-
-<img src="/group-chat-2/gradient.png" alt="gradient" />
-
-to create this gradient effect, i used a technique inspired by
-[lucas bebber](https://x.com/lucasbebber) (found on
-[codepen](https://codepen.io/lbebber/pen/RVegdO)). here's how it works:
-
-1. there's a large gradient background that spans the entire chat area
-   (`bg-gradient-to-b from-[#43CDF6] to-[#0A7CFF]`)
-2. each message bubble is created using an svg with two key parts:
-   - a border that forms the bubble's outline and tail: the border is white (`#FFFFFF`) in light
-     mode and dark gray (`#1A1A1A`) in dark mode
-   - for messages from the user: a transparent center that acts like a window
-   - for messages from the other participants: a center that is light gray (`#F3F4F6`) in light mode
-     and dark gray (`#404040`) in dark mode
-3. the typing indicator follows the same pattern with the typing bubble shape instead of the message
-   tail. at first, it’s displayed with some placeholder dots that are animated to blink from left to
-   right as the recipient types. after the typing delay, the typing bubble switches to a message
-   bubble with the content inside.
-4. the rest of the chat area is built up of spacer divs that essentially cover up the gradient
-   background. they're white (`#FFFFFF`) in light mode and dark gray (`#1A1A1A`) in dark mode and
-   fit in seamlessly with the borders of the message bubble svgs.
-
-<img src="/group-chat-2/bubbles.png" alt="message bubbles" />
-
-when the bubbles are placed over the gradient background, the transparent center allows the gradient
-to show through, creating the illusion of blue message bubbles that appear lighter at the top of the
-screen and darker at the bottom.
-
-```javascript
-<div
-  className={cn(
-    // shared base classes
-    "group relative max-w-[75%] break-words flex-none",
-
-    // conditional classes
-    isSystemMessage
-      ? "bg-muted/50 rounded-lg text-center"
-      : isTyping
-      ? "border-[17px] border-solid border-l-[22px] bg-[#F3F4F6] dark:bg-[#404040] text-gray-900 dark:text-gray-100"
-      : isMe
-      ? "border-[17px] border-solid border-r-[22px] text-white"
-      : "border-[17px] border-solid border-l-[22px] bg-[#F3F4F6] dark:bg-[#404040] text-gray-900 dark:text-gray-100"
-  )}
-  style={
-    !isSystemMessage
-      ? {
-          borderImageSlice: isMe ? "31 43 31 31" : "31 31 31 43",
-          borderImageSource: `url('${
-            isMe ? rightBubbleSvg : isTyping ? typingIndicatorSvg : leftBubbleSvg
-          }')`,
-        }
-      : undefined
-  }
->
-  {/* message content */}
-</div>
-```
-
-the main downside with this approach is that reactions (which sit on top of the bubble) don’t get
-the same gradient. this bothered me, so i experimented with another approach that uses fixed
-backgrounds. with this implemenation, the reaction bubbles match the color of the message bubbles
-because they have the same fixed background.
-
-<div style={{ marginBlock: "1rem" }}>
-  <video
-    src="/group-chat-2/bg-attachment.mp4"
-    autoPlay
-    loop
-    muted
-    playsInline
-    style={{ width: "100%", display: "block", borderRadius: "0.5rem" }}
-  />
-</div>
-
-instead of adding the gradient in the message list component, we simply add it to the message
-bubble: `bg-[linear-gradient(to_bottom,#43CDF6,#0A7CFF)] bg-fixed`. then for the reactions, we use
-the same linear gradient with `backgroundAttachment: fixed;` and overlay the reaction icon on top.
-
-```javascript
-<div
-  className={cn(
-    "w-8 h-8 flex items-center justify-center text-sm relative cursor-pointer",
-    index !== array.length - 1 && (isMe ? "-mr-7" : "-ml-7"),
-    `z-[${array.length - index}]`
-  )}
-  style={{
-    ...(reaction.sender === "me"
-      ? {
-          WebkitMaskImage: `url('${getReactionIconSvg(isMe, reaction.type)}')`,
-          maskImage: `url('${getReactionIconSvg(isMe, reaction.type)}')`,
-          WebkitMaskSize: "contain",
-          maskSize: "contain",
-          WebkitMaskRepeat: "no-repeat",
-          maskRepeat: "no-repeat",
-          WebkitMaskPosition: "center",
-          maskPosition: "center",
-          background: "linear-gradient(to bottom, #43CDF6, #0A7CFF)",
-          backgroundAttachment: "fixed",
-        }
-      : {
-          backgroundImage: `url('${getReactionIconSvg(isMe, reaction.type)}')`,
-          backgroundSize: "contain",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center",
-        }),
-  }}
->
-  {reaction.sender === "me" && (
-    <div className="absolute inset-0 flex items-center justify-center">
-      <Image
-        src={getReactionIconSvg(isMe, reaction.type, true)}
-        width={32}
-        height={32}
-        alt={`${reaction.type} reaction`}
-        className={cn("relative z-10 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2")}
-      />
-    </div>
-  )}
-</div>
-```
-
-this works well on desktop, but `backgroundAttachment: fixed;` isn’t fully supported on mobile
-browsers, so i decided to launch with the other approach. i would love to figure out a solution that
-works for reactions across all platforms. if you have any ideas,
-[please let me know](https://x.com/alanaagoyal).
-
-## the frosted glass effect
-
-apple’s frosted glass effect (the translucent blur behind headers and footers) is a big part of the
-imessage look. to recreate it here, i positioned the header and input on top of the message list,
-then added margins in the scrollbar so that the message list appears between them.
-
-specifically:
-
-<div style={{ marginBlock: "1rem" }}>
-  <video
-    src="/group-chat-2/scroll.mp4"
-    autoPlay
-    loop
-    muted
-    playsInline
-    style={{ width: "100%", display: "block", borderRadius: "0.5rem" }}
-  />
-</div>
-
-in the code shared above, you'll notice the following:
-
 - `bg-background/50` and `backdrop-blur-md` applies the translucent background and blur effect to
   the chat header and message input components.
 - `z-50` ensures these frosted panels appear above the message list content.
 - `withVerticalMargins` adds a margin to the top and bottom of the scrollbar so that it doesn't get
   hidden behind the chat header and message input.
+- `--dynamic-height` is used to offset the height of the message input for multi-line messages.
 
-by combining these blur styles with vibrant blue bubbles from underneath, you get a realistic
-apple-style translucent header and footer. it’s a small detail, but adds a ton of polish and feels
-very imessage.
+by combining these blur styles with the vibrant blue bubbles from underneath, we get a realistic
+apple-style translucent header and footer. it’s a small detail, but does a lot to contribue to the
+overall imessage look and feel.
 
 ## reactions
 
-adding reactions reactions in imessage might look simple, but there are a lot of possible variations
-that made it nontrivial to implement.
+another hallmark of imessage is the reactions. at a glance, the reactions seem pretty simple, but
+like most of the project, gave me a bit of trouble.
 
 <div style={{ marginBlock: "1rem" }}>
   <video
@@ -257,7 +221,7 @@ that made it nontrivial to implement.
   />
 </div>
 
-there are a few factors to consider when displaying reactions:
+there are a few factors that determine how a reaction looks and behaves:
 
 - **type**: heart, like, dislike, laugh, question, and emphasize.
 
@@ -276,9 +240,8 @@ there are a few factors to consider when displaying reactions:
 <img src="/group-chat-2/reactions.png" alt="reactions" />
 
 once you account for orientation, color, theme, and reaction type, you end up with quite a few
-unique svgs. to manage all these permutations, i wrote a helper function that takes in parameters
-like sender, message owner, reaction type, and theme, then picks the correct svg from a folder of
-assets.
+unique svgs. to manage all these permutations, i wrote a function that takes in parameters like
+sender, message owner, reaction type, and theme, then picks the correct svg from a folder of assets.
 
 ```typescript
 const getReactionIconSvg = (
@@ -298,9 +261,7 @@ const getReactionIconSvg = (
 };
 ```
 
-to make reactions pop onto the screen more like they do in imessage, i added a quick “scale-in”
-animation when a reaction first appears. basically, the reaction element starts at a smaller size,
-then grows to full size in a fraction of a second.
+to make reactions pop onto the screen like they do in imessage, i added the following animations:
 
 ```css
 @keyframes popIn {
@@ -337,13 +298,24 @@ then grows to full size in a fraction of a second.
 }
 ```
 
-## @-mentions
+## mentions
 
 originally, i thought i could just use a plain html `<input>` for typing messages, but sadly i was
 mistaken. one of the details i was most excited to replicate was the ability to mention members of
-the chat. imessage has a very specific, delightful way of displaying mentions. when you type "@"
-then start typing the name of one of the members of the chat, the text changes to gray. then, if
-it's a match, the text changes to blue with a little shimmer and bounce animation.
+the chat. imessage has a very specific, incredibly delightful way of displaying mentions. when you
+type "@" then start typing the name of one of the members of the chat, the text changes to gray.
+then, if it's a match, the text changes to blue with a little shimmer and bounce animation.
+
+<div style={{ marginBlock: "1rem" }}>
+  <video
+    src="/group-chat-2/mention.mp4"
+    autoPlay
+    loop
+    muted
+    playsInline
+    style={{ width: "100%", display: "block", borderRadius: "0.5rem" }}
+  />
+</div>
 
 unfortunately, this type of interaction is hard to replicate in plain html, so i ended up using
 [tiptap](https://tiptap.dev). tiptap's mention extension is set up to detect when the user types
@@ -354,15 +326,6 @@ unfortunately, this type of interaction is hard to replicate in plain html, so i
 - replaces the “@name” text in the editor with a custom `<span>` that has special mention styling
 
 this styling is managed in `tiptap.css`:
-
-- we use a linear gradient that transitions from blue to white to blue
-- the gradient is clipped to the text with `-webkit-background-clip: text`
-- the text itself is made transparent so the gradient shows through
-- the shimmer animation moves the gradient across the text, making it look like it’s sparkling
-- once the animation finishes, we apply a `.shimmer-done` class so it only plays when the mention is
-  first added
-
-here’s the css:
 
 ```css
 /* suggestion styling */
@@ -399,16 +362,14 @@ here’s the css:
 }
 ```
 
-<div style={{ marginBlock: "1rem" }}>
-  <video
-    src="/group-chat-2/mention.mp4"
-    autoPlay
-    loop
-    muted
-    playsInline
-    style={{ width: "100%", display: "block", borderRadius: "0.5rem" }}
-  />
-</div>
+essentially:
+
+- there's a linear gradient that transitions from blue to white to blue
+- the gradient is clipped to the text with `-webkit-background-clip: text`
+- the text itself is made transparent so the gradient shows through
+- the shimmer animation moves the gradient across the text, making it look like it’s sparkling
+- once the animation finishes, we apply a `.shimmer-done` class so it only plays when the mention is
+  first added
 
 another surprising challenge was handling multi-line messages in the message input. in imessage,
 when your message goes beyond one line, the input gets taller, pushing the messages upward. handling
@@ -441,7 +402,7 @@ messages move up, and the scroll area stays consistent, just like imessage.
 beyond the core features of bubbles, mentions, and reactions, there were a few extra details that
 helped complete the imessage illusion:
 
-- **sound effects**: i pulled in the classic imessage “pop” and “ding” sounds. shout out to
+- **sound effects**: i pulled in the classic imessage notification sounds. shout out to
   [paul](https://x.com/pauldornier_) for the idea.
 - **sidebar**: i recreated the sidebar with the same style and functionality (pinned convos, unread
   notifications, etc).
@@ -450,7 +411,7 @@ helped complete the imessage illusion:
 - **blue cursor**: the cursor in the input is the same bright blue that you see in imessage.
 
 none of these details were quite as complex to implement as the gradient bubbles or @-mention logic,
-but they each add a bit of polish and reality to the system.
+but each detail was crucial in nailing the imessage look.
 
 ## challenges & reflections
 
@@ -473,6 +434,7 @@ if you want to take a closer look at the code:
 - **[**/components/message-input.tsx**](https://github.com/alanagoyal/messages/blob/main/components/message-input.tsx)**
   a text editor for typing new messages, including @-mentions
 
-i’m pretty happy with how it turned out, but there’s still room for improvement (especially around
-mobile support). if you spot something i could do better or have an alternative approach to any of
-these effects, i’d love to hear about it.
+i’m pretty happy with how it turned out, but there’s still room for improvement. if you spot
+something i could do better or have an alternative approach to any of these effects, i’d love to
+hear about it. reach out to me on [x](https://x.com/alanagoyal) or submit a pull request on
+[github](https://github.com/alanagoyal/messages).
