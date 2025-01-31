@@ -1,7 +1,7 @@
 ---
 title: "engineering the perfect group chat (part 2)"
-date: "2025-01-21"
-readingTimeMin: 10
+date: "2025-01-30"
+readingTimeMin: 13
 meta:
   "og:title": "engineering the perfect group chat (part 2)"
   og:description: "how i replicated apple's imessage ui in an autonomous group chat"
@@ -414,27 +414,25 @@ i love working on projects that push me to dissect how the interfaces i admire r
 hood. in many ways, this was one of the most challenging projects i’ve tackled and i learned a ton
 through it. in particular:
 
-- **building ios-grade experiences for the web**  
-  building a ui that looks and feels like imessage was tricky enough on desktop, but mobile added
-  another layer of complexity. i’d often get a feature working great on desktop, then test on mobile
-  only to find that something was totally off. in particular, the ios keyboard and scroll bars were
-  a big challenge. i had to work around them in a number of ways to get the ui to behave even close
-  to what i wanted.
-- **wrestling with svgs**  
-  this was my first time really using svgs in a project - and boy did i use them. the public folder
-  has close to a hundred svgs of different variations. using them wasn’t so much hard as it was a
-  game of shuffling assets around: hunting them down in the first place, manipulating their
-  backgrounds and borders, exporting and importing them, fiddling with their positioning, and so on.
-  it reinforced my belief that there are still so many manual workflows at the intersection of
-  design and development that could be improved.
-- **animations & the art of articulation**  
-  the biggest challenge i faced with animations was honestly finding the right words to describe
-  them to codegen tools like windsurf, chatgpt, or claude (or friends like
-  [eden](https://x.com/eden_halperin) and [john](https://x.com/JohnPhamous)). the mention animation,
-  for example, was very hard to describe in words. i spend a good hour just playing around with
-  imessage and studying what was actually happening before i could properly describe it. with all
-  the progress that has been made in codegen tools to get to the point where "if you can speak it,
-  you can build it", actually being able to articulate exactly what you want is an important skill.
+- **building ios-grade experiences for the web**: building a ui that looks and feels like imessage
+  was tricky enough on desktop, but mobile added another layer of complexity. i’d often get a
+  feature working great on desktop, then test on mobile only to find that something was totally off.
+  in particular, the ios keyboard and scroll bars were a big challenge. i had to work around them in
+  a number of ways to get the ui to behave even close to what i wanted.
+- **wrestling with svgs**: this was my first time really using svgs in a project - and boy did i use
+  them. the public folder has close to a hundred svgs of different variations. using them wasn’t so
+  much hard as it was a game of shuffling assets around: hunting them down in the first place,
+  manipulating their backgrounds and borders, exporting and importing them, fiddling with their
+  positioning, and so on. it reinforced my belief that there are still so many manual workflows at
+  the intersection of design and development that could be improved.
+- **animations & the art of articulation**: the biggest challenge i faced with animations was
+  honestly finding the right words to describe them to codegen tools like windsurf, chatgpt, or
+  claude (or friends like [eden](https://x.com/eden_halperin) and
+  [john](https://x.com/JohnPhamous)). the mention animation, for example, was very hard to describe
+  in words. i spend a good hour just playing around with imessage and studying what was actually
+  happening before i could properly describe it. with all the progress that has been made in codegen
+  tools to get to the point where "if you can speak it, you can build it", actually being able to
+  articulate exactly what you want is an important skill.
 
 a big thank you to [andy](https://x.com/andyzg3), [eden](https://x.com/eden_halperin),
 [john](https://x.com/JohnPhamous), [justin](https://x.com/defaultalive),
