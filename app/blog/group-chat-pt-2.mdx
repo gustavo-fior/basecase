@@ -56,9 +56,8 @@ position.
 
 <img src="/group-chat-2/gradient.png" alt="gradient" />
 
-to create this gradient effect, i used a technique inspired by
-[lucas bebber](https://x.com/lucasbebber) (found on
-[codepen](https://codepen.io/lbebber/pen/RVegdO)). here's how it works:
+to create this gradient effect, i used a [technique](https://codepen.io/lbebber/pen/RVegdO) inspired
+by [lucas bebber](https://x.com/lucasbebber). here's how it works:
 
 1. there's a large gradient background in the chat area itself:
 
@@ -92,47 +91,17 @@ before:bg-fixed before:-z-10"
 - `before:bg-[linear-gradient(#43CDF6,#0A7CFF)] before:bg-fixed` sets the same blue gradient (from
   the chat area) and pins it to the viewport with `background-attachment: fixed`
 - placing it behind the bubble (`before:-z-10`) ensures it shows through the transparent portion of
-  the svg outline.
+  the svg outline
 
 3. for messages from the other participants, the svg mask is given a center that is light gray
    (`#F3F4F6`) in light mode and dark gray (`#404040`) in dark mode.
 
-4. the typing indicator follows the same pattern with the typing bubble shape instead of the message
-   tail. at first, it’s displayed with some placeholder dots that are animated to blink from left to
-   right as the recipient types. after the typing delay, the typing bubble switches to a message
-   bubble with the content inside.
+4. the typing indicator follows the same pattern, but its svg mask is a typing bubble shape instead
+   of the message tail. at first, it’s displayed with some placeholder dots that are animated to
+   blink from left to right as the recipient types. after the typing delay, the typing bubble
+   switches to a message bubble with the content inside.
 
 <img src="/group-chat-2/bubbles.png" alt="message bubbles" />
-
-5. the reactions are a bit trickier. each reaction icon is masked via `webkitmaskimage` or
-   `maskimage`, then filled with the fixed gradient. the result is that each reaction bubble
-   displays the same fixed gradient behind the scenes, giving them the same color variation as the
-   main message bubbles. without the pseudo elements,
-   [mobile browsers struggle with fixed backgrounds](https://www.reddit.com/r/csshelp/comments/1cefzv4/trying_to_get_a_fixed_background_on_mobile/).
-
-```typescript
-style={{
-  ...(reaction.sender === "me"
-    ? {
-        WebkitMaskImage: `url('${getReactionIconSvg(isMe, reaction.type)}')`,
-        maskImage: `url('${getReactionIconSvg(isMe, reaction.type)}')`,
-        WebkitMaskSize: "contain",
-        maskSize: "contain",
-        WebkitMaskRepeat: "no-repeat",
-        maskRepeat: "no-repeat",
-        WebkitMaskPosition: "center",
-        maskPosition: "center",
-        background: "linear-gradient(to bottom, #43CDF6, #0A7CFF)",
-        backgroundAttachment: "fixed",
-      }
-    : {
-        backgroundImage: `url('${getReactionIconSvg(isMe, reaction.type)}')`,
-        backgroundSize: "contain",
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "center",
-      }),
-}}
-```
 
 once the gradients, masks, and pseudo elements are all in place, we get the dynamic, imessage-style
 effect: your own messages look light at the top, deeper blue at the bottom, and all the reaction
@@ -262,7 +231,32 @@ const getReactionIconSvg = (
 };
 ```
 
-to make reactions pop onto the screen like they do in imessage, i added the following animations:
+the real challenge with the reaction bubbles was getting the user reaction bubbles to match the same
+gradient as the blue bubbles. to achieve this, we use the same fixed background attachment as we do
+for the message bubbles, which gives them the same color variation as the main message bubbles.
+
+```typescript
+style={{
+  ...(reaction.sender === "me"
+    ? {
+        maskImage: `url('${getReactionIconSvg(isMe, reaction.type)}')`,
+        maskSize: "contain",
+        maskRepeat: "no-repeat",
+        maskPosition: "center",
+        background: "linear-gradient(to bottom, #43CDF6, #0A7CFF)",
+        backgroundAttachment: "fixed",
+      }
+    : {
+        backgroundImage: `url('${getReactionIconSvg(isMe, reaction.type)}')`,
+        backgroundSize: "contain",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center",
+      }),
+}}
+```
+
+finally, to make reactions pop onto the screen like they do in imessage, i added the following
+animations:
 
 ```css
 @keyframes popIn {
@@ -435,12 +429,12 @@ through it. in particular:
   design and development that could be improved.
 - **animations & the art of articulation**  
   the biggest challenge i faced with animations was honestly finding the right words to describe
-  them to codegen tools like windsurf, chatgpt, or claude (or friends like eden and john). the
-  mention animation, for example, was very hard to describe in words. i spend a good hour just
-  playing around with imessage and studying what was actually happening before i could properly
-  describe it. with all the progress that has been made in codegen tools to get to the point where
-  "if you can speak it, you can build it", actually being able to articulate exactly what you want
-  is an important skill.
+  them to codegen tools like windsurf, chatgpt, or claude (or friends like
+  [eden](https://x.com/eden_halperin) and [john](https://x.com/JohnPhamous)). the mention animation,
+  for example, was very hard to describe in words. i spend a good hour just playing around with
+  imessage and studying what was actually happening before i could properly describe it. with all
+  the progress that has been made in codegen tools to get to the point where "if you can speak it,
+  you can build it", actually being able to articulate exactly what you want is an important skill.
 
 a big thank you to [andy](https://x.com/andyzg3), [eden](https://x.com/eden_halperin),
 [john](https://x.com/JohnPhamous), [justin](https://x.com/defaultalive),
