@@ -13,31 +13,32 @@ meta:
 ---
 
 last week, i launched a fun project that lets you chat with ai personas in a group chat setting that
-both looks and feels exactly like imessage. in [part 1](/blog/group-chat), i walked through how i
-built the backend to make the ai personas chat autonomously and mimic the dynamics of a real group
-chat. in this post, i want to switch gears and focus on the frontend.
+both looks and feels remarkably similar to imessage. in [part 1](/blog/group-chat), i walked through
+how i built the backend to make the ai personas chat autonomously and mimic the dynamics of a real
+group chat. in this post, we'll switch gears and focus on the frontend and dive into the design and
+technical details behind this imessage-inspired interface.
 
-## the magic of imessage
+## why imessage?
 
-imessage has a ton of tiny details that make it so satisfying to use. i wanted to replicate them as
-closely as possible:
+imessage is beloved for its sleek, bubbly design. there are so many tiny details that make it so
+satisfying to use. i wanted to replicate them as closely as possible:
 
 - **message bubbles**: the message bubbles have a dynamic, adaptive color that subtly shifts based
-  on their position on the screen
+  on their position on the screen.
 - **frosted glass effect**: the header and footer have a semi-transparent, blurred look that allows
-  content behind it to subtly show through, giving a sense of depth while maintaining readability
+  content behind it to subtly show through, giving a sense of depth while maintaining readability.
 - **reactions**: the familiar heart, like, dislike, laugh, emphasize, and question reactions animate
-  in and out
-- **mentions**: @-mentions turn bright blue with a subtle bounce when a participant's name is typed
+  in and out.
+- **mentions**: @-mentions turn bright blue with a subtle bounce when a participant's name is typed.
 - fun sounds and animations sprinkled throughout
 
 it wasn’t until i tried building these elements from scratch that i fully grasped how much is
-happening under the hood. each detail requires a good amount of front-end trickery, from carefully
-placed gradients and svg masks to rich text editors and css animations.
+happening under the hood. each detail requires a good amount of frontend trickery - from carefully
+placed gradients and custom scroll bars to svg masks and rich text editors.
 
-## overview of components
+## quick component overview
 
-i split the ui into four main components to keep things organized:
+in this post, we'll mainly focus on four core components:
 
 - **chat area**: a top-level container that includes all of the components below
 - **chat header**: the top part of the chat area, showing the conversation's participants
@@ -45,8 +46,6 @@ i split the ui into four main components to keep things organized:
 - **message input**: a text editor for typing new messages, including @-mentions
 
 <img src="/group-chat-2/layout.png" alt="layout" />
-
-let’s walk through how they work together to achieve the imessage look and feel.
 
 ## message bubbles
 
@@ -106,7 +105,10 @@ before:bg-fixed before:-z-10"
 <img src="/group-chat-2/bubbles.png" alt="message bubbles" />
 
 5. the reactions are a bit trickier. each reaction icon is masked via `webkitmaskimage` or
-   `maskimage`, then filled with the fixed gradient. here’s an example:
+   `maskimage`, then filled with the fixed gradient. the result is that each reaction bubble
+   displays the same fixed gradient behind the scenes, giving them the same color variation as the
+   main message bubbles. without the pseudo elements,
+   [mobile browsers struggle with fixed backgrounds](https://www.reddit.com/r/csshelp/comments/1cefzv4/trying_to_get_a_fixed_background_on_mobile/).
 
 ```typescript
 style={{
@@ -132,13 +134,12 @@ style={{
 }}
 ```
 
-the result is that each reaction bubble displays the same fixed gradient behind the scenes, giving
-them the same color variation as the main message bubbles. without the pseudo elements,
-[mobile browsers struggle with fixed backgrounds](https://www.reddit.com/r/csshelp/comments/1cefzv4/trying_to_get_a_fixed_background_on_mobile/).
-
 once the gradients, masks, and pseudo elements are all in place, we get the dynamic, imessage-style
-effect: user messages look light at the top, deeper blue at the bottom, and all the reaction icons
-are seamlessly tinted to match.
+effect: your own messages look light at the top, deeper blue at the bottom, and all the reaction
+icons are seamlessly tinted to match.
+
+there is zero chance i would have figured this part out without the help of
+[eden](https://x.com/eden_halperin) and [john](https://x.com/JohnPhamous) 🫶🏼
 
 ## the frosted glass effect
 
@@ -415,9 +416,31 @@ but each detail was crucial in nailing the imessage look.
 
 ## challenges & reflections
 
-i love working on projects that challenge me to disect how the interfaces i admire really work. i
-learned a ton of interesting tricks and techniques - like svg masks, background attachments, and css
-animations.
+i love working on projects that push me to dissect how the interfaces i admire really work under the
+hood. in many ways, this was one of the most challenging projects i’ve tackled and i learned a ton
+through it. in particular:
+
+- **building ios-grade experiences for the web**  
+  building a ui that looks and feels like imessage was tricky enough on desktop, but mobile added
+  another layer of complexity. i’d often get a feature working great on desktop, then test on mobile
+  only to find that something was totally off. in particular, the ios keyboard and scroll bars were
+  a big challenge. i had to work around them in a number of ways to get the ui to behave even close
+  to what i wanted.
+- **wrestling with svgs**  
+  this was my first time really using svgs in a project - and boy did i use them. the public folder
+  has close to a hundred svgs of different variations. using them wasn’t so much hard as it was a
+  game of shuffling assets around: hunting them down in the first place, manipulating their
+  backgrounds and borders, exporting and importing them, fiddling with their positioning, and so on.
+  it reinforced my belief that there are still so many manual workflows at the intersection of
+  design and development that could be improved.
+- **animations & the art of articulation**  
+  the biggest challenge i faced with animations was honestly finding the right words to describe
+  them to codegen tools like windsurf, chatgpt, or claude (or friends like eden and john). the
+  mention animation, for example, was very hard to describe in words. i spend a good hour just
+  playing around with imessage and studying what was actually happening before i could properly
+  describe it. with all the progress that has been made in codegen tools to get to the point where
+  "if you can speak it, you can build it", actually being able to articulate exactly what you want
+  is an important skill.
 
 a big thank you to [andy](https://x.com/andyzg3), [eden](https://x.com/eden_halperin),
 [john](https://x.com/JohnPhamous), [justin](https://x.com/defaultalive),
@@ -434,7 +457,8 @@ if you want to take a closer look at the code:
 - **[**/components/message-input.tsx**](https://github.com/alanagoyal/messages/blob/main/components/message-input.tsx)**
   a text editor for typing new messages, including @-mentions
 
-i’m pretty happy with how it turned out, but there’s still room for improvement. if you spot
-something i could do better or have an alternative approach to any of these effects, i’d love to
-hear about it. reach out to me on [x](https://x.com/alanagoyal) or submit a pull request on
+i’m pretty happy with how it turned out, but there’s still a lot of room for improvement. in
+particular, i definitely cut a lot of corners on performance, accessability, and organization. if
+you spot something i could do better or have an alternative approach to any of these effects, i’d
+love to hear about it. reach out to me on [x](https://x.com/alanagoyal) or submit a pull request on
 [github](https://github.com/alanagoyal/messages).
