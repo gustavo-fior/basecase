@@ -5,6 +5,12 @@
   color: inherit;
 }
 
+/* Container styles to prevent overflow */
+.prose {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 /* Light mode - default state */
 .prose pre {
   background-color: hsl(var(--card)) !important;
@@ -15,8 +21,10 @@
   margin: 1rem 0;
   border-radius: 0.5rem;
   white-space: pre-wrap !important;
-  word-wrap: break-word !important;
+  overflow-wrap: anywhere !important;
   word-break: break-word !important;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .prose pre code {
@@ -141,4 +149,12 @@
 
 .copy-button:hover {
   opacity: 1;
+}
+
+/* Apply wrapping only for narrow screens */
+@media (max-width: 640px) {
+  .prose pre {
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+  }
 }
