@@ -635,25 +635,25 @@ drop in with a heart reaction.
 
 i learned a ton through this project. in particular:
 
-- **realistic personas**: one of the trickiest parts was making the ai replicas sound believable. the added personality
-  prompts made a big difference (shout out to [spencer](https://x.com/spenciefy) for this
-  suggestion). i was surprised to find that the biggest factor in making the ai personas sound real
-  was actually model choice. i used the [braintrust](https://braintrust.dev) proxy to easily swap
-  out different llms (`gpt-4o-mini`, `claude-3-5-sonnet-latest`, `grok-beta`) and log everything for
-  evals. claude-3-5-sonnet-latest produced the most human-like interactions in my tests, so i
-  settled on that.
+- **realistic personas**: one of the trickiest parts was making the ai replicas sound believable.
+  the added personality prompts made a big difference (shout out to
+  [spencer](https://x.com/spenciefy) for this suggestion). i was surprised to find that the biggest
+  factor in making the ai personas sound real was actually model choice. i used the
+  [braintrust](https://braintrust.dev) proxy to easily swap out different llms (`gpt-4o-mini`,
+  `claude-3-5-sonnet-latest`, `grok-beta`) and log everything for evals. claude-3-5-sonnet-latest
+  produced the most human-like interactions in my tests, so i settled on that.
 
 <img src="/group-chat/evals.png" width="90%" />
 
-- **handling user interruptions**: coordinating multiple threads, user messages, ai concurrency, and reaction timing required careful
-  engineering. in real life, group chats are chaotic, with overlapping messages and constant
-  recontextualization. i ultimately designed a priority-based queue with conversation versioning to
-  keep the experience smooth for users.
+- **handling user interruptions**: coordinating multiple threads, user messages, ai concurrency, and
+  reaction timing required careful engineering. in real life, group chats are chaotic, with
+  overlapping messages and constant recontextualization. i ultimately designed a priority-based
+  queue with conversation versioning to keep the experience smooth for users.
 
-- **concurrent conversations**: i initially overlooked the idea of having multiple group chats active at once. in testing, i
-  realized i wanted each conversation to continue even if i started a new one. with a few tweaks, i
-  ended up with a design that allows any number of chats to run simultaneously, each with its own
-  queue, tasks, and state.
+- **concurrent conversations**: i initially overlooked the idea of having multiple group chats
+  active at once. in testing, i realized i wanted each conversation to continue even if i started a
+  new one. with a few tweaks, i ended up with a design that allows any number of chats to run
+  simultaneously, each with its own queue, tasks, and state.
 
 a big thank you to adrian, [ankur](https://x.com/ankgryl), [eden](https://x.com/eden_halperin),
 [jj](https://x.com/_ijjk), [ornella](https://x.com/ornelladotcom), [riley](https://x.com/rtwlz),
