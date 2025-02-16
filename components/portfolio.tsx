@@ -227,12 +227,12 @@ export const Portfolio = () => {
           onClick={() => setIsGridView(!isGridView)}
           className="hidden md:block text-sm p-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors"
         >
-          {isGridView ? '[l] list view' : '[l] grid view'}
+          {isGridView ? '[l] list view' : '[l] logo view'}
         </button>
       </div>
 
       <div className="relative" style={{ height: totalHeight }}>
-        {/* Grid intersections - only show on md and up when in grid view */}
+        {/* Grid intersections - only show on md and up when in logo view */}
         {isGridView && (
           <div className="hidden md:block">
             {renderGridIntersections()}
