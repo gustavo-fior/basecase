@@ -7,7 +7,11 @@ import { useKeyboardShortcut } from "@/hooks/keyboard-shortcuts";
 export function GridToggle() {
   const [showGrid, setShowGrid] = useState(false);
 
-  const toggleGrid = () => setShowGrid(!showGrid);
+  const toggleGrid = () => {
+    const newState = !showGrid;
+    setShowGrid(newState);
+    localStorage.setItem("grid-enabled", JSON.stringify(newState));
+  };
 
   useKeyboardShortcut({
     handlers: [
@@ -27,6 +31,13 @@ export function GridToggle() {
       root.removeAttribute('data-grid');
     }
   }, [showGrid]);
+
+  useEffect(() => {
+    const savedGrid = localStorage.getItem("grid-enabled");
+    if (savedGrid !== null) {
+      setShowGrid(JSON.parse(savedGrid));
+    }
+  }, []);
 
   return (
     <button
