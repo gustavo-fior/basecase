@@ -42,7 +42,7 @@ export function GridToggle() {
   return (
     <button
       onClick={toggleGrid}
-      className="flex rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 py-2 px-4 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]"
+      className="hidden md:flex rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 py-2 px-4 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]"
     >
       <Grid className={`w-4 h-4 ${showGrid ? 'text-[var(--color-primary)]' : 'text-gray-500'}`} />
     </button>
