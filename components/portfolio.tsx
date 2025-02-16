@@ -225,7 +225,7 @@ export const Portfolio = () => {
         </h2>
         <button
           onClick={() => setIsGridView(!isGridView)}
-          className="hidden md:block text-sm p-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors"
+          className="hidden md:block text-sm p-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]"
         >
           {isGridView ? '[l] list view' : '[l] logo view'}
         </button>
