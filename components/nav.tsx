@@ -1,14 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { SnakeGame } from "./snake";
 import { ColorSwitcher } from "./color-switcher";
 import { ThemeSwitcher } from "./theme-switcher";
 import { GitHistory } from "./git";
-import { Gamepad, GitCommit, Keyboard, Grid } from "lucide-react";
+import { Gamepad, GitCommit, Keyboard } from "lucide-react";
 import { useKeyboardShortcut } from "../hooks/keyboard-shortcuts";
 import Shortcuts from "./shortcuts";
 import Link from "next/link";
+import { GridToggle } from "./grid-toggle";
 
 export default function Navigation() {
   const [showSnake, setShowSnake] = useState(false);
@@ -17,16 +18,6 @@ export default function Navigation() {
   const [minimizedGit, setMinimizedGit] = useState(false);
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [minimizedShortcuts, setMinimizedShortcuts] = useState(false);
-  const [showGrid, setShowGrid] = useState(false);
-
-  useEffect(() => {
-    const root = document.documentElement;
-    if (showGrid) {
-      root.setAttribute('data-grid', 'true');
-    } else {
-      root.removeAttribute('data-grid');
-    }
-  }, [showGrid]);
 
   useKeyboardShortcut({
     handlers: [
@@ -123,12 +114,7 @@ export default function Navigation() {
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <button
-                onClick={() => setShowGrid(!showGrid)}
-                className="flex rounded-lg border border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600 py-2 px-4 [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]"
-              >
-                <Grid className={`w-4 h-4 ${showGrid ? 'text-[var(--color-primary)]' : 'text-gray-500'}`} />
-              </button>
+              <GridToggle />
               <ColorSwitcher />
               <ThemeSwitcher />
               <button
