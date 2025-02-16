@@ -40,7 +40,7 @@ const shortcutGroups: ShortcutGroup[] = [
     name: "theme",
     shortcuts: [
       { key: "d", description: "toggle dark mode" },
-      { key: "g", description: "toggle grid theme" },
+      { key: "g", description: "toggle grid overlay" },
       { key: "l", description: "toggle portfolio list" },
       { key: "1", description: "red theme" },
       { key: "2", description: "pink theme" },
