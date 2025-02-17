@@ -23,8 +23,6 @@ const shortcutGroups: ShortcutGroup[] = [
     shortcuts: [
       { key: "j", description: "scroll down" },
       { key: "k", description: "scroll up" },
-      { key: "g", description: "switch to grid view" },
-      { key: "l", description: "switch to list view" },
       { key: "n", description: "next quote" },
       { key: "p", description: "previous quote" },
     ]
@@ -42,6 +40,8 @@ const shortcutGroups: ShortcutGroup[] = [
     name: "theme",
     shortcuts: [
       { key: "d", description: "toggle dark mode" },
+      { key: "g", description: "toggle grid overlay" },
+      { key: "l", description: "toggle portfolio list" },
       { key: "1", description: "red theme" },
       { key: "2", description: "pink theme" },
       { key: "3", description: "orange theme" },

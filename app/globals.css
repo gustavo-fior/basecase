@@ -103,6 +103,15 @@
   }
 }
 
+/* Grid background when data-grid attribute is present */
+html[data-grid="true"] body {
+  background-image: 
+    linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px),
+    linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px);
+  background-size: 16px 16px;
+  background-position: 0 0;
+}
+
 /* Add a .preload class to prevent transitions during page load */
 .preload * {
   transition: none !important;

@@ -149,7 +149,7 @@ export const Quotes = () => {
           onClick={() =>
             setCurrentIndex((prevIndex) => (prevIndex + 1) % quotes.length)
           }
-          className="hidden md:block text-sm p-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors whitespace-nowrap"
+          className="hidden md:block text-sm p-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors whitespace-nowrap [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]"
         >
           [n] next
         </button>
