@@ -99,11 +99,43 @@ export const Portfolio = () => {
       status: null,
     },
     {
+      title: "mastra",
+      icon: "/portfolio/mastra.png",
+      description:
+        "mastra is the typescript framework for building agents.",
+      url: "https://www.mastra.ai/",
+      status: null,
+    },
+    {
+      title: "meticulous",
+      icon: "/portfolio/meticulous.png",
+      description:
+        "meticulous is a zero-effort javascript testing platform.",
+      url: "https://meticulous.ai/",
+      status: null,
+    },
+    {
       title: "orb",
       icon: "/portfolio/orb.png",
       description:
         "orb is developer-first billing infrastructure built to help companies succeed with usage-based pricing.",
       url: "https://www.withorb.com/",
+      status: null,
+    },
+    {
+      title: "paper",
+      icon: "/portfolio/paper.png",
+      description:
+        "paper is a new home for designers.",
+      url: "https://paper.design/",
+      status: null,
+    },
+    {
+      title: "quanta",
+      icon: "/portfolio/quanta.png",
+      description:
+        "quanta is the AI-powered accounting service that 100Xs the best accountants.",
+      url: "https://usequanta.com/",
       status: null,
     },
     {
