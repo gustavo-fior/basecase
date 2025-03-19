@@ -134,7 +134,7 @@ export const Portfolio = () => {
       title: "quanta",
       icon: "/portfolio/quanta.png",
       description:
-        "quanta is the AI-powered accounting service that 100Xs the best accountants.",
+        "quanta is the ai-powered accounting service to 100x the best accountants.",
       url: "https://usequanta.com/",
       status: null,
     },
