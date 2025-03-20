@@ -99,11 +99,43 @@ export const Portfolio = () => {
       status: null,
     },
     {
+      title: "mastra",
+      icon: "/portfolio/mastra.png",
+      description:
+        "mastra is the typescript framework for building agents.",
+      url: "https://www.mastra.ai/",
+      status: null,
+    },
+    {
+      title: "meticulous",
+      icon: "/portfolio/meticulous.png",
+      description:
+        "meticulous is a zero-effort javascript testing platform.",
+      url: "https://meticulous.ai/",
+      status: null,
+    },
+    {
       title: "orb",
       icon: "/portfolio/orb.png",
       description:
         "orb is developer-first billing infrastructure built to help companies succeed with usage-based pricing.",
       url: "https://www.withorb.com/",
+      status: null,
+    },
+    {
+      title: "paper",
+      icon: "/portfolio/paper.png",
+      description:
+        "paper is a new home for designers.",
+      url: "https://paper.design/",
+      status: null,
+    },
+    {
+      title: "quanta",
+      icon: "/portfolio/quanta.png",
+      description:
+        "quanta is the ai-powered accounting service to 100x the best accountants.",
+      url: "https://usequanta.com/",
       status: null,
     },
     {
@@ -148,16 +180,31 @@ export const Portfolio = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isIconicHovered, setIsIconicHovered] = useState(false);
   const [isGridView, setIsGridView] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  const toggleView = () => {
+    const newState = !isGridView;
+    setIsGridView(newState);
+    localStorage.setItem("portfolio-view", JSON.stringify(newState));
+  };
 
   useKeyboardShortcut({
     handlers: [
       {
         key: 'l',
-        handler: () => setIsGridView(!isGridView),
+        handler: toggleView,
         description: 'Switch to list view'
       },
     ]
   });
+
+  useEffect(() => {
+    const savedView = localStorage.getItem("portfolio-view");
+    if (savedView !== null) {
+      setIsGridView(JSON.parse(savedView));
+    }
+    setIsLoaded(true);
+  }, []);
 
   useEffect(() => {
     if (isIconicHovered) {
@@ -223,115 +270,119 @@ export const Portfolio = () => {
           </span>{" "}
           companies
         </h2>
-        <button
-          onClick={() => setIsGridView(!isGridView)}
-          className="hidden md:block text-sm p-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]"
-        >
-          {isGridView ? '[l] list view' : '[l] logo view'}
-        </button>
+          <button
+            onClick={toggleView}
+            className="hidden md:block text-sm p-2 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 transition-colors [background-color:var(--color-background-light)] dark:[background-color:var(--color-background-dark)]"
+          >
+            {isGridView ? '[l] list view' : '[l] logo view'}
+          </button>
       </div>
 
       <div className="relative" style={{ height: totalHeight }}>
-        {/* Grid intersections - only show on md and up when in logo view */}
-        {isGridView && (
-          <div className="hidden md:block">
-            {renderGridIntersections()}
-          </div>
-        )}
-        
-        {/* List view - show on mobile OR when list view is selected */}
-        <div 
-          className={`flex flex-col ${isGridView ? 'md:hidden' : ''}`}
-          style={{ height: totalHeight }}
-        >
-          {portfolio.map((client, index) => (
-            <div
-              key={index}
-              className="flex items-center gap-2 text-sm"
-              style={{ height: `${totalHeight / portfolio.length}px` }}
+        {isLoaded && (
+          <>
+            {/* Grid intersections - only show on md and up when in logo view */}
+            {isGridView && (
+              <div className="hidden md:block">
+                {renderGridIntersections()}
+              </div>
+            )}
+            
+            {/* List view - show on mobile OR when list view is selected */}
+            <div 
+              className={`flex flex-col ${isGridView ? 'md:hidden' : ''}`}
+              style={{ height: totalHeight }}
             >
-              <span className="text-gray-800 dark:text-gray-400">+</span>
-              <div className="flex items-center gap-1">
-                <a
-                  href={client.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="relative inline-block"
-                  onMouseEnter={() => setHoveredIndex(index)}
-                  onMouseLeave={() => setHoveredIndex(null)}
+              {portfolio.map((client, index) => (
+                <div
+                  key={index}
+                  className="flex items-center gap-2 text-sm"
+                  style={{ height: `${totalHeight / portfolio.length}px` }}
                 >
-                  <span className="text-sm md:hidden">
-                    <span className="underline">{client.title}</span>
-                    {client.status && (
-                      <span className="text-sm text-gray-500"> ({client.status.toLowerCase()})</span>
-                    )}
-                  </span>
-                  <span className="hidden md:inline">
-                    {hoveredIndex === index ? (
-                      <ScrambleText 
-                        text={client.title === "diagram" ? "diagram.com" : getDomainFromUrl(client.url)} 
-                        className="text-sm underline text-[var(--color-primary)]"
-                      />
-                    ) : (
-                      <span>
-                        <span className="text-sm underline">
-                          {client.title}
-                        </span>
+                  <span className="text-gray-800 dark:text-gray-400">+</span>
+                  <div className="flex items-center gap-1">
+                    <a
+                      href={client.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="relative inline-block"
+                      onMouseEnter={() => setHoveredIndex(index)}
+                      onMouseLeave={() => setHoveredIndex(null)}
+                    >
+                      <span className="text-sm md:hidden">
+                        <span className="underline">{client.title}</span>
                         {client.status && (
                           <span className="text-sm text-gray-500"> ({client.status.toLowerCase()})</span>
                         )}
                       </span>
-                    )}
-                  </span>
-                </a>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Grid view - only show on md and up when grid view is selected */}
-        {isGridView && (
-          <div 
-            className="hidden md:grid md:grid-cols-4"
-            style={{ height: totalHeight }}
-          >
-            {portfolio.map((client, index) => (
-              <a
-                href={client.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                key={index}
-                className="cursor-pointer group"
-                style={{ height: '112px' }}
-                onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex(null)}
-              >
-                <div className="h-full relative flex items-center justify-center">
-                  <img
-                    src={client.icon}
-                    alt=""
-                    className="h-8 w-auto object-contain group-hover:opacity-0 transition-opacity dark:invert hidden md:block"
-                  />
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-center hidden md:flex">
-                    {hoveredIndex === index ? (
-                      <>
-                        <ScrambleText text={client.title} className="text-2xl font-bold tracking-wide font-geist" />
-                        {client.status && (
-                          <span className="text-xs text-[var(--color-primary)] mt-1">
-                            {client.status}
+                      <span className="hidden md:inline">
+                        {hoveredIndex === index ? (
+                          <ScrambleText 
+                            text={client.title === "diagram" ? "diagram.com" : getDomainFromUrl(client.url)} 
+                            className="text-sm underline text-[var(--color-primary)]"
+                          />
+                        ) : (
+                          <span>
+                            <span className="text-sm underline">
+                              {client.title}
+                            </span>
+                            {client.status && (
+                              <span className="text-sm text-gray-500"> ({client.status.toLowerCase()})</span>
+                            )}
                           </span>
                         )}
-                      </>
-                    ) : (
-                      <span className="text-2xl font-bold tracking-wide font-geist">
-                        {client.title}
                       </span>
-                    )}
+                    </a>
                   </div>
                 </div>
-              </a>
-            ))}
-          </div>
+              ))}
+            </div>
+
+            {/* Grid view - only show on md and up when grid view is selected */}
+            {isGridView && (
+              <div 
+                className="hidden md:grid md:grid-cols-4"
+                style={{ height: totalHeight }}
+              >
+                {portfolio.map((client, index) => (
+                  <a
+                    href={client.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    key={index}
+                    className="cursor-pointer group"
+                    style={{ height: '112px' }}
+                    onMouseEnter={() => setHoveredIndex(index)}
+                    onMouseLeave={() => setHoveredIndex(null)}
+                  >
+                    <div className="h-full relative flex items-center justify-center">
+                      <img
+                        src={client.icon}
+                        alt=""
+                        className="h-8 w-auto object-contain group-hover:opacity-0 transition-opacity dark:invert hidden md:block"
+                      />
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-center hidden md:flex">
+                        {hoveredIndex === index ? (
+                          <>
+                            <ScrambleText text={client.title} className="text-2xl font-bold tracking-wide font-geist" />
+                            {client.status && (
+                              <span className="text-xs text-[var(--color-primary)] mt-1">
+                                {client.status}
+                              </span>
+                            )}
+                          </>
+                        ) : (
+                          <span className="text-2xl font-bold tracking-wide font-geist">
+                            {client.title}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
